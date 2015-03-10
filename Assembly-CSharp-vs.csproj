@@ -46,6 +46,17 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Script\Managers\GameManager.cs" />
+     <Compile Include="Assets\Script\System\EnumManager.cs" />
+     <Compile Include="Assets\Script\System\LoadManager.cs" />
+     <Compile Include="Assets\Script\System\OpenChart.cs" />
+     <Compile Include="Assets\Script\System\Profile.cs" />
+     <Compile Include="Assets\Script\System\ProfileManager.cs" />
+     <Compile Include="Assets\Script\System\SerializableSong.cs" />
+     <Compile Include="Assets\Script\System\SerializableSongStorage.cs" />
+     <Compile Include="Assets\Script\System\Song.cs" />
+     <Compile Include="Assets\Script\System\SongInfoProfil.cs" />
+     <Compile Include="Assets\Script\System\VersionDeserializationBinder.cs" />
      <Compile Include="Assets\TempScript.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
