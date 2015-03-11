@@ -8,152 +8,218 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Reflection;
 
-public class LoadManager{
+public class SongPack
+{
+	public string name;
+	public Texture2D banner;
+	public List<SongData> songsData;
 
-	private static LoadManager instance;
+	public SongPack()
+	{
+		songsData = new List<SongData> ();
+	}
+
+	public SongPack(string name, Texture2D banner)
+	{
+		songsData = new List<SongData> ();
+		this.name = name;
+		this.banner = banner;
+	}
+}
+
+public class SongData
+{
+	public string name;
+	public Dictionary<Difficulty, Song> songs;
+
+	public SongData()
+	{
+		songs = new Dictionary<Difficulty, Song> ();
+	}
+}
+
+public class LoadManager : MonoBehaviour{
 	
-	public static LoadManager Instance{
-		get{
-			if(instance == null){
-			instance = new LoadManager();	
-			}
-			return instance;
-		
+	public static LoadManager instance;
+
+	void Awake()
+	{
+		if(instance == null){
+			instance = this;	
+			init ();
 		}
+		DontDestroyOnLoad (this);
 	}
 	
-	private Dictionary<string, Dictionary<string, Dictionary<Difficulty, Song>>> songs;
-	private Dictionary<string, Texture2D> bannerPack;
+	private List<SongPack> songPacks;
+
+	public int packBeforeReturn = 10;
+	public int songsBeforeReturn = 100;
+
 	public bool alreadyLoaded;
 	
-	private LoadManager(){
+	void init(){
 		alreadyLoaded = false;
-		
 	}
 	
-	public void Loading(){
-		bannerPack = new Dictionary<string, Texture2D>();
-		//string[] packpath = (string[]) Directory.GetDirectories(Application.dataPath + "/Songs/"); 	//RELEASE
-		string[] packpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/");  	//DEBUG
-		var length = lastDir((string) packpath[0]).Count();
-		songs = new Dictionary<string, Dictionary<string, Dictionary<Difficulty, Song>>>();
-		foreach(string el in packpath){
-			songs.Add(lastDir(el)[length - 1], new Dictionary<string, Dictionary<Difficulty, Song>>());
-			var path = Directory.GetFiles(el).FirstOrDefault(c => c.Contains(".png") || c.Contains(".jpg") || c.Contains(".jpeg"));
-			if(!String.IsNullOrEmpty(path)){
-				WWW www = new WWW("file://" + path);
-       			Texture2D texTmp = new Texture2D(512,256);
-				while(!www.isDone){}
-        		www.LoadImageIntoTexture(texTmp);
-				bannerPack.Add(lastDir(el)[length - 1], texTmp);
-			}else{
-				bannerPack.Add(lastDir(el)[length - 1], (Texture2D) Resources.Load("Cublast"));
-			}
-			
-			//Debug.Log("new pack : " + lastDir(el)[length - 1]);
-		}
+	public void Loading()
+	{
+		StartCoroutine (LoadingFromDisc ());
+	}
+
+	public void Loading(SerializableSongStorage sss)
+	{
+		StartCoroutine (LoadingFromCacheFile (sss));
+	}
+
+	public IEnumerator LoadingFromDisc()
+	{
+		songPacks = new List<SongPack>();
 		
 		
+		yield return StartCoroutine(LoadPacks ());
 		
-		foreach(var el in songs){
-			//string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + "/Songs/" + el.Key);		//RELEASE
-			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + el.Key);		//DEBUG
-			var lengthsp = lastDir ((string) songpath[0]).Count();
-			foreach(string sp in songpath){
-				//Debug.Log("new song : " + lastDir(sp)[lengthsp - 1]);
-				var dic = OpenChart.Instance.readChart(sp.Replace('\\', '/'));
-				if(dic != null && dic.Count != 0) songs[el.Key].Add(lastDir(sp)[lengthsp - 1] , dic);
-				/*Debug.Log("Song : " + lastDir(sp)[lengthsp - 1] + 
-					" added / pack : " + el.Key + 
-					" / number diff : " + songs[el.Key][lastDir(sp)[lengthsp - 1]].Count() +
-					" / number step expert : " + songs[el.Key][lastDir(sp)[lengthsp - 1]][Difficulty.EXPERT].numberOfSteps);*/
-					
-			}
-			songs[el.Key].OrderBy(c => c.Value.First().Value.title);
-		}
+		yield return StartCoroutine (LoadSongs ());
 		
-		
-		//DEBUG
-		if(songs.Keys.Count < 5){
-			var cou = songs.Keys.Count + 1;
-			for(int i=0; i<5-cou; i++){
-				songs.Add("Empty folder " + (i + 1), new Dictionary<string, Dictionary<Difficulty, Song>>());
-				bannerPack.Add("Empty folder " + (i + 1), (Texture2D) Resources.Load("Cublast"));
-			}
-		}
 		alreadyLoaded = true;
 	}
-	
-	
-	
-	public int LoadingFromCacheFile(SerializableSongStorage sss){
-		var numberNotFound = 0;
-		bannerPack = new Dictionary<string, Texture2D>();
-		//string[] packpath = (string[]) Directory.GetDirectories(Application.dataPath + "/Songs/"); 	//RELEASE
-		string[] packpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/");  	//DEBUG
-		var length = lastDir((string) packpath[0]).Count();
-		songs = new Dictionary<string, Dictionary<string, Dictionary<Difficulty, Song>>>();
+
+	public IEnumerator LoadingFromCacheFile(SerializableSongStorage sss){
+		
+		songPacks = new List<SongPack>();
+		
+		yield return StartCoroutine (LoadPacks ());
+		
+		yield return StartCoroutine (LoadSongsFromCache (sss));
+		
+		alreadyLoaded = true;
+		
+		
+	}
+
+	public IEnumerator LoadPacks()
+	{
+		//Récupération de tous les dossiers
+		string[] packpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/");
+		int length = lastDir((string) packpath[0]).Count();
+		int packOK = 0;
+
 		foreach(string el in packpath){
-			songs.Add(lastDir(el)[length - 1], new Dictionary<string, Dictionary<Difficulty, Song>>());
 			var path = Directory.GetFiles(el).FirstOrDefault(c => c.Contains(".png") || c.Contains(".jpg") || c.Contains(".jpeg"));
+			Texture2D texTmp = new Texture2D(512,256);
+			
+			//Chargement de la texture bannière si trouvée
 			if(!String.IsNullOrEmpty(path)){
 				WWW www = new WWW("file://" + path);
-       			Texture2D texTmp = new Texture2D(512, 256);
 				while(!www.isDone){}
-        		www.LoadImageIntoTexture(texTmp);
-				bannerPack.Add(lastDir(el)[length - 1], texTmp);
+				www.LoadImageIntoTexture(texTmp);
 			}else{
-				bannerPack.Add(lastDir(el)[length - 1], (Texture2D) Resources.Load("Cublast"));
+				texTmp = null;
 			}
 			
-			//Debug.Log("new pack : " + lastDir(el)[length - 1]);
+			//Ajout au songPack
+			SongPack sp = new SongPack(lastDir(el)[length - 1], texTmp);
+			songPacks.Add(sp);
+
+			packOK++;
+			if(packOK >= packBeforeReturn)
+			{
+				packOK = 0;
+				yield return 0;
+			}
 		}
-		
-		
-		
-		foreach(var el in songs){
-			//string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + "/Songs/" + el.Key);		//RELEASE
-			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + el.Key);		//DEBUG
+
+		yield return 0;
+	}
+
+	public IEnumerator LoadSongs()
+	{
+		int songOK = 0;
+		foreach(SongPack spack in songPacks){
+			
+			//Récupération de toutes les chansons
+			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + spack.name);		//DEBUG
 			var lengthsp = lastDir ((string) songpath[0]).Count();
-			var packsss = sss.getStore().Where(c => c.packName == el.Key);
+
 			foreach(string sp in songpath){
-				//Debug.Log("new song : " + lastDir(sp)[lengthsp - 1]);
-				var dic = new Dictionary<Difficulty, Song>();
-				var sameSong = packsss.Where(c => c.songFileName == lastDir(sp)[lengthsp - 1]);
-				if(sameSong.Count() > 0){
-					foreach(var oneSong in sameSong){
-						var theUnpackedSong = new Song();
-						oneSong.transfertLoad(theUnpackedSong);
-						dic.Add(theUnpackedSong.difficulty, theUnpackedSong);
-					}
-					
-				}else{
-					dic = OpenChart.Instance.readChart(sp.Replace('\\', '/'));
-					numberNotFound++;
+
+				SongData songData = new SongData();
+				//Lecture de la chart
+				songData.songs = OpenChart.Instance.readChart(sp.Replace('\\', '/'));
+				if(songData.songs != null && songData.songs.Count > 0) songData.name = songData.songs.First().Value.title;
+				spack.songsData.Add(songData);
+
+				songOK++;
+				if(songOK >= songsBeforeReturn)
+				{
+					songOK = 0;
+					yield return 0;
 				}
-				if(dic != null && dic.Count != 0) songs[el.Key].Add(lastDir(sp)[lengthsp - 1] , dic);
-				/*Debug.Log("Song : " + lastDir(sp)[lengthsp - 1] + 
-					" added / pack : " + el.Key + 
-					" / number diff : " + songs[el.Key][lastDir(sp)[lengthsp - 1]].Count() +
-					" / number step expert : " + songs[el.Key][lastDir(sp)[lengthsp - 1]][Difficulty.EXPERT].numberOfSteps);*/
-					
 			}
-			sss.getStore().RemoveAll(c => c.packName == el.Key);
-			songs[el.Key].OrderBy(c => c.Key);
+			spack.songsData.RemoveAll(c => string.IsNullOrEmpty(c.name));
+			spack.songsData = spack.songsData.OrderBy(c => c.name);
+
+
 		}
-		
-		
-		//DEBUG
-		if(songs.Keys.Count < 5){
-			var cou = songs.Keys.Count + 1;
-			for(int i=0; i<5-cou; i++){
-				songs.Add("Empty folder " + (i + 1), new Dictionary<string, Dictionary<Difficulty, Song>>());
-				bannerPack.Add("Empty folder " + (i + 1), (Texture2D) Resources.Load("Cublast"));
-			}
-		}
-		alreadyLoaded = true;
-		return numberNotFound;
+
+		yield return 0;
 	}
+
+	public IEnumerator LoadSongsFromCache(SerializableSongStorage sss)
+	{
+		int songOK = 0;
+		foreach(SongPack spack in songPacks){
+			//Récupération de toutes les chansons
+			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + el.Key);		//DEBUG
+			var lengthsp = lastDir ((string) songpath[0]).Count();
+
+			//Récupérartion des chansons du store
+			var packsss = sss.getStore().Where(c => c.packName == spack.name);
+			foreach(string sp in songpath){
+
+				//Récupération de la chanson du store
+				SongData songData = new SongData();
+
+				string songName = lastDir(sp)[lengthsp - 1];
+				IEnumerable<SerializableSong> sameSong = packsss.Where(c => c.songFileName == songName);
+
+				//Pour toutes les chansons trouvées
+				if(sameSong.Count() > 0){
+
+					foreach(SerializableSong oneSong in sameSong){
+						//Copie
+						Song theUnpackedSong = new Song();
+						oneSong.transfertLoad(theUnpackedSong);
+						songData.songs.Add(theUnpackedSong.difficulty, theUnpackedSong);
+					}
+				}else{
+					//Récupération depuis le disc, de base
+					songData.songs = OpenChart.Instance.readChart(sp.Replace('\\', '/'));
+				}
+
+				if(songData.songs != null && songData.songs.Count > 0) songData.name = songData.songs.First().Value.title;
+				spack.songsData.Add(songData);
+
+				songOK++;
+				if(songOK >= songsBeforeReturn)
+				{
+					songOK = 0;
+					yield return 0;
+				}
+				
+			}
+			sss.getStore().RemoveAll(c => c.packName == spack.name);
+
+			spack.songsData.RemoveAll(c => string.IsNullOrEmpty(c.name));
+			spack.songsData = spack.songsData.OrderBy(c => c.name);
+		}
+		
+		yield return 0;
+	}
+	
+	
+	
+
 	
 	public bool isSongFolderEmpty(){
 		return Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/").Length == 0;
@@ -163,28 +229,36 @@ public class LoadManager{
 		return dir.Replace('\\', '/').Split ('/');
 	}
 
-	public Dictionary<Difficulty, Song> FindSong(string pack, string song){
-		return songs[pack][song];
+	public SongData FindSongData(string pack, string song){
+		return songPacks.Find (c => c.name == pack).songsData.FirstOrDefault(c => c.name == song);
+	}
+
+	public SongData FindSongData(SongPack pack, string song){
+		return pack.songsData.FirstOrDefault(c => c.name == song);
 	}
 	
-	public KeyValuePair<Difficulty, Dictionary<Difficulty, Song>> FindSong(SongInfoProfil sip)
+	public Song FindSong(SongInfoProfil sip)
 	{
-		for(int i=0; i<songs.Count; i++)
-		{
-			for(int j=0; j<songs.ElementAt(i).Value.Count; j++)
+		foreach (SongPack sp in songPacks) {
+			foreach(SongData sd in sp)
 			{
-				var thesong = songs.ElementAt(i).Value.ElementAt(j).Value.FirstOrDefault(c => c.Value.sip.CompareId(sip));
-				if(!thesong.Equals(default(KeyValuePair<Difficulty, Song>)))
+				foreach(KeyValuePair<Difficulty,Song> s in sd)
 				{
-					return new KeyValuePair<Difficulty, Dictionary<Difficulty, Song>>(thesong.Key, songs.ElementAt(i).Value.ElementAt(j).Value);	
+					if(s.Value.sip.CompareId(sip))
+					{
+						return s;
+					}
 				}
 			}
 		}
-		return default(KeyValuePair<Difficulty, Dictionary<Difficulty, Song>>);
 	}
 	
-	public Dictionary<string, Dictionary<string, Dictionary<Difficulty, Song>>> ListSong(){
-		return songs;
+	public List<SongData> ListSong(){
+		List<SongData> temp = new List<SongData> ();
+		foreach (SongPack sp in songPacks) {
+			temp.AddRange(sp.songsData);
+		}
+		return temp;
 	}
 	
 	public Dictionary<string, Dictionary<Difficulty, Song>> ListSong(Dictionary<string, Dictionary<Difficulty, Song>> previousList, string contains){
