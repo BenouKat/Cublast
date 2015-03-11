@@ -77,7 +77,6 @@ public class Profile{
 		SecondaryKeyCodeDown = KeyCode.S;
 		SecondaryKeyCodeLeft = KeyCode.Q;
 		SecondaryKeyCodeRight = KeyCode.D;
-		loadOptions();
 	}
 	
 	public void saveASong(SongInfoProfil sip, float scoreEarned, double speedmodPref, bool fail){
@@ -103,50 +102,9 @@ public class Profile{
 		gameTime += gt;
 	}
 	
-	public void loadOptions(){
-	
-		GameManager.instance.userGOS = this.userGOS;
-		GameManager.instance.mouseMolSpeed = this.mouseMolSpeed;
-		GameManager.instance.dancepadMode = this.dancepadMode;
-		GameManager.instance.quickMode = this.quickMode;
-		GameManager.instance.generalVolume = this.generalVolume;
-		GameManager.instance.enableBloom = this.enableBloom;
-		GameManager.instance.enableDepthOfField = this.enableDepthOfField;
-		GameManager.instance.onlyOnGame = this.onlyOnGame;
-		GameManager.instance.antiAliasing = this.antiAliasing;
-		GameManager.instance.useTheCacheSystem = this.useTheCacheSystem;
-		
-		GameManager.instance.KeyCodeUp = this.KeyCodeUp;
-		GameManager.instance.KeyCodeDown = this.KeyCodeDown;
-		GameManager.instance.KeyCodeLeft = this.KeyCodeLeft;
-		GameManager.instance.KeyCodeRight = this.KeyCodeRight;
-		GameManager.instance.SecondaryKeyCodeUp = this.SecondaryKeyCodeUp;
-		GameManager.instance.SecondaryKeyCodeDown = this.SecondaryKeyCodeDown;
-		GameManager.instance.SecondaryKeyCodeLeft = this.SecondaryKeyCodeLeft;
-		GameManager.instance.SecondaryKeyCodeRight = this.SecondaryKeyCodeRight;
-	}
-	
 	public void saveOptions(){
 	
-		this.userGOS = GameManager.instance.userGOS;
-		this.mouseMolSpeed = GameManager.instance.mouseMolSpeed;
-		this.dancepadMode = GameManager.instance.dancepadMode;
-		this.quickMode = GameManager.instance.quickMode;
-		this.generalVolume = GameManager.instance.generalVolume;
-		this.enableBloom = GameManager.instance.enableBloom;
-		this.enableDepthOfField = GameManager.instance.enableDepthOfField;
-		this.onlyOnGame = GameManager.instance.onlyOnGame;
-		this.antiAliasing = GameManager.instance.antiAliasing;
-		this.useTheCacheSystem = GameManager.instance.useTheCacheSystem;
-		
-		this.KeyCodeUp = GameManager.instance.KeyCodeUp;
-		this.KeyCodeDown = GameManager.instance.KeyCodeDown;
-		this.KeyCodeLeft = GameManager.instance.KeyCodeLeft;
-		this.KeyCodeRight = GameManager.instance.KeyCodeRight;
-		this.SecondaryKeyCodeUp = GameManager.instance.SecondaryKeyCodeUp;
-		this.SecondaryKeyCodeDown = GameManager.instance.SecondaryKeyCodeDown;
-		this.SecondaryKeyCodeLeft = GameManager.instance.SecondaryKeyCodeLeft;
-		this.SecondaryKeyCodeRight = GameManager.instance.SecondaryKeyCodeRight;
+		ProfileManager.instance.SaveProfile ();
 	}
 	
 }

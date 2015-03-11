@@ -190,8 +190,8 @@ public class LoadManager{
 	public Dictionary<string, Dictionary<Difficulty, Song>> ListSong(Dictionary<string, Dictionary<Difficulty, Song>> previousList, string contains){
 		
 		var finalList = new Dictionary<string, Dictionary<Difficulty, Song>>();
-		
-		switch(GameManager.instance.sortMethod){
+		Sort sortMethod = Sort.NAME; //temp !
+		switch(sortMethod){
 		
 			case Sort.NAME:
 				if(previousList.Count == 0){
@@ -272,7 +272,8 @@ public class LoadManager{
 	}
 	
 	public bool isAllowedToSearch(string search){
-		switch(GameManager.instance.sortMethod){
+		Sort sortMethod = Sort.NAME; //Temp !
+		switch(sortMethod){
 			case Sort.NAME:
 				return search.Trim().Length >= 3;
 			case Sort.STARTWITH:

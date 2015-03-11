@@ -10,16 +10,16 @@ using System.Reflection;
 
 public class ProfileManager{
 	
-	private static ProfileManager instance;
+	private static ProfileManager _instance;
 	
 	public bool alreadyLoaded;
 	
-	public static ProfileManager Instance{
+	public static ProfileManager instance{
 		get{
-			if(instance == null){ 
-				instance = new ProfileManager();
+			if(_instance == null){ 
+				_instance = new ProfileManager();
 			}
-			return instance;
+			return _instance;
 		}
 	}
 
@@ -33,7 +33,6 @@ public class ProfileManager{
 	public void setCurrentProfile(Profile p){
 		
 		prefs = p;
-		prefs.loadOptions();
 	}
 	
 	public bool SaveProfile () {
@@ -82,18 +81,21 @@ public class ProfileManager{
 	}
 	
 	public void LoadProfiles () {
-		if(File.Exists(Application.dataPath + GameManager.instance.DEBUGPATH + "UserData/local.prefs")){
+		if (File.Exists (Application.dataPath + GameManager.instance.DEBUGPATH + "UserData/local.prefs")) {
 
 			Profile pr = new Profile ();
-			Stream stream = File.Open(Application.dataPath + GameManager.instance.DEBUGPATH + "UserData/local.prefs", FileMode.Open);
-			BinaryFormatter bformatter = new BinaryFormatter();
-			bformatter.Binder = new VersionDeserializationBinder(); 
-			pr = (Profile)bformatter.Deserialize(stream);
-			stream.Close();
+			Stream stream = File.Open (Application.dataPath + GameManager.instance.DEBUGPATH + "UserData/local.prefs", FileMode.Open);
+			BinaryFormatter bformatter = new BinaryFormatter ();
+			bformatter.Binder = new VersionDeserializationBinder (); 
+			pr = (Profile)bformatter.Deserialize (stream);
+			stream.Close ();
 			
-			setCurrentProfile(pr);
+			setCurrentProfile (pr);
 
 			alreadyLoaded = true;
+		} else {
+			setCurrentProfile(new Profile());
+			SaveProfile();
 		}
 	}
 	

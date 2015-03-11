@@ -56,6 +56,28 @@ public enum Precision{
 		NONE
 }
 
+public enum ScoreNote
+{
+	QUAD,
+	GOLD,
+	SILVER,
+	BRONZE,
+	SPLUS,
+	S,
+	SMINUS,
+	APLUS,
+	A,
+	AMINUS,
+	BPLUS,
+	B,
+	BMINUS,
+	CPLUS,
+	C,
+	CMINUS,
+	BAD,
+	FAILED
+}
+
 public enum ArrowType{
 		NORMAL,
 		FREEZE,

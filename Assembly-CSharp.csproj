@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Script\Managers\GameManager.cs" />
+     <Compile Include="Assets\Script\Managers\TestSound.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
      <Compile Include="Assets\Script\System\OpenChart.cs" />
