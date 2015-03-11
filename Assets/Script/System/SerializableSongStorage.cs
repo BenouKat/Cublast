@@ -14,12 +14,12 @@ public class SerializableSongStorage {
 	}
 	
 	public void packTheStore(){
-		var allSongs = LoadManager.Instance.ListSong();
-		foreach(var packs in allSongs){
-			foreach(var songs in packs.Value){
-				foreach(var song in songs.Value){
+		
+		foreach(SongPack pack in LoadManager.instance.songPacks){
+			foreach(SongData songs in pack.songsData){
+				foreach(KeyValuePair<Difficulty, Song> song in songs.songs){
 					var ss = new SerializableSong();
-					ss.transfertSave(song.Value, packs.Key, songs.Key);
+					ss.transfertSave(song.Value, pack.name, songs.name);
 					store.Add(ss);
 				}
 			}
