@@ -38,6 +38,13 @@ public class SongData
 	}
 }
 
+[Serializable]
+public class SearchAllowed
+{
+	public Sort sortType;
+	public int minimumCharacRequired;
+}
+
 public class LoadManager : MonoBehaviour{
 	
 	public static LoadManager instance;
@@ -51,12 +58,13 @@ public class LoadManager : MonoBehaviour{
 		DontDestroyOnLoad (this);
 	}
 	
-	private List<SongPack> songPacks;
+	public List<SongPack> songPacks;
+	public List<SearchAllowed> searchAllowed;
 
 	public int packBeforeReturn = 10;
 	public int songsBeforeReturn = 100;
 
-	public bool alreadyLoaded;
+	[HideInInspector] public bool alreadyLoaded;
 	
 	void init(){
 		alreadyLoaded = false;
@@ -138,8 +146,7 @@ public class LoadManager : MonoBehaviour{
 		foreach(SongPack spack in songPacks){
 			
 			//Récupération de toutes les chansons
-			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + spack.name);		//DEBUG
-			var lengthsp = lastDir ((string) songpath[0]).Count();
+			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + spack.name);	
 
 			foreach(string sp in songpath){
 
@@ -157,7 +164,7 @@ public class LoadManager : MonoBehaviour{
 				}
 			}
 			spack.songsData.RemoveAll(c => string.IsNullOrEmpty(c.name));
-			spack.songsData = spack.songsData.OrderBy(c => c.name);
+			spack.songsData = spack.songsData.OrderBy(c => c.name).ToList();
 
 
 		}
@@ -170,7 +177,7 @@ public class LoadManager : MonoBehaviour{
 		int songOK = 0;
 		foreach(SongPack spack in songPacks){
 			//Récupération de toutes les chansons
-			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + el.Key);		//DEBUG
+			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + spack.name);		//DEBUG
 			var lengthsp = lastDir ((string) songpath[0]).Count();
 
 			//Récupérartion des chansons du store
@@ -211,7 +218,7 @@ public class LoadManager : MonoBehaviour{
 			sss.getStore().RemoveAll(c => c.packName == spack.name);
 
 			spack.songsData.RemoveAll(c => string.IsNullOrEmpty(c.name));
-			spack.songsData = spack.songsData.OrderBy(c => c.name);
+			spack.songsData = spack.songsData.OrderBy(c => c.name).ToList();
 		}
 		
 		yield return 0;
@@ -240,17 +247,26 @@ public class LoadManager : MonoBehaviour{
 	public Song FindSong(SongInfoProfil sip)
 	{
 		foreach (SongPack sp in songPacks) {
-			foreach(SongData sd in sp)
+			foreach(SongData sd in sp.songsData)
 			{
-				foreach(KeyValuePair<Difficulty,Song> s in sd)
-				{
-					if(s.Value.sip.CompareId(sip))
-					{
-						return s;
-					}
-				}
+				Song song = FindSong(sd, sip);
+				if(song != null) return song;
 			}
 		}
+
+		return null;
+	}
+
+	public Song FindSong(SongData sd, SongInfoProfil sip)
+	{
+		foreach(KeyValuePair<Difficulty,Song> s in sd.songs)
+		{
+			if(s.Value.sip.CompareId(sip))
+			{
+				return s.Value;
+			}
+		}
+		return null;
 	}
 	
 	public List<SongData> ListSong(){
@@ -263,61 +279,39 @@ public class LoadManager : MonoBehaviour{
 	
 	public List<SongData> SortListSong(List<SongData> thePreviousList, Sort sortMethod, string param)
 	{
-		Sort sortMethod = Sort.NAME;
 		switch(sortMethod){
-		
 			case Sort.NAME:
-				return thePreviousList.Where(c => c.name.Contains(param));
-			break;
-			
+				return thePreviousList.Where(c => c.name.Contains(param)).ToList();
+
 			case Sort.STARTWITH:
-				return thePreviousList.Where(c => c.name.StartsWith(param));
-			break;
+				return thePreviousList.Where(c => c.name.StartsWith(param)).ToList();
 			
 			case Sort.ARTIST:
-				return thePreviousList.Where(c => c.songs.Exist(d => d.Value.artist.Contains(param)));
-			break;
+				return thePreviousList.Where(c => !c.songs.Values.Any(d => d.artist.Contains(param))).ToList();
 			
 			case Sort.STEPARTIST:
-				return thePreviousList.Where(c => c.songs.Exist(d => d.Value.stepartist.Contains(param)));
-			break;
+			return thePreviousList.Where(c => !c.songs.Values.Any(d => d.stepartist.Contains(param))).ToList();
 			
 			case Sort.DIFFICULTY:
 				int dif = 0;
 				if(Int32.TryParse(param, out dif)){
-					return thePreviousList.Where(c => c.songs.Exist(d => d.Value.difficulty == dif));
+				return thePreviousList.Where(c => !c.songs.Values.Any(d => (int)d.difficulty == dif)).ToList();
 				}
 			break;
-			
-			//remplacer par des try parse
+
 			case Sort.BPM:
 				int dif2 = 0;
 				if(Int32.TryParse(param, out dif2)){
-					return thePreviousList.Where(c => c.songs.Exist(d => d.Value.bpm == dif2));
+				return thePreviousList.Where(c => !c.songs.Values.Any(d => d.bpms.Values.Contains((double)dif2))).ToList();
 				}
 			break;
 		
 		}
-		return finalList;
+		return thePreviousList;
 	}
 	
 	public bool isAllowedToSearch(Sort sortMethod, string search){
-		switch(sortMethod){
-			case Sort.NAME:
-				return search.Trim().Length >= 3;
-			case Sort.STARTWITH:
-				return search.Trim().Length >= 1;
-			case Sort.ARTIST:
-				return search.Trim().Length >= 3;
-			case Sort.STEPARTIST:
-				return search.Trim().Length >= 3;
-			case Sort.DIFFICULTY:
-				return search.Trim().Length >= 1;
-			case Sort.BPM:
-				return search.Trim().Length >= 2;
-			default:
-				return false;
-		}
+		return search.Trim().Length >= searchAllowed.Find(c => c.sortType == sortMethod).minimumCharacRequired;
 	}
 	
 	private void renameSharpFolder(){
@@ -342,7 +336,7 @@ public class LoadManager : MonoBehaviour{
 		
 		for(int i=0; i < songPacks.Count(); i++)
 		{
-			packName += songPacks.name;
+			packName += songPacks[i].name;
 			if(i < songPacks.Count() - 1)
 			{
 				packName += ";";
@@ -359,21 +353,21 @@ public class LoadManager : MonoBehaviour{
 		if(!Directory.Exists(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache/")){
 				Directory.CreateDirectory(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache");
 		}
-		var cacheFiles = (string[]) Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache");
+		string[] cacheFiles = (string[]) Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache");
 		for(int i=0; i<cacheFiles.Length; i++){
 			File.Delete(cacheFiles[i]);	
 		}
 		
-		var sss = new SerializableSongStorage();
+		SerializableSongStorage sss = new SerializableSongStorage();
 		sss.packTheStore();
-		var decoupStore = sss.decoupSerial();
+		List<List<SerializableSong>> decoupStore = sss.decoupSerial();
 		
 		for(int i=0; i<decoupStore.Count; i++){
 			using(Stream stream = File.Open(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache/" + "dataSong" + i + ".cache", FileMode.Create))
 			{
 				BinaryFormatter bformatter = new BinaryFormatter();
 				bformatter.Binder = new VersionDeserializationBinder(); 
-				var minisss = new SerializableSongStorage();
+				SerializableSongStorage minisss = new SerializableSongStorage();
 				minisss.store = decoupStore[i];
 				
 				try{
@@ -381,7 +375,8 @@ public class LoadManager : MonoBehaviour{
 					minisss = null;
 					
 				}catch(Exception e){
-					var cacheFilesDel = (string[]) Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache");
+					Debug.Log(e.Message);
+					string[] cacheFilesDel = (string[]) Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache");
 					for(int j=0; j<cacheFilesDel.Length; j++){
 						File.Delete(cacheFilesDel[j]);	
 					};
@@ -408,12 +403,11 @@ public class LoadManager : MonoBehaviour{
 	public bool LoadFromCache () {
 	
 		if(Directory.Exists(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache/")){
-			var cacheFiles = (string[]) Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache");
-			var sss = new SerializableSongStorage ();
-			Debug.Log(System.DateTime.Now.Second + ":" + System.DateTime.Now.Millisecond);
+			string[] cacheFiles = (string[]) Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache");
+			SerializableSongStorage sss = new SerializableSongStorage ();
 			for(int i=0; i<cacheFiles.Length; i++){
-				var file = Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache").FirstOrDefault(c => c.Contains("dataSong"+ i +".cache"));
-				var minisss = new SerializableSongStorage ();
+				string file = cacheFiles.ToList().FirstOrDefault(c => c.Contains("dataSong"+ i +".cache"));
+				SerializableSongStorage minisss = new SerializableSongStorage ();
 				using(Stream stream = File.Open(file, FileMode.Open))
 				{
 					BinaryFormatter bformatter = new BinaryFormatter();
