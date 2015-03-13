@@ -48,8 +48,14 @@
   <ItemGroup>
      <Compile Include="Assets\Script\Managers\GameManager.cs" />
      <Compile Include="Assets\Script\Managers\TestSound.cs" />
+     <Compile Include="Assets\Script\Managers\UnpatchSong.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
+     <Compile Include="Assets\Script\System\OGGScripts\ByteUtilities.cs" />
+     <Compile Include="Assets\Script\System\OGGScripts\LowLevel.cs" />
+     <Compile Include="Assets\Script\System\OGGScripts\Ogglength.cs" />
+     <Compile Include="Assets\Script\System\OGGScripts\Patcher.cs" />
+     <Compile Include="Assets\Script\System\OGGScripts\PatcherOptions.cs" />
      <Compile Include="Assets\Script\System\OpenChart.cs" />
      <Compile Include="Assets\Script\System\Profile.cs" />
      <Compile Include="Assets\Script\System\ProfileManager.cs" />
