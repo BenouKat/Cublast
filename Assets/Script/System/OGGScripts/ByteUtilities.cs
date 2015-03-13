@@ -60,82 +60,82 @@ public class ByteUtilities {
 
 
 //Generic method
-	public byte Read(FileStream fs, byte obj, ref bool eofOut)
+	public static byte ReadOrDieByte(FileStream fs, ref bool eofOut)
 	{
 		byte[] bytes = ReadBytes (fs, sizeof(byte));
 		if (bytes.Length == 0) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else if (bytes.Length < sizeof(byte)) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else {
 			eofOut = false;
 			return (byte) bytes[0];
 		}
 	}
 
-	public Int32 Read(FileStream fs, Int32 obj, ref bool eofOut)
+	public static Int32 ReadOrDieByteInt32(FileStream fs, ref bool eofOut)
 	{
 		byte[] bytes = ReadBytes (fs, sizeof(Int32));
 		if (bytes.Length == 0) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else if (bytes.Length < sizeof(Int32)) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else {
 			eofOut = false;
 			return (Int32) BitConverter.ToInt32(bytes, 0);
 		}
 	}
 
-	public UInt32 Read(FileStream fs, UInt32 obj, ref bool eofOut)
+	public static UInt32 ReadOrDieByteUInt32(FileStream fs, ref bool eofOut)
 	{
 		byte[] bytes = ReadBytes (fs, sizeof(UInt32));
 		if (bytes.Length == 0) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else if (bytes.Length < sizeof(UInt32)) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else {
 			eofOut = false;
 			return (UInt32)  BitConverter.ToUInt32(bytes, 0);
 		}
 	}
 
-	public Int64 Read(FileStream fs, Int64 obj, ref bool eofOut)
+	public static Int64 ReadOrDieByteInt64(FileStream fs, ref bool eofOut)
 	{
 		byte[] bytes = ReadBytes (fs, sizeof(Int64));
 		if (bytes.Length == 0) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else if (bytes.Length < sizeof(Int64)) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else {
 			eofOut = false;
 			return (Int64) BitConverter.ToInt64(bytes, 0);
 		}
 	}
 
-	public UInt64 Read(FileStream fs, UInt64 obj, ref bool eofOut)
+	public static UInt64 ReadOrDieByteUInt64(FileStream fs, ref bool eofOut)
 	{
 		byte[] bytes = ReadBytes (fs, sizeof(UInt64));
 		if (bytes.Length == 0) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else if (bytes.Length < sizeof(UInt64)) {
 			eofOut = true;
-			return obj;
+			return 0;
 		} else {
 			eofOut = false;
 			return (UInt64)  BitConverter.ToUInt64(bytes, 0);
 		}
 	}
 
-	public void WriteOrDie(FileStream fs, Int32 data)
+	public static void WriteOrDie(FileStream fs, Int32 data)
 	{
 		byte[] arrayData = BitConverter.GetBytes (data);
 		if (BitConverter.IsLittleEndian) {
@@ -144,7 +144,7 @@ public class ByteUtilities {
 		fs.Write (arrayData, 0, 1);
 	}
 
-	public void WriteOrDie(FileStream fs, Int64 data)
+	public static void WriteOrDie(FileStream fs, Int64 data)
 	{
 		byte[] arrayData = BitConverter.GetBytes (data);
 		if (BitConverter.IsLittleEndian) {
@@ -154,7 +154,7 @@ public class ByteUtilities {
 	}
 
 
-	public void AppendBytes(ref byte[] vec, Int32 data)
+	public static void AppendBytes(ref byte[] vec, Int32 data)
 	{
 		byte[] arrayData = BitConverter.GetBytes (data);
 		if (BitConverter.IsLittleEndian) {
@@ -168,7 +168,7 @@ public class ByteUtilities {
 		vec = byteList.ToArray ();
 	}
 
-	public void AppendBytes(ref byte[] vec, Int64 data)
+	public static void AppendBytes(ref byte[] vec, Int64 data)
 	{
 		byte[] arrayData = BitConverter.GetBytes (data);
 		if (BitConverter.IsLittleEndian) {
@@ -182,7 +182,7 @@ public class ByteUtilities {
 		vec = byteList.ToArray ();
 	}
 
-	public bool CheckBit(byte number, int bitIndex)
+	public static bool CheckBit(byte number, int bitIndex)
 	{
 		return (number & (1 << bitIndex)) != 0;
 	}

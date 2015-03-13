@@ -81,7 +81,7 @@ public class Ogglength {
 			byte headerType;
 			UInt32 sampleRate = 0;
 			Int32 savedBitstreamSerialNumber = 0;
-
+			bool eof = false;
 
 			while(true)
 			{
@@ -91,6 +91,35 @@ public class Ogglength {
 					return;
 				}
 
+				version = ByteUtilities.ReadOrDieByte(fs, ref eof);
+				if(eof) return;
+				if(version != 0) return;
+
+				headerType = ByteUtilities.ReadOrDieByte(fs, ref eof);
+				if(eof) return;
+				bool continuation = ByteUtilities.CheckBit(headerType, 0);
+				bool beginningOfStream = ByteUtilities.CheckBit(headerType, 1);
+				bool endOfStream = ByteUtilities.CheckBit(headerType, 2);
+
+				if(endOfStream)
+				{
+					break;
+				}
+
+				Int64 granulePosition = ByteUtilities.ReadOrDieByteInt64(fs, ref eof);
+				if(eof) return;
+
+				Int32 bitstreamSerialNumber = ByteUtilities.ReadOrDieByteInt32(fs, ref eof);
+				if(eof) return;
+
+				if(sampleRate != 0 && bitstreamSerialNumber != savedBitstreamSerialNumber)
+				{
+					return;
+				}
+				savedBitstreamSerialNumber = bitstreamSerialNumber;
+
+				Int32 pageSequenceNumber = ByteUtilities.ReadOrDieByteInt32(fs, ref eof);
+				if(eof) return;
 
 			}
 
