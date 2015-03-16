@@ -3,6 +3,7 @@ using System.Collections;
 using Xiph.LowLevel;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Collections.Generic;
 
 public class Ogglength {
 
@@ -85,17 +86,17 @@ public class Ogglength {
 
 			while(true)
 			{
-				byte[] buffer = ByteUtilities.ReadBytesOrDie(fs, 4);
+				byte[] buffer = ByteUtilities.ReadBytesOrDie(ref fs, 4);
 				if(buffer[0] != 'O' || buffer[1] != 'g' || buffer[2] != 'g' || buffer[3] != 'S')
 				{
 					return;
 				}
 
-				version = ByteUtilities.ReadOrDieByte(fs, ref eof);
+				version = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
 				if(eof) return;
 				if(version != 0) return;
 
-				headerType = ByteUtilities.ReadOrDieByte(fs, ref eof);
+				headerType = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
 				if(eof) return;
 				bool continuation = ByteUtilities.CheckBit(headerType, 0);
 				bool beginningOfStream = ByteUtilities.CheckBit(headerType, 1);
@@ -106,23 +107,140 @@ public class Ogglength {
 					break;
 				}
 
-				Int64 granulePosition = ByteUtilities.ReadOrDieByteInt64(fs, ref eof);
+				Int64 granulePositionWhile = ByteUtilities.ReadOrDieByteInt64(ref fs, ref eof);
 				if(eof) return;
 
-				Int32 bitstreamSerialNumber = ByteUtilities.ReadOrDieByteInt32(fs, ref eof);
+				Int32 bitstreamSerialNumberWhile = ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
 				if(eof) return;
 
-				if(sampleRate != 0 && bitstreamSerialNumber != savedBitstreamSerialNumber)
+				if(sampleRate != 0 && bitstreamSerialNumberWhile != savedBitstreamSerialNumber)
 				{
 					return;
 				}
-				savedBitstreamSerialNumber = bitstreamSerialNumber;
+				savedBitstreamSerialNumber = bitstreamSerialNumberWhile;
 
-				Int32 pageSequenceNumber = ByteUtilities.ReadOrDieByteInt32(fs, ref eof);
+				Int32 pageSequenceNumberWhile = ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
+				if(eof) return;
+				Int32 checksumWhile = ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
+				if(eof) return;
+				byte numSegmentsWhile = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
 				if(eof) return;
 
+				if(sampleRate == 0)
+				{
+					byte[] segmentSizesWhile = ByteUtilities.ReadBytesOrDie(ref fs, numSegmentsWhile);
+					UInt32 vorbisHeaderPacketSize = 0;
+					for(int segIndex = 0; segIndex < numSegmentsWhile; segIndex++)
+					{
+						vorbisHeaderPacketSize += segmentSizesWhile[segIndex];
+						if(segmentSizesWhile[segIndex] < 255)
+						{
+							break;
+						}
+					}
+
+					if(vorbisHeaderPacketSize < 16)
+					{
+						return;
+					}
+
+					byte packetType = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
+					if(eof) return;
+
+					if(packetType != 1)
+					{
+						return;
+					}
+
+					byte[] vorbisString = ByteUtilities.ReadBytesOrDie(ref fs, 6);
+					if(vorbisString[0] != 'v' || vorbisString[1] != 'o' || vorbisString[2] != 'r'
+					   || vorbisString[3] != 'b' || vorbisString[4] != 'i' || vorbisString[5] != 's')
+					{
+						return;
+					}
+
+					UInt32 vorbisVersion = ByteUtilities.ReadOrDieByteUInt32(ref fs, ref eof);
+					if(eof) return;
+
+					if(vorbisVersion != 0)
+					{
+						return;
+					}
+
+					byte numChannels = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
+					if(eof) return;
+					sampleRate = ByteUtilities.ReadOrDieByteUInt32(ref fs, ref eof);
+					if(eof) return;
+
+					if(sampleRate == 0)
+					{
+						return;
+					}
+
+					Int32 pageDataSize = 0;
+					for(byte segmentIndex = 0; segmentIndex < numSegmentsWhile; segmentIndex++)
+					{
+						byte segmentSize = segmentSizesWhile[segmentIndex];
+						pageDataSize += segmentSize;
+					}
+
+					Int32 unreadDataBytes = pageDataSize - 16;
+					ByteUtilities.SeekOrDie(ref fs, unreadDataBytes, SeekOrigin.Current);
+				}else{
+					Int32 pageDataSize = 0;
+
+					for(byte segmentIndex = 0; segmentIndex < numSegmentsWhile; segmentIndex++)
+					{
+						byte segmentSize = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
+						if(eof) return;
+						pageDataSize += segmentSize;
+					}
+
+					ByteUtilities.SeekOrDie(ref fs, pageDataSize, SeekOrigin.Current);
+				}
 			}
 
+			if(sampleRate == 0)
+			{
+				return;
+			}
+
+			Int64 numSamples = (Int64)(numSeconds * sampleRate);
+
+			long granulePositionPosition = ByteUtilities.TellOrDie(ref fs);
+
+			Int64 granulePosition = ByteUtilities.ReadOrDieByteInt64(ref fs, ref eof);
+			if(eof) return;
+			granulePosition = numSamples;
+
+			Int32 bitstreamSerialNumber = ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
+			if(eof) return;
+			Int32 pageSequenceNumber = ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
+			if(eof) return;
+
+			Int32 checksum = ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
+			if(eof) return;
+			checksum = 0;
+
+			byte numSegments = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
+			if(eof) return;
+
+			byte[] segmentSizes = ByteUtilities.ReadBytesOrDie(ref fs, numSegments);
+
+			List<byte> headerBytes = new List<byte>();
+			headerBytes.Add(Convert.ToByte ('O'));
+			headerBytes.Add(Convert.ToByte ('g'));
+			headerBytes.Add(Convert.ToByte ('g'));
+			headerBytes.Add(Convert.ToByte ('S'));
+			headerBytes.Add(version);
+			headerBytes.Add(headerType);
+
+			//Resoudre le problème du toArray
+			ByteUtilities.AppendBytes(ref headerBytes, granulePosition);
+			ByteUtilities.AppendBytes(ref headerBytes, bitstreamSerialNumber);
+			ByteUtilities.AppendBytes(ref headerBytes, pageSequenceNumber);
+			ByteUtilities.AppendBytes(ref headerBytes), checksum);
+			headerBytes.Add(numSegments);
 
 		}catch(Exception e)
 		{

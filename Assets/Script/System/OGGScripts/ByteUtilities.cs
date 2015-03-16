@@ -5,7 +5,7 @@ using System;
 
 public class ByteUtilities {
 
-	public static byte[] ReadBytes(FileStream file, int numBytes)
+	public static byte[] ReadBytes(ref FileStream file, int numBytes)
 	{
 		if (file == null) {
 			return null;
@@ -32,9 +32,9 @@ public class ByteUtilities {
 		return buffer;
 	}
 	
-	public static byte[] ReadBytesOrDie(FileStream file, int numBytes)
+	public static byte[] ReadBytesOrDie(ref FileStream file, int numBytes)
 	{
-		byte[] bytes = ReadBytes (file, numBytes);
+		byte[] bytes = ReadBytes (ref file, numBytes);
 		if (bytes != null && bytes.Length < numBytes) {
 			return null;
 		} else {
@@ -47,12 +47,12 @@ public class ByteUtilities {
 		return File.Open(filePath, mode, FileAccess.ReadWrite);
 	}
 	
-	public static void SeekOrDie(FileStream file, long offset, SeekOrigin origin)
+	public static void SeekOrDie(ref FileStream file, long offset, SeekOrigin origin)
 	{
 		file.Seek (offset, origin);
 	}
 	
-	public static long TellOrDie(FileStream file)
+	public static long TellOrDie(ref FileStream file)
 	{
 		long seekPosition = file.Position;
 		return seekPosition;
@@ -60,9 +60,9 @@ public class ByteUtilities {
 
 
 //Generic method
-	public static byte ReadOrDieByte(FileStream fs, ref bool eofOut)
+	public static byte ReadOrDieByte(ref FileStream fs, ref bool eofOut)
 	{
-		byte[] bytes = ReadBytes (fs, sizeof(byte));
+		byte[] bytes = ReadBytes (ref fs, sizeof(byte));
 		if (bytes.Length == 0) {
 			eofOut = true;
 			return 0;
@@ -75,9 +75,9 @@ public class ByteUtilities {
 		}
 	}
 
-	public static Int32 ReadOrDieByteInt32(FileStream fs, ref bool eofOut)
+	public static Int32 ReadOrDieByteInt32(ref FileStream fs, ref bool eofOut)
 	{
-		byte[] bytes = ReadBytes (fs, sizeof(Int32));
+		byte[] bytes = ReadBytes (ref fs, sizeof(Int32));
 		if (bytes.Length == 0) {
 			eofOut = true;
 			return 0;
@@ -90,9 +90,9 @@ public class ByteUtilities {
 		}
 	}
 
-	public static UInt32 ReadOrDieByteUInt32(FileStream fs, ref bool eofOut)
+	public static UInt32 ReadOrDieByteUInt32(ref FileStream fs, ref bool eofOut)
 	{
-		byte[] bytes = ReadBytes (fs, sizeof(UInt32));
+		byte[] bytes = ReadBytes (ref fs, sizeof(UInt32));
 		if (bytes.Length == 0) {
 			eofOut = true;
 			return 0;
@@ -105,9 +105,9 @@ public class ByteUtilities {
 		}
 	}
 
-	public static Int64 ReadOrDieByteInt64(FileStream fs, ref bool eofOut)
+	public static Int64 ReadOrDieByteInt64(ref FileStream fs, ref bool eofOut)
 	{
-		byte[] bytes = ReadBytes (fs, sizeof(Int64));
+		byte[] bytes = ReadBytes (ref fs, sizeof(Int64));
 		if (bytes.Length == 0) {
 			eofOut = true;
 			return 0;
@@ -120,9 +120,9 @@ public class ByteUtilities {
 		}
 	}
 
-	public static UInt64 ReadOrDieByteUInt64(FileStream fs, ref bool eofOut)
+	public static UInt64 ReadOrDieByteUInt64(ref FileStream fs, ref bool eofOut)
 	{
-		byte[] bytes = ReadBytes (fs, sizeof(UInt64));
+		byte[] bytes = ReadBytes (ref fs, sizeof(UInt64));
 		if (bytes.Length == 0) {
 			eofOut = true;
 			return 0;
@@ -135,7 +135,7 @@ public class ByteUtilities {
 		}
 	}
 
-	public static void WriteOrDie(FileStream fs, Int32 data)
+	public static void WriteOrDie(ref FileStream fs, Int32 data)
 	{
 		byte[] arrayData = BitConverter.GetBytes (data);
 		if (BitConverter.IsLittleEndian) {
@@ -144,7 +144,7 @@ public class ByteUtilities {
 		fs.Write (arrayData, 0, 1);
 	}
 
-	public static void WriteOrDie(FileStream fs, Int64 data)
+	public static void WriteOrDie(ref FileStream fs, Int64 data)
 	{
 		byte[] arrayData = BitConverter.GetBytes (data);
 		if (BitConverter.IsLittleEndian) {
