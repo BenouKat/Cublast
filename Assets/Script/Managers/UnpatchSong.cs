@@ -7,7 +7,7 @@ public class UnpatchSong : MonoBehaviour {
 	Patcher patch;
 	// Use this for initialization
 	void Start () {
-		patch = new Patcher ();
+		patch = GetComponent<Patcher> ();
 	}
 	
 	// Update is called once per frame
