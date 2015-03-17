@@ -168,6 +168,20 @@ public class ByteUtilities {
 		vec = byteList.ToArray ();
 	}
 
+	public static void AppendBytes(ref List<byte> vec, Int32 data)
+	{
+		byte[] arrayData = BitConverter.GetBytes (data);
+		if (BitConverter.IsLittleEndian) {
+			Array.Reverse(arrayData);
+		}
+		List<byte> byteList = new List<byte> ();
+		byteList.AddRange (vec);
+		for (int i=0; i<arrayData.Length; i++) {
+			byteList.Add(arrayData[i]);
+		}
+		vec = byteList;
+	}
+
 	public static void AppendBytes(ref byte[] vec, Int64 data)
 	{
 		byte[] arrayData = BitConverter.GetBytes (data);
@@ -180,6 +194,20 @@ public class ByteUtilities {
 			byteList.Add(arrayData[i]);
 		}
 		vec = byteList.ToArray ();
+	}
+
+	public static void AppendBytes(ref List<byte> vec, Int64 data)
+	{
+		byte[] arrayData = BitConverter.GetBytes (data);
+		if (BitConverter.IsLittleEndian) {
+			Array.Reverse(arrayData);
+		}
+		List<byte> byteList = new List<byte> ();
+		byteList.AddRange (vec);
+		for (int i=0; i<arrayData.Length; i++) {
+			byteList.Add(arrayData[i]);
+		}
+		vec = byteList;
 	}
 
 	public static bool CheckBit(byte number, int bitIndex)

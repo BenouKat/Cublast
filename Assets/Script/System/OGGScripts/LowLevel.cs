@@ -664,26 +664,26 @@ namespace Xiph.LowLevel
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writeinit")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writeinit")]
 		public static extern void oggpack_writeinit(ref oggpack_buffer b);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writecheck")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writecheck")]
 		public static extern int oggpack_writecheck(ref oggpack_buffer b);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writetrunc")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writetrunc")]
 		public static extern void oggpack_writetrunc(ref oggpack_buffer b, int bits);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writealign")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writealign")]
 		public static extern void oggpack_writealign(ref oggpack_buffer b);
 
 
@@ -691,19 +691,19 @@ namespace Xiph.LowLevel
 		///b: oggpack_buffer*
 		///source: void*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writecopy")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writecopy")]
 		public static extern void oggpack_writecopy(ref oggpack_buffer b, IntPtr source, int bits);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_reset")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_reset")]
 		public static extern void oggpack_reset(ref oggpack_buffer b);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writeclear")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_writeclear")]
 		public static extern void oggpack_writeclear(ref oggpack_buffer b);
 
 
@@ -711,7 +711,7 @@ namespace Xiph.LowLevel
 		///b: oggpack_buffer*
 		///buf: void*
 		///bytes: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_readinit")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_readinit")]
 		public static extern void oggpack_readinit(ref oggpack_buffer b, IntPtr buf, int bytes);
 
 
@@ -719,89 +719,89 @@ namespace Xiph.LowLevel
 		///b: oggpack_buffer*
 		///value: unsigned int
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_write")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_write")]
 		public static extern void oggpack_write(ref oggpack_buffer b, uint value, int bits);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_look")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_look")]
 		public static extern int oggpack_look(ref oggpack_buffer b, int bits);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_look1")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_look1")]
 		public static extern int oggpack_look1(ref oggpack_buffer b);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_adv")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_adv")]
 		public static extern void oggpack_adv(ref oggpack_buffer b, int bits);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_adv1")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_adv1")]
 		public static extern void oggpack_adv1(ref oggpack_buffer b);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_read")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_read")]
 		public static extern int oggpack_read(ref oggpack_buffer b, int bits);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_read1")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_read1")]
 		public static extern int oggpack_read1(ref oggpack_buffer b);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_bytes")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_bytes")]
 		public static extern int oggpack_bytes(ref oggpack_buffer b);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_bits")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_bits")]
 		public static extern int oggpack_bits(ref oggpack_buffer b);
 
 
 		/// Return Type: void*
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_get_buffer")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpack_get_buffer")]
 		public static extern IntPtr oggpack_get_buffer(ref oggpack_buffer b);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writeinit")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writeinit")]
 		public static extern void oggpackB_writeinit(ref oggpack_buffer b);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writecheck")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writecheck")]
 		public static extern int oggpackB_writecheck(ref oggpack_buffer b);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writetrunc")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writetrunc")]
 		public static extern void oggpackB_writetrunc(ref oggpack_buffer b, int bits);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writealign")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writealign")]
 		public static extern void oggpackB_writealign(ref oggpack_buffer b);
 
 
@@ -809,19 +809,19 @@ namespace Xiph.LowLevel
 		///b: oggpack_buffer*
 		///source: void*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writecopy")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writecopy")]
 		public static extern void oggpackB_writecopy(ref oggpack_buffer b, IntPtr source, int bits);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_reset")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_reset")]
 		public static extern void oggpackB_reset(ref oggpack_buffer b);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writeclear")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_writeclear")]
 		public static extern void oggpackB_writeclear(ref oggpack_buffer b);
 
 
@@ -829,7 +829,7 @@ namespace Xiph.LowLevel
 		///b: oggpack_buffer*
 		///buf: void*
 		///bytes: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_readinit")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_readinit")]
 		public static extern void oggpackB_readinit(ref oggpack_buffer b, IntPtr buf, int bytes);
 
 
@@ -837,71 +837,71 @@ namespace Xiph.LowLevel
 		///b: oggpack_buffer*
 		///value: unsigned int
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_write")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_write")]
 		public static extern void oggpackB_write(ref oggpack_buffer b, uint value, int bits);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_look")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_look")]
 		public static extern int oggpackB_look(ref oggpack_buffer b, int bits);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_look1")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_look1")]
 		public static extern int oggpackB_look1(ref oggpack_buffer b);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_adv")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_adv")]
 		public static extern void oggpackB_adv(ref oggpack_buffer b, int bits);
 
 
 		/// Return Type: void
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_adv1")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_adv1")]
 		public static extern void oggpackB_adv1(ref oggpack_buffer b);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
 		///bits: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_read")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_read")]
 		public static extern int oggpackB_read(ref oggpack_buffer b, int bits);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_read1")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_read1")]
 		public static extern int oggpackB_read1(ref oggpack_buffer b);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_bytes")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_bytes")]
 		public static extern int oggpackB_bytes(ref oggpack_buffer b);
 
 
 		/// Return Type: int
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_bits")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_bits")]
 		public static extern int oggpackB_bits(ref oggpack_buffer b);
 
 
 		/// Return Type: void*
 		///b: oggpack_buffer*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_get_buffer")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "oggpackB_get_buffer")]
 		public static extern IntPtr oggpackB_get_buffer(ref oggpack_buffer b);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
 		///op: ogg_packet*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_packetin")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_packetin")]
 		public static extern int ogg_stream_packetin(ref ogg_stream_state os, ref ogg_packet op);
 
 
@@ -911,236 +911,236 @@ namespace Xiph.LowLevel
 		///count: int
 		///e_o_s: int
 		///granulepos: ogg_int64_t->__int64
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_iovecin")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_iovecin")]
 		public static extern int ogg_stream_iovecin(ref ogg_stream_state os, ref ogg_iovec_t iov, int count, int e_o_s, long granulepos);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_pageout")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_pageout")]
 		public static extern int ogg_stream_pageout(ref ogg_stream_state os, ref ogg_page og);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_flush")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_flush")]
 		public static extern int ogg_stream_flush(ref ogg_stream_state os, ref ogg_page og);
 
 
 		/// Return Type: int
 		///oy: ogg_sync_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_init")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_init")]
 		public static extern int ogg_sync_init(ref ogg_sync_state oy);
 
 
 		/// Return Type: int
 		///oy: ogg_sync_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_clear")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_clear")]
 		public static extern int ogg_sync_clear(ref ogg_sync_state oy);
 
 
 		/// Return Type: int
 		///oy: ogg_sync_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_reset")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_reset")]
 		public static extern int ogg_sync_reset(ref ogg_sync_state oy);
 
 
 		/// Return Type: int
 		///oy: ogg_sync_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_destroy")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_destroy")]
 		public static extern int ogg_sync_destroy(ref ogg_sync_state oy);
 
 
 		/// Return Type: int
 		///oy: ogg_sync_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_check")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_check")]
 		public static extern int ogg_sync_check(ref ogg_sync_state oy);
 
 
 		/// Return Type: char*
 		///oy: ogg_sync_state*
 		///size: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_buffer")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_buffer")]
 		public static extern IntPtr ogg_sync_buffer(ref ogg_sync_state oy, int size);
 
 
 		/// Return Type: int
 		///oy: ogg_sync_state*
 		///bytes: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_wrote")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_wrote")]
 		public static extern int ogg_sync_wrote(ref ogg_sync_state oy, int bytes);
 
 
 		/// Return Type: int
 		///oy: ogg_sync_state*
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_pageseek")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_pageseek")]
 		public static extern int ogg_sync_pageseek(ref ogg_sync_state oy, ref ogg_page og);
 
 
 		/// Return Type: int
 		///oy: ogg_sync_state*
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_pageout")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_sync_pageout")]
 		public static extern int ogg_sync_pageout(ref ogg_sync_state oy, ref ogg_page og);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_pagein")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_pagein")]
 		public static extern int ogg_stream_pagein(ref ogg_stream_state os, ref ogg_page og);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
 		///op: ogg_packet*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_packetout")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_packetout")]
 		public static extern int ogg_stream_packetout(ref ogg_stream_state os, ref ogg_packet op);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
 		///op: ogg_packet*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_packetpeek")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_packetpeek")]
 		public static extern int ogg_stream_packetpeek(ref ogg_stream_state os, ref ogg_packet op);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
 		///serialno: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_init")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_init")]
 		public static extern int ogg_stream_init(ref ogg_stream_state os, int serialno);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_clear")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_clear")]
 		public static extern int ogg_stream_clear(ref ogg_stream_state os);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_reset")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_reset")]
 		public static extern int ogg_stream_reset(ref ogg_stream_state os);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
 		///serialno: int
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_reset_serialno")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_reset_serialno")]
 		public static extern int ogg_stream_reset_serialno(ref ogg_stream_state os, int serialno);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_destroy")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_destroy")]
 		public static extern int ogg_stream_destroy(ref ogg_stream_state os);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_check")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_check")]
 		public static extern int ogg_stream_check(ref ogg_stream_state os);
 
 
 		/// Return Type: int
 		///os: ogg_stream_state*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_eos")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_stream_eos")]
 		public static extern int ogg_stream_eos(ref ogg_stream_state os);
 
 
 		/// Return Type: void
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_checksum_set")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_checksum_set")]
 		public static extern void ogg_page_checksum_set(ref ogg_page og);
 
 
 		/// Return Type: int
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_version")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_version")]
 		public static extern int ogg_page_version(ref ogg_page og);
 
 
 		/// Return Type: int
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_continued")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_continued")]
 		public static extern int ogg_page_continued(ref ogg_page og);
 
 
 		/// Return Type: int
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_bos")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_bos")]
 		public static extern int ogg_page_bos(ref ogg_page og);
 
 
 		/// Return Type: int
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_eos")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_eos")]
 		public static extern int ogg_page_eos(ref ogg_page og);
 
 
 		/// Return Type: ogg_int64_t->__int64
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_granulepos")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_granulepos")]
 		public static extern long ogg_page_granulepos(ref ogg_page og);
 
 
 		/// Return Type: int
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_serialno")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_serialno")]
 		public static extern int ogg_page_serialno(ref ogg_page og);
 
 
 		/// Return Type: int
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_pageno")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_pageno")]
 		public static extern int ogg_page_pageno(ref ogg_page og);
 
 
 		/// Return Type: int
 		///og: ogg_page*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_packets")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_page_packets")]
 		public static extern int ogg_page_packets(ref ogg_page og);
 
 
 		/// Return Type: void
 		///op: ogg_packet*
-		[DllImportAttribute("libogg.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_packet_clear")]
+		[DllImport("libogg", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ogg_packet_clear")]
 		public static extern void ogg_packet_clear(ref ogg_packet op);
 
 
 		/// Return Type: void
 		///vi: vorbis_info*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_info_init")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_info_init")]
 		public static extern void vorbis_info_init(ref vorbis_info vi);
 
 
 		/// Return Type: void
 		///vi: vorbis_info*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_info_clear")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_info_clear")]
 		public static extern void vorbis_info_clear(ref vorbis_info vi);
 
 
 		/// Return Type: int
 		///vi: vorbis_info*
 		///zo: int
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_info_blocksize")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_info_blocksize")]
 		public static extern int vorbis_info_blocksize(ref vorbis_info vi, int zo);
 
 
 		/// Return Type: void
 		///vc: vorbis_comment*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_init")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_init")]
 		public static extern void vorbis_comment_init(ref vorbis_comment vc);
 
 
 		/// Return Type: void
 		///vc: vorbis_comment*
 		///comment: char*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_add")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_add")]
 		public static extern void vorbis_comment_add(ref vorbis_comment vc, [InAttribute()] [MarshalAsAttribute(UnmanagedType.LPStr)] string comment);
 
 
@@ -1148,7 +1148,7 @@ namespace Xiph.LowLevel
 		///vc: vorbis_comment*
 		///tag: char*
 		///contents: char*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_add_tag")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_add_tag")]
 		public static extern void vorbis_comment_add_tag(ref vorbis_comment vc, [InAttribute()] [MarshalAsAttribute(UnmanagedType.LPStr)] string tag, [InAttribute()] [MarshalAsAttribute(UnmanagedType.LPStr)] string contents);
 
 
@@ -1156,65 +1156,65 @@ namespace Xiph.LowLevel
 		///vc: vorbis_comment*
 		///tag: char*
 		///count: int
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_query")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_query")]
 		public static extern IntPtr vorbis_comment_query(ref vorbis_comment vc, [InAttribute()] [MarshalAsAttribute(UnmanagedType.LPStr)] string tag, int count);
 
 
 		/// Return Type: int
 		///vc: vorbis_comment*
 		///tag: char*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_query_count")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_query_count")]
 		public static extern int vorbis_comment_query_count(ref vorbis_comment vc, [InAttribute()] [MarshalAsAttribute(UnmanagedType.LPStr)] string tag);
 
 
 		/// Return Type: void
 		///vc: vorbis_comment*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_clear")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_comment_clear")]
 		public static extern void vorbis_comment_clear(ref vorbis_comment vc);
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
 		///vb: vorbis_block*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_block_init")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_block_init")]
 		public static extern int vorbis_block_init(ref vorbis_dsp_state v, ref vorbis_block vb);
 
 
 		/// Return Type: int
 		///vb: vorbis_block*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_block_clear")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_block_clear")]
 		public static extern int vorbis_block_clear(ref vorbis_block vb);
 
 
 		/// Return Type: void
 		///v: vorbis_dsp_state*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_dsp_clear")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_dsp_clear")]
 		public static extern void vorbis_dsp_clear(ref vorbis_dsp_state v);
 
 
 		/// Return Type: double
 		///v: vorbis_dsp_state*
 		///granulepos: ogg_int64_t->__int64
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_granule_time")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_granule_time")]
 		public static extern double vorbis_granule_time(ref vorbis_dsp_state v, long granulepos);
 
 
 		/// Return Type: char*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_version_string")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_version_string")]
 		public static extern IntPtr vorbis_version_string();
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
 		///vi: vorbis_info*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_init")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_init")]
 		public static extern int vorbis_analysis_init(ref vorbis_dsp_state v, ref vorbis_info vi);
 
 
 		/// Return Type: int
 		///vc: vorbis_comment*
 		///op: ogg_packet*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_commentheader_out")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_commentheader_out")]
 		public static extern int vorbis_commentheader_out(ref vorbis_comment vc, ref ogg_packet op);
 
 
@@ -1224,54 +1224,54 @@ namespace Xiph.LowLevel
 		///op: ogg_packet*
 		///op_comm: ogg_packet*
 		///op_code: ogg_packet*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_headerout")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_headerout")]
 		public static extern int vorbis_analysis_headerout(ref vorbis_dsp_state v, ref vorbis_comment vc, ref ogg_packet op, ref ogg_packet op_comm, ref ogg_packet op_code);
 
 
 		/// Return Type: float**
 		///v: vorbis_dsp_state*
 		///vals: int
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_buffer")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_buffer")]
 		public static extern IntPtr vorbis_analysis_buffer(ref vorbis_dsp_state v, int vals);
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
 		///vals: int
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_wrote")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_wrote")]
 		public static extern int vorbis_analysis_wrote(ref vorbis_dsp_state v, int vals);
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
 		///vb: vorbis_block*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_blockout")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis_blockout")]
 		public static extern int vorbis_analysis_blockout(ref vorbis_dsp_state v, ref vorbis_block vb);
 
 
 		/// Return Type: int
 		///vb: vorbis_block*
 		///op: ogg_packet*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_analysis")]
 		public static extern int vorbis_analysis(ref vorbis_block vb, ref ogg_packet op);
 
 
 		/// Return Type: int
 		///vb: vorbis_block*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_bitrate_addblock")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_bitrate_addblock")]
 		public static extern int vorbis_bitrate_addblock(ref vorbis_block vb);
 
 
 		/// Return Type: int
 		///vd: vorbis_dsp_state*
 		///op: ogg_packet*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_bitrate_flushpacket")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_bitrate_flushpacket")]
 		public static extern int vorbis_bitrate_flushpacket(ref vorbis_dsp_state vd, ref ogg_packet op);
 
 
 		/// Return Type: int
 		///op: ogg_packet*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_idheader")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_idheader")]
 		public static extern int vorbis_synthesis_idheader(ref ogg_packet op);
 
 
@@ -1279,95 +1279,95 @@ namespace Xiph.LowLevel
 		///vi: vorbis_info*
 		///vc: vorbis_comment*
 		///op: ogg_packet*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_headerin")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_headerin")]
 		public static extern int vorbis_synthesis_headerin(ref vorbis_info vi, ref vorbis_comment vc, ref ogg_packet op);
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
 		///vi: vorbis_info*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_init")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_init")]
 		public static extern int vorbis_synthesis_init(ref vorbis_dsp_state v, ref vorbis_info vi);
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_restart")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_restart")]
 		public static extern int vorbis_synthesis_restart(ref vorbis_dsp_state v);
 
 
 		/// Return Type: int
 		///vb: vorbis_block*
 		///op: ogg_packet*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis")]
 		public static extern int vorbis_synthesis(ref vorbis_block vb, ref ogg_packet op);
 
 
 		/// Return Type: int
 		///vb: vorbis_block*
 		///op: ogg_packet*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_trackonly")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_trackonly")]
 		public static extern int vorbis_synthesis_trackonly(ref vorbis_block vb, ref ogg_packet op);
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
 		///vb: vorbis_block*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_blockin")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_blockin")]
 		public static extern int vorbis_synthesis_blockin(ref vorbis_dsp_state v, ref vorbis_block vb);
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
 		///pcm: float***
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_pcmout")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_pcmout")]
 		public static extern int vorbis_synthesis_pcmout(ref vorbis_dsp_state v, ref IntPtr pcm);
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
 		///pcm: float***
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_lapout")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_lapout")]
 		public static extern int vorbis_synthesis_lapout(ref vorbis_dsp_state v, ref IntPtr pcm);
 
 
 		/// Return Type: int
 		///v: vorbis_dsp_state*
 		///samples: int
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_read")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_read")]
 		public static extern int vorbis_synthesis_read(ref vorbis_dsp_state v, int samples);
 
 
 		/// Return Type: int
 		///vi: vorbis_info*
 		///op: ogg_packet*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_packet_blocksize")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_packet_blocksize")]
 		public static extern int vorbis_packet_blocksize(ref vorbis_info vi, ref ogg_packet op);
 
 
 		/// Return Type: int
 		///v: vorbis_info*
 		///flag: int
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_halfrate")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_halfrate")]
 		public static extern int vorbis_synthesis_halfrate(ref vorbis_info v, int flag);
 
 
 		/// Return Type: int
 		///v: vorbis_info*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_halfrate_p")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_synthesis_halfrate_p")]
 		public static extern int vorbis_synthesis_halfrate_p(ref vorbis_info v);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_clear")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_clear")]
 		public static extern int ov_clear(ref OggVorbis_File vf);
 
 
 		/// Return Type: int
 		///path: char*
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_fopen")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_fopen")]
 		public static extern int ov_fopen(IntPtr path, ref OggVorbis_File vf);
 
 
@@ -1377,7 +1377,7 @@ namespace Xiph.LowLevel
 		///initial: char*
 		///ibytes: int
 		///callbacks: ov_callbacks->Anonymous_d6f414e8_3702_4d14_99c9_91cdcb94f508
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_open_callbacks")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_open_callbacks")]
 		public static extern int ov_open_callbacks(IntPtr datasource, ref OggVorbis_File vf, IntPtr initial, int ibytes, ov_callbacks callbacks);
 
 
@@ -1387,168 +1387,168 @@ namespace Xiph.LowLevel
 		///initial: char*
 		///ibytes: int
 		///callbacks: ov_callbacks->Anonymous_d6f414e8_3702_4d14_99c9_91cdcb94f508
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_test_callbacks")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_test_callbacks")]
 		public static extern int ov_test_callbacks(IntPtr datasource, ref OggVorbis_File vf, IntPtr initial, int ibytes, ov_callbacks callbacks);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_test_open")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_test_open")]
 		public static extern int ov_test_open(ref OggVorbis_File vf);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///i: int
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_bitrate")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_bitrate")]
 		public static extern int ov_bitrate(ref OggVorbis_File vf, int i);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_bitrate_instant")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_bitrate_instant")]
 		public static extern int ov_bitrate_instant(ref OggVorbis_File vf);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_streams")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_streams")]
 		public static extern int ov_streams(ref OggVorbis_File vf);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_seekable")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_seekable")]
 		public static extern int ov_seekable(ref OggVorbis_File vf);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///i: int
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_serialnumber")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_serialnumber")]
 		public static extern int ov_serialnumber(ref OggVorbis_File vf, int i);
 
 
 		/// Return Type: ogg_int64_t->__int64
 		///vf: OggVorbis_File*
 		///i: int
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_raw_total")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_raw_total")]
 		public static extern long ov_raw_total(ref OggVorbis_File vf, int i);
 
 
 		/// Return Type: ogg_int64_t->__int64
 		///vf: OggVorbis_File*
 		///i: int
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_total")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_total")]
 		public static extern long ov_pcm_total(ref OggVorbis_File vf, int i);
 
 
 		/// Return Type: double
 		///vf: OggVorbis_File*
 		///i: int
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_total")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_total")]
 		public static extern double ov_time_total(ref OggVorbis_File vf, int i);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: ogg_int64_t->__int64
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_raw_seek")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_raw_seek")]
 		public static extern int ov_raw_seek(ref OggVorbis_File vf, long pos);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: ogg_int64_t->__int64
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_seek")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_seek")]
 		public static extern int ov_pcm_seek(ref OggVorbis_File vf, long pos);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: ogg_int64_t->__int64
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_seek_page")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_seek_page")]
 		public static extern int ov_pcm_seek_page(ref OggVorbis_File vf, long pos);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: double
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_seek")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_seek")]
 		public static extern int ov_time_seek(ref OggVorbis_File vf, double pos);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: double
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_seek_page")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_seek_page")]
 		public static extern int ov_time_seek_page(ref OggVorbis_File vf, double pos);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: ogg_int64_t->__int64
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_raw_seek_lap")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_raw_seek_lap")]
 		public static extern int ov_raw_seek_lap(ref OggVorbis_File vf, long pos);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: ogg_int64_t->__int64
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_seek_lap")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_seek_lap")]
 		public static extern int ov_pcm_seek_lap(ref OggVorbis_File vf, long pos);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: ogg_int64_t->__int64
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_seek_page_lap")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_seek_page_lap")]
 		public static extern int ov_pcm_seek_page_lap(ref OggVorbis_File vf, long pos);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: double
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_seek_lap")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_seek_lap")]
 		public static extern int ov_time_seek_lap(ref OggVorbis_File vf, double pos);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///pos: double
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_seek_page_lap")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_seek_page_lap")]
 		public static extern int ov_time_seek_page_lap(ref OggVorbis_File vf, double pos);
 
 
 		/// Return Type: ogg_int64_t->__int64
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_raw_tell")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_raw_tell")]
 		public static extern long ov_raw_tell(ref OggVorbis_File vf);
 
 
 		/// Return Type: ogg_int64_t->__int64
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_tell")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_pcm_tell")]
 		public static extern long ov_pcm_tell(ref OggVorbis_File vf);
 
 
 		/// Return Type: double
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_tell")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_time_tell")]
 		public static extern double ov_time_tell(ref OggVorbis_File vf);
 
 
 		/// Return Type: vorbis_info*
 		///vf: OggVorbis_File*
 		///link: int
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_info")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_info")]
 		public static extern IntPtr ov_info(ref OggVorbis_File vf, int link);
 
 
 		/// Return Type: vorbis_comment*
 		///vf: OggVorbis_File*
 		///link: int
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_comment")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_comment")]
 		public static extern IntPtr ov_comment(ref OggVorbis_File vf, int link);
 
 
@@ -1557,7 +1557,7 @@ namespace Xiph.LowLevel
 		///pcm_channels: float***
 		///samples: int
 		///bitstream: int*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_read_float")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_read_float")]
 		public static extern int ov_read_float(ref OggVorbis_File vf, ref IntPtr pcm_channels, int samples, ref int bitstream);
 
 
@@ -1571,7 +1571,7 @@ namespace Xiph.LowLevel
 		///bitstream: int*
 		///filter: Anonymous_84c13e06_455d_4e54_b13e_5306b4d9db9b
 		///filter_param: void*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_read_filter")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_read_filter")]
 		public static extern int ov_read_filter(ref OggVorbis_File vf, IntPtr buffer, int length, int bigendianp, int word, int sgned, ref int bitstream, Anonymous_84c13e06_455d_4e54_b13e_5306b4d9db9b filter, IntPtr filter_param);
 
 
@@ -1583,27 +1583,27 @@ namespace Xiph.LowLevel
 		///word: int
 		///sgned: int
 		///bitstream: int*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_read")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_read")]
 		public static extern int ov_read(ref OggVorbis_File vf, IntPtr buffer, int length, int bigendianp, int word, int sgned, ref int bitstream);
 
 
 		/// Return Type: int
 		///vf1: OggVorbis_File*
 		///vf2: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_crosslap")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_crosslap")]
 		public static extern int ov_crosslap(ref OggVorbis_File vf1, ref OggVorbis_File vf2);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
 		///flag: int
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_halfrate")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_halfrate")]
 		public static extern int ov_halfrate(ref OggVorbis_File vf, int flag);
 
 
 		/// Return Type: int
 		///vf: OggVorbis_File*
-		[DllImportAttribute("libvorbisfile.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_halfrate_p")]
+		[DllImport("libvorbisfile", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ov_halfrate_p")]
 		public static extern int ov_halfrate_p(ref OggVorbis_File vf);
 
 
@@ -1614,7 +1614,7 @@ namespace Xiph.LowLevel
 		///max_bitrate: int
 		///nominal_bitrate: int
 		///min_bitrate: int
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_init")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_init")]
 		public static extern int vorbis_encode_init(ref vorbis_info vi, int channels, int rate, int max_bitrate, int nominal_bitrate, int min_bitrate);
 
 
@@ -1625,7 +1625,7 @@ namespace Xiph.LowLevel
 		///max_bitrate: int
 		///nominal_bitrate: int
 		///min_bitrate: int
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_setup_managed")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_setup_managed")]
 		public static extern int vorbis_encode_setup_managed(ref vorbis_info vi, int channels, int rate, int max_bitrate, int nominal_bitrate, int min_bitrate);
 
 
@@ -1634,7 +1634,7 @@ namespace Xiph.LowLevel
 		///channels: int
 		///rate: int
 		///quality: float
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_setup_vbr")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_setup_vbr")]
 		public static extern int vorbis_encode_setup_vbr(ref vorbis_info vi, int channels, int rate, float quality);
 
 
@@ -1643,13 +1643,13 @@ namespace Xiph.LowLevel
 		///channels: int
 		///rate: int
 		///base_quality: float
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_init_vbr")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_init_vbr")]
 		public static extern int vorbis_encode_init_vbr(ref vorbis_info vi, int channels, int rate, float base_quality);
 
 
 		/// Return Type: int
 		///vi: vorbis_info*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_setup_init")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_setup_init")]
 		public static extern int vorbis_encode_setup_init(ref vorbis_info vi);
 
 
@@ -1657,7 +1657,7 @@ namespace Xiph.LowLevel
 		///vi: vorbis_info*
 		///number: int
 		///arg: void*
-		[DllImportAttribute("libvorbis.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_ctl")]
+		[DllImport("libvorbis", CallingConvention = CallingConvention.Cdecl, EntryPoint = "vorbis_encode_ctl")]
 		public static extern int vorbis_encode_ctl(ref vorbis_info vi, int number, IntPtr arg);
 
 	}

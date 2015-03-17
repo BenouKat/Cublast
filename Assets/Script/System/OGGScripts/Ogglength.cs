@@ -9,18 +9,23 @@ public class Ogglength {
 
 	public OggVorbis_File openOggVorbisFile(string filePath)
 	{
+		LiveDebugger.instance.log("open file go");
 		OggVorbis_File oggfile = new OggVorbis_File ();
-		NativeMethods.ov_fopen (Marshal.StringToHGlobalAuto(filePath), ref oggfile);
+		int success = NativeMethods.ov_fopen (Marshal.StringToHGlobalAnsi(filePath), ref oggfile);
+		LiveDebugger.instance.log("success = " + success);
 		return oggfile;
 	}
 
 	public double getReportedTime(string filePath)
 	{
+		LiveDebugger.instance.log("get reported go");
 		OggVorbis_File oggfile = openOggVorbisFile (filePath);
 		double reportedTime = NativeMethods.ov_time_total (ref oggfile, -1);
+		LiveDebugger.instance.log("reported time : " + reportedTime);
 		if (reportedTime != NativeConstants.OV_EINVAL) {
 			return reportedTime;
 		}
+		LiveDebugger.instance.log("failure :(");
 		return -1;
 	}
 
@@ -39,14 +44,17 @@ public class Ogglength {
 		long bytesRead = 0;
 		int pcmWordSize = 2;
 
+		LiveDebugger.instance.log ("get real time go");
 
-		while ((bytesRead = NativeMethods.ov_read(ref oggfile, bufferIntPtr, 4096, 0, pcmWordSize, 1, ref logicalBitstreamRead)) > 0) {
+		int outBoucle = 0;
+		while (outBoucle < 50 && (bytesRead = NativeMethods.ov_read(ref oggfile, bufferIntPtr, 4096, 0, pcmWordSize, 1, ref logicalBitstreamRead)) > 0) {
 
 			if(logicalBitstreamReading == -1)
 			{
 				logicalBitstreamReading = logicalBitstreamRead;
 			}else if(logicalBitstreamReading != logicalBitstreamRead)
 			{
+				LiveDebugger.instance.log("logicalBitstream");
 				return -1;
 			}
 
@@ -56,15 +64,18 @@ public class Ogglength {
 
 			if(numChannels <= 0)
 			{
+				LiveDebugger.instance.log("numChannels");
 				return -1;
 			}
 			long samplesPerChannel = samplesRead / numChannels;
 			double timeRead = (double)samplesPerChannel / info.rate;
 
 			totalTimeRead += timeRead;
+			outBoucle += 1;
 		}
 
 		if (bytesRead < 0) {
+			LiveDebugger.instance.log("bytesRead");
 			return -1;
 		}
 
@@ -177,26 +188,26 @@ public class Ogglength {
 						return;
 					}
 
-					Int32 pageDataSize = 0;
+					Int32 pageDataSizeWhile = 0;
 					for(byte segmentIndex = 0; segmentIndex < numSegmentsWhile; segmentIndex++)
 					{
 						byte segmentSize = segmentSizesWhile[segmentIndex];
-						pageDataSize += segmentSize;
+						pageDataSizeWhile += segmentSize;
 					}
 
-					Int32 unreadDataBytes = pageDataSize - 16;
+					Int32 unreadDataBytes = pageDataSizeWhile - 16;
 					ByteUtilities.SeekOrDie(ref fs, unreadDataBytes, SeekOrigin.Current);
 				}else{
-					Int32 pageDataSize = 0;
+					Int32 pageDataSizeWhile = 0;
 
 					for(byte segmentIndex = 0; segmentIndex < numSegmentsWhile; segmentIndex++)
 					{
 						byte segmentSize = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
 						if(eof) return;
-						pageDataSize += segmentSize;
+						pageDataSizeWhile += segmentSize;
 					}
 
-					ByteUtilities.SeekOrDie(ref fs, pageDataSize, SeekOrigin.Current);
+					ByteUtilities.SeekOrDie(ref fs, pageDataSizeWhile, SeekOrigin.Current);
 				}
 			}
 
@@ -239,8 +250,39 @@ public class Ogglength {
 			ByteUtilities.AppendBytes(ref headerBytes, granulePosition);
 			ByteUtilities.AppendBytes(ref headerBytes, bitstreamSerialNumber);
 			ByteUtilities.AppendBytes(ref headerBytes, pageSequenceNumber);
-			ByteUtilities.AppendBytes(ref headerBytes), checksum);
+			ByteUtilities.AppendBytes(ref headerBytes, checksum);
 			headerBytes.Add(numSegments);
+			headerBytes.AddRange(segmentSizes);
+
+			Int32 pageDataSize = 0;
+			for(byte segmentIndex = 0; segmentIndex < numSegments; segmentIndex++)
+			{
+				byte segmentSize = segmentSizes[segmentIndex];
+				pageDataSize += segmentSize;
+			}
+
+			byte[] dataBytes = ByteUtilities.ReadBytesOrDie(ref fs, pageDataSize);
+
+			ogg_page page = new ogg_page();
+			page.header_len = headerBytes.Count;
+			IntPtr unmanagedHeader = Marshal.AllocHGlobal(headerBytes.Count);
+			Marshal.Copy(headerBytes.ToArray(), 0, unmanagedHeader, headerBytes.Count); 
+			page.header = unmanagedHeader;
+			page.body_len = dataBytes.Length;
+			if(dataBytes.Length > 0)
+			{
+				IntPtr unmanagedBody = Marshal.AllocHGlobal(dataBytes.Length);
+				Marshal.Copy(dataBytes, 0, unmanagedBody, dataBytes.Length); 
+				page.body = unmanagedBody;
+			}
+
+			NativeMethods.ogg_page_checksum_set(ref page);
+			checksum = BitConverter.ToInt32(headerBytes.ToArray(), 22);
+
+			ByteUtilities.SeekOrDie(ref fs, granulePositionPosition, SeekOrigin.Begin);
+			ByteUtilities.WriteOrDie(ref fs, granulePosition);
+			ByteUtilities.SeekOrDie(ref fs, 8, SeekOrigin.Current);
+			ByteUtilities.WriteOrDie(ref fs, checksum);
 
 		}catch(Exception e)
 		{
@@ -249,7 +291,10 @@ public class Ogglength {
 			{
 				fs.Close();
 			}
+			return;
 		}
+
+		fs.Close ();
 	}
 }
 /*
