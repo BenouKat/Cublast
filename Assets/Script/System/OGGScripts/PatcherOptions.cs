@@ -10,7 +10,6 @@ enum PatcherLengthCondition
 
 public class PatcherOptions {
 
-	bool m_patchToRealLength = true;
 	PatcherLengthCondition m_lengthConditionType = PatcherLengthCondition.condition_equal;
 	double m_lengthCondition = 105;
 
@@ -32,6 +31,7 @@ public class PatcherOptions {
 		if (m_lengthConditionType != PatcherLengthCondition.condition_none) {
 
 			double reportedLength = oggLength.getReportedTime (filePath);
+			oggLength.closeOggFile();
 			return LengthMeetsConditions (reportedLength);
 		} else {
 			return true;

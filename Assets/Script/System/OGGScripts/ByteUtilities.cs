@@ -17,7 +17,7 @@ public class ByteUtilities {
 			buffer[i] = 0;
 		}
 		
-		int bytesRead = file.Read (buffer, 1, numBytes);
+		int bytesRead = file.Read (buffer, 0, numBytes);
 		
 		if(bytesRead < numBytes)
 		{

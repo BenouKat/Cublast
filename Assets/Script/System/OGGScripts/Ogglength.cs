@@ -4,167 +4,80 @@ using Xiph.LowLevel;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Ogglength : MonoBehaviour {
+public class Ogglength {
 
 	OggVorbis_File oggfile;
-	bool opened = false;
+	IntPtr bufferIntPtr = new IntPtr();
 
 	public OggVorbis_File openOggVorbisFile(string filePath)
 	{
-		LiveDebugger.instance.log("open file go");
-		if (!opened) {
-			oggfile = new OggVorbis_File ();
-			int success = NativeMethods.ov_fopen (Marshal.StringToHGlobalAnsi(filePath), ref oggfile);
-			LiveDebugger.instance.log("success = " + success);
-			opened = true;
-		}
+		oggfile = new OggVorbis_File ();
+		NativeMethods.ov_fopen (Marshal.StringToHGlobalAnsi(filePath), ref oggfile);
 		return oggfile;
 	}
 
+	public void closeOggFile()
+	{
+		NativeMethods.ov_clear(ref oggfile);
+	}
+
+
 	public double getReportedTime(string filePath)
 	{
-		LiveDebugger.instance.log("get reported go");
 		OggVorbis_File oggfile = openOggVorbisFile (filePath);
 		double reportedTime = NativeMethods.ov_time_total (ref oggfile, -1);
-		LiveDebugger.instance.log("reported time : " + reportedTime);
 		if (reportedTime != NativeConstants.OV_EINVAL) {
 			return reportedTime;
 		}
-		LiveDebugger.instance.log("failure :(");
 		return -1;
-	}
-
-	public IEnumerator getRealTimeTest(string filePath)
-	{
-		OggVorbis_File oggfile = openOggVorbisFile (filePath);
-		double totalTimeRead = 0;
-		
-		char[] buffer = new char[4096];
-		IntPtr bufferIntPtr = Marshal.AllocHGlobal(buffer.Length);
-		Marshal.Copy (buffer, 0, bufferIntPtr, buffer.Length);
-		
-		int logicalBitstreamRead = -555;
-		int logicalBitstreamReading = -1;
-		
-		long bytesRead = 0;
-		int pcmWordSize = 2;
-		
-		LiveDebugger.instance.log ("get real time go");
-		
-		int outBoucle = 0;
-		int iteration = 0;
-		bytesRead = NativeMethods.ov_read(ref oggfile, bufferIntPtr, 4096, 0, pcmWordSize, 1, ref logicalBitstreamRead);
-
-		while (bytesRead > 0) {
-
-			LiveDebugger.instance.log ("StartTreatment"); 
-			LiveDebugger.instance.log ("Bytes read : " + bytesRead); 
-			if(logicalBitstreamReading == -1)
-			{
-				logicalBitstreamReading = logicalBitstreamRead;
-			}else if(logicalBitstreamReading != logicalBitstreamRead)
-			{
-				LiveDebugger.instance.log("logicalBitstream");
-				yield return new WaitForSeconds(60f);
-			}
-
-			LiveDebugger.instance.log("Actual bitstream : " + logicalBitstreamRead);
-			
-			long samplesRead = bytesRead / pcmWordSize;
-			vorbis_info info = ((vorbis_info) Marshal.PtrToStructure(NativeMethods.ov_info(ref oggfile, logicalBitstreamRead), typeof(vorbis_info)));
-			int numChannels = info.channels;
-			
-			if(numChannels <= 0)
-			{
-				LiveDebugger.instance.log("numChannels");
-				yield return new WaitForSeconds(60f);
-			}
-			long samplesPerChannel = samplesRead / numChannels;
-			double timeRead = (double)samplesPerChannel / info.rate;
-			
-			totalTimeRead += timeRead;
-			outBoucle += 1;
-			iteration++;
-			LiveDebugger.instance.log ("TimeRead : " + totalTimeRead + " // it : " + iteration);
-			if(outBoucle >= 10)
-			{
-				LiveDebugger.instance.log ("Boucle !");
-				outBoucle = 0;
-				yield return new WaitForSeconds(3f);
-			}
-
-			LiveDebugger.instance.log ("Reading again");
-			bytesRead = NativeMethods.ov_read(ref oggfile, bufferIntPtr, 4096, 0, pcmWordSize, 1, ref logicalBitstreamRead);
-
-			//yield return 0;
-		}
-		
-		if (bytesRead < 0) {
-			LiveDebugger.instance.log("bytesRead");
-			yield return new WaitForSeconds(60f);
-		}
-
-		yield return 0;
-
-
-		//return totalTimeRead;
 	}
 
 	public double getRealTime(string filePath)
 	{
 		OggVorbis_File oggfile = openOggVorbisFile (filePath);
 		double totalTimeRead = 0;
-
-		byte[] buffer = new byte[4096];
-		IntPtr bufferIntPtr = Marshal.AllocHGlobal(buffer.Length);
-		Marshal.Copy (buffer, 0, bufferIntPtr, buffer.Length);
-
+		
+		char[] buffer = new char[4096];
+		bufferIntPtr = Marshal.StringToHGlobalUni(new string(buffer));
+		
 		int logicalBitstreamRead = -555;
 		int logicalBitstreamReading = -1;
-
+		
 		long bytesRead = 0;
 		int pcmWordSize = 2;
-
-		LiveDebugger.instance.log ("get real time go");
-
-		int outBoucle = 0;
-		while (outBoucle < 50 && (bytesRead = NativeMethods.ov_read(ref oggfile, bufferIntPtr, 4096, 0, pcmWordSize, 1, ref logicalBitstreamRead)) > 0) {
-
+		
+		while ((bytesRead = NativeMethods.ov_read(ref oggfile, bufferIntPtr, 4096, 0, pcmWordSize, 1, ref logicalBitstreamRead)) > 0) {
+			
 			if(logicalBitstreamReading == -1)
 			{
 				logicalBitstreamReading = logicalBitstreamRead;
 			}else if(logicalBitstreamReading != logicalBitstreamRead)
 			{
-				LiveDebugger.instance.log("logicalBitstream");
 				return -1;
 			}
-
+			
 			long samplesRead = bytesRead / pcmWordSize;
 			vorbis_info info = ((vorbis_info) Marshal.PtrToStructure(NativeMethods.ov_info(ref oggfile, logicalBitstreamRead), typeof(vorbis_info)));
 			int numChannels = info.channels;
-
+			
 			if(numChannels <= 0)
 			{
-				LiveDebugger.instance.log("numChannels");
 				return -1;
 			}
 			long samplesPerChannel = samplesRead / numChannels;
 			double timeRead = (double)samplesPerChannel / info.rate;
-
+			
 			totalTimeRead += timeRead;
-			outBoucle += 1;
 		}
-
+		
 		if (bytesRead < 0) {
-			LiveDebugger.instance.log("bytesRead");
 			return -1;
 		}
-
+		
 		return totalTimeRead;
 	}
-
+	
 	public void ChangeSongLength(string filePath, double numSeconds)
 	{
 		FileStream fs = null;
@@ -192,8 +105,8 @@ public class Ogglength : MonoBehaviour {
 
 				headerType = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
 				if(eof) return;
-				bool continuation = ByteUtilities.CheckBit(headerType, 0);
-				bool beginningOfStream = ByteUtilities.CheckBit(headerType, 1);
+				/*bool continuation = */ByteUtilities.CheckBit(headerType, 0);
+				/*bool beginningOfStream = */ByteUtilities.CheckBit(headerType, 1);
 				bool endOfStream = ByteUtilities.CheckBit(headerType, 2);
 
 				if(endOfStream)
@@ -201,7 +114,7 @@ public class Ogglength : MonoBehaviour {
 					break;
 				}
 
-				Int64 granulePositionWhile = ByteUtilities.ReadOrDieByteInt64(ref fs, ref eof);
+				/*Int64 granulePositionWhile = */ByteUtilities.ReadOrDieByteInt64(ref fs, ref eof);
 				if(eof) return;
 
 				Int32 bitstreamSerialNumberWhile = ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
@@ -213,9 +126,9 @@ public class Ogglength : MonoBehaviour {
 				}
 				savedBitstreamSerialNumber = bitstreamSerialNumberWhile;
 
-				Int32 pageSequenceNumberWhile = ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
+				/*Int32 pageSequenceNumberWhile =*/ ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
 				if(eof) return;
-				Int32 checksumWhile = ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
+				/*Int32 checksumWhile = */ByteUtilities.ReadOrDieByteInt32(ref fs, ref eof);
 				if(eof) return;
 				byte numSegmentsWhile = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
 				if(eof) return;
@@ -261,7 +174,7 @@ public class Ogglength : MonoBehaviour {
 						return;
 					}
 
-					byte numChannels = ByteUtilities.ReadOrDieByte(ref fs, ref eof);
+					/*byte numChannels = */ByteUtilities.ReadOrDieByte(ref fs, ref eof);
 					if(eof) return;
 					sampleRate = ByteUtilities.ReadOrDieByteUInt32(ref fs, ref eof);
 					if(eof) return;

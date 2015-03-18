@@ -1,17 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 
-public class Patcher : MonoBehaviour {
+public class Patcher {
 
 	Ogglength ogglength;
 	PatcherOptions patcherOption;
 
 
-	void Awake()
+	public Patcher()
 	{
-		ogglength = GetComponent<Ogglength>();
+		ogglength = new Ogglength();
 		patcherOption = new PatcherOptions();
 	}
 
@@ -25,14 +24,22 @@ public class Patcher : MonoBehaviour {
 	public void Patch(string filePath)
 	{
 		if (File.Exists (filePath)) {
-			LiveDebugger.instance.log ("The file exist");
 			if (patcherOption.FileMeetsConditions (ogglength, filePath)) {
+				/* Fait planter Unity pour le moment...
 				//double lengthToPatchTo = ogglength.getRealTime (filePath);
-				StartCoroutine(ogglength.getRealTimeTest(filePath));
-				//LiveDebugger.instance.log ("length to patch : " + lengthToPatchTo);
-				//ogglength.ChangeSongLength (filePath, lengthToPatchTo);
+				//ogglength.closeOggFile();
+				//LiveDebugger.instance.log(lengthToPatchTo.ToString()); */
+				ogglength.ChangeSongLength (filePath, -1);
 			}
 		}
+	}
+
+	public bool IsPatchedSong(string filePath)
+	{
+		if (File.Exists (filePath)) {
+			return patcherOption.FileMeetsConditions (ogglength, filePath);
+		}
+		return false;
 	}
 
 }
