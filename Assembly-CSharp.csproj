@@ -54,7 +54,6 @@
      <Compile Include="Assets\Script\Chart\ParticleEffectController.cs" />
      <Compile Include="Assets\Script\Managers\GameManager.cs" />
      <Compile Include="Assets\Script\Managers\SoundWaveManager.cs" />
-     <Compile Include="Assets\Script\Managers\TestSound.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
      <Compile Include="Assets\Script\System\OGGScripts\ByteUtilities.cs" />
@@ -71,6 +70,7 @@
      <Compile Include="Assets\Script\System\Song.cs" />
      <Compile Include="Assets\Script\System\SongInfoProfil.cs" />
      <Compile Include="Assets\Script\System\VersionDeserializationBinder.cs" />
+     <Compile Include="Assets\Script\TestSoundWave.cs" />
      <Compile Include="Assets\TempScript.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />

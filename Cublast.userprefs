@@ -1,15 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Managers\SoundWaveManager.cs">
     <Files>
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\TokenTrapGame\TokenSpawner.cs" Line="26" Column="22" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\TokenTrapGame\TokenTrap.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\TokenTrapGame\TokenTrapGameManager.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\TokenTrapGame\TokenTrapUI.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\PlateGame\PlateGameUI.cs" Line="19" Column="48" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\PlateGame\PlateGameManager.cs" Line="66" Column="1" />
-      <File FileName="Assets\Script\Managers\SoundWaveManager.cs" Line="63" Column="10" />
-      <File FileName="Assets\Script\Managers\TestSound.cs" Line="79" Column="3" />
+      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\RopeGame\RopeGameManager.cs" Line="99" Column="30" />
+      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\RopeGame\FallPiece.cs" Line="1" Column="1" />
+      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\PlateGame\PlateGameUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Managers\SoundWaveManager.cs" Line="75" Column="30" />
+      <File FileName="Assets\Script\TestSoundWave.cs" Line="22" Column="66" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

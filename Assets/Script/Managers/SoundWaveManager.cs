@@ -15,8 +15,8 @@ public class SoundWaveManager : MonoBehaviour {
 	public int samplesLength = 1024;  // array size
 	public float RMSrefValue = 0.1f; // RMS value for 0 dB
 	public float threshold = 0.02f;      // minimum amplitude to extract pitch
-	float rmsValue;   // sound level - RMS
-	float dbValue;    // sound level - dB
+	float rmsValue;  // sound level - RMS
+	float dbValue;   // sound level - dB
 	float pitchValue; // sound pitch - Hz
 	float[] samples;
 	float[] spectrum;
@@ -64,15 +64,15 @@ public class SoundWaveManager : MonoBehaviour {
 		}
 	}
 
-	public void getSpectrumAverage(ref float[] bandArray, float height = 1f)
+	void getSpectrumAverage(ref float[] bandArray, float height = 1f)
 	{
 		if (!activeAnalyse) return;
-		int sizePerCut = samplesLength / bandArray.Length;
+		int sizePerCut = (int)((float)samplesLength / (float)bandArray.Length);
 
 		for(int i=0; i<sizePerCut; i++)
 		{
 			int cutPosition = sizePerCut*i;
-			float outputSpectrum = -1000;
+			float outputSpectrum = 0f;
 			for(int j=cutPosition; j<cutPosition + sizePerCut; j++)
 			{
 				outputSpectrum += Mathf.Clamp(spectrum[j] * (height + j*j), 0f, 400f);
@@ -82,10 +82,10 @@ public class SoundWaveManager : MonoBehaviour {
 		}
 	}
 
-	public void getSpectrumTop(ref float[] cutArray, float height = 1f)
+	void getSpectrumTop(ref float[] bandArray, float height = 1f)
 	{
 		if (!activeAnalyse) return;
-		int sizePerCut = samplesLength / cutArray.Length;
+		int sizePerCut = (int)((float)samplesLength / (float)bandArray.Length);
 		
 		for(int i=0; i<sizePerCut; i++)
 		{
@@ -95,11 +95,11 @@ public class SoundWaveManager : MonoBehaviour {
 			{
 				if(spectrum[j] > outputSpectrum) outputSpectrum = Mathf.Clamp(spectrum[j] * (height + j*j), 0f, 400f);
 			}
-			cutArray[i] = outputSpectrum;
+			bandArray[i] = outputSpectrum;
 		}
 	}
 	
-	public void getSpectrumExp(ref float[] bandArray, float height)
+	void getSpectrumExp(ref float[] bandArray, float height)
 	{
 		if (!activeAnalyse) return;
 		float coeff = Mathf.Log (spectrum.Length);
