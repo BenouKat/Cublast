@@ -46,9 +46,15 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Script\Chart\AudioController.cs" />
+     <Compile Include="Assets\Script\Chart\ChartManager.cs" />
+     <Compile Include="Assets\Script\Chart\ComboController.cs" />
+     <Compile Include="Assets\Script\Chart\LaneManager.cs" />
+     <Compile Include="Assets\Script\Chart\LifeController.cs" />
+     <Compile Include="Assets\Script\Chart\ParticleEffectController.cs" />
      <Compile Include="Assets\Script\Managers\GameManager.cs" />
+     <Compile Include="Assets\Script\Managers\SoundWaveManager.cs" />
      <Compile Include="Assets\Script\Managers\TestSound.cs" />
-     <Compile Include="Assets\Script\Managers\UnpatchSong.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
      <Compile Include="Assets\Script\System\OGGScripts\ByteUtilities.cs" />
