@@ -1,12 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Managers\SoundWaveManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\VisualizerController.cs">
     <Files>
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\RopeGame\RopeGameManager.cs" Line="99" Column="30" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\RopeGame\FallPiece.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\PlateGame\PlateGameUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Managers\SoundWaveManager.cs" Line="75" Column="30" />
-      <File FileName="Assets\Script\TestSoundWave.cs" Line="22" Column="66" />
+      <File FileName="Assets\Script\Managers\SoundWaveManager.cs" Line="19" Column="20" />
+      <File FileName="Assets\Script\TestSoundWave.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Utils\Utils.cs" Line="1" Column="1" />
+      <File FileName="Assets\ProjectResources\Shaders\Glow.shader" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\VisualizerController.cs" Line="69" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

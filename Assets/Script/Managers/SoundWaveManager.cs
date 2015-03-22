@@ -10,14 +10,27 @@ public enum SpectrumCut
 
 public class SoundWaveManager : MonoBehaviour {
 
+	public static SoundWaveManager instance;
+
+	void Awake()
+	{
+		if(instance == null)
+		{
+			instance = this;
+		}
+	}
+
 	public AudioSource source;
 
 	public int samplesLength = 1024;  // array size
 	public float RMSrefValue = 0.1f; // RMS value for 0 dB
 	public float threshold = 0.02f;      // minimum amplitude to extract pitch
-	float rmsValue;  // sound level - RMS
+	float rmsValue; // sound level - RMS
+	public float RMSValue { get{ return rmsValue; }}
 	float dbValue;   // sound level - dB
+	public float DBValue { get{ return dbValue; }}
 	float pitchValue; // sound pitch - Hz
+	public float PitchValue { get{ return pitchValue; }}
 	float[] samples;
 	float[] spectrum;
 
@@ -42,6 +55,7 @@ public class SoundWaveManager : MonoBehaviour {
 	}
 
 	#region getSpectrums
+	//Deprecated
 	public float[] getSpectrumBand(int cutCount, float height = 1f, SpectrumCut cut = SpectrumCut.EXP)
 	{
 		float[] bandArray = new float[Mathf.Clamp(cutCount, 1, samplesLength)];
@@ -49,7 +63,15 @@ public class SoundWaveManager : MonoBehaviour {
 		return bandArray;
 	}
 
-	public void getSpectrumBand(ref float[] bandArray, float height, SpectrumCut cut = SpectrumCut.EXP)
+	//Deprecated
+	public void getSpectrumBand(ref float[] bandArray, float height = 1f, SpectrumCut cut = SpectrumCut.EXP)
+	{
+		float[] heightArray = new float[bandArray.Length];
+		for(int i=0; i<heightArray.Length; i++) heightArray[i] = height;
+		getSpectrumBand (ref bandArray, heightArray, cut);
+	}
+
+	public void getSpectrumBand(ref float[] bandArray, float[] height, SpectrumCut cut = SpectrumCut.EXP)
 	{
 		switch (cut) {
 		case SpectrumCut.EXP:
@@ -64,7 +86,7 @@ public class SoundWaveManager : MonoBehaviour {
 		}
 	}
 
-	void getSpectrumAverage(ref float[] bandArray, float height = 1f)
+	void getSpectrumAverage(ref float[] bandArray, float[] height)
 	{
 		if (!activeAnalyse) return;
 		int sizePerCut = (int)((float)samplesLength / (float)bandArray.Length);
@@ -75,14 +97,14 @@ public class SoundWaveManager : MonoBehaviour {
 			float outputSpectrum = 0f;
 			for(int j=cutPosition; j<cutPosition + sizePerCut; j++)
 			{
-				outputSpectrum += Mathf.Clamp(spectrum[j] * (height + j*j), 0f, 400f);
+				outputSpectrum += Mathf.Clamp(spectrum[j] * (Utils.indexOrLast(height, i) + j*j), 0f, 400f);
 			}
 
 			bandArray[i] = outputSpectrum / (float)sizePerCut;
 		}
 	}
 
-	void getSpectrumTop(ref float[] bandArray, float height = 1f)
+	void getSpectrumTop(ref float[] bandArray, float[] height)
 	{
 		if (!activeAnalyse) return;
 		int sizePerCut = (int)((float)samplesLength / (float)bandArray.Length);
@@ -93,13 +115,13 @@ public class SoundWaveManager : MonoBehaviour {
 			float outputSpectrum = -1000;
 			for(int j=cutPosition; j<cutPosition + sizePerCut; j++)
 			{
-				if(spectrum[j] > outputSpectrum) outputSpectrum = Mathf.Clamp(spectrum[j] * (height + j*j), 0f, 400f);
+				if(spectrum[j] > outputSpectrum) outputSpectrum = Mathf.Clamp(spectrum[j] * (Utils.indexOrLast(height, i) + j*j), 0f, 400f);
 			}
 			bandArray[i] = outputSpectrum;
 		}
 	}
 	
-	void getSpectrumExp(ref float[] bandArray, float height)
+	void getSpectrumExp(ref float[] bandArray, float[] height)
 	{
 		if (!activeAnalyse) return;
 		float coeff = Mathf.Log (spectrum.Length);
@@ -115,7 +137,7 @@ public class SoundWaveManager : MonoBehaviour {
 				sum += spectrum[offsets];
 				offsets++;
 			}
-			bandArray[i] = Mathf.Sqrt(weight * sum)*height;
+			bandArray[i] = Mathf.Sqrt(weight * sum)*Utils.indexOrLast(height, i);
 		}
 	}
 	#endregion
