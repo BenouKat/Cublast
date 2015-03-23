@@ -13,7 +13,6 @@ public class VisualizerController : MonoBehaviour {
 	private float[] spectrumDatas;
 	public float[] visualizerBarHeights;
 	public float heightLimit = 3.5f;
-	public float smooth = 0.1f;
 
 	public float xSpacing = 0.5f;
 	public int bandNumber = 8;
@@ -61,14 +60,16 @@ public class VisualizerController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
+	private float smoothFramerate;
 	void Update () {
 
 		SoundWaveManager.instance.getSpectrumBand(ref spectrumDatas, visualizerBarHeights, SpectrumCut.EXP);
 
+		smoothFramerate = Mathf.Lerp(0.2f, 0.9f, Mathf.Clamp(Time.deltaTime / 0.033f, 0f, 1f));
 		for(int i=0; i<bandNumber; i++)
 		{
-			leftVisualizer[i].localScale = Vector3.Lerp(leftVisualizer[i].localScale, flatY + Vector3.up*Mathf.Clamp(spectrumDatas[i+bandIngore], 0f, heightLimit), smooth);
-			rightVisualizer[i].localScale = Vector3.Lerp(rightVisualizer[i].localScale, flatY + Vector3.up*Mathf.Clamp(spectrumDatas[i+bandIngore], 0f, heightLimit), smooth);
+			leftVisualizer[i].localScale = Vector3.Lerp(leftVisualizer[i].localScale, flatY + Vector3.up*Mathf.Clamp(spectrumDatas[i+bandIngore], 0f, heightLimit), smoothFramerate);
+			rightVisualizer[i].localScale = Vector3.Lerp(rightVisualizer[i].localScale, flatY + Vector3.up*Mathf.Clamp(spectrumDatas[i+bandIngore], 0f, heightLimit), smoothFramerate);
 		}
 
 	}

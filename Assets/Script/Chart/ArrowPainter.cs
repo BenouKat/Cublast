@@ -16,7 +16,7 @@ public class ArrowPainter : MonoBehaviour {
 	public Color defaultColor;
 		
 		
-	public Color getMesureColor(int mesure, int posMesure)
+	public Color getMesureColor(int mesure, int posmesure)
 	{
 		switch(mesure){
 		case 4:	

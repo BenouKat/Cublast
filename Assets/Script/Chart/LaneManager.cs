@@ -46,6 +46,7 @@ public class LaneManager : MonoBehaviour {
 			case Lanes.RIGHT:
 				return rightArrows;				
 		}
+		return null;
 	}
 	
 	public void pushArrow(Arrow ar, double time, Lanes lane)
