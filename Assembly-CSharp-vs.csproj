@@ -57,6 +57,7 @@
      <Compile Include="Assets\Script\Chart\SkinManager.cs" />
      <Compile Include="Assets\Script\Chart\VisualizerController.cs" />
      <Compile Include="Assets\Script\Managers\GameManager.cs" />
+     <Compile Include="Assets\Script\Managers\SongOptionManager.cs" />
      <Compile Include="Assets\Script\Managers\SoundWaveManager.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
@@ -78,7 +79,6 @@
      <Compile Include="Assets\Script\Utils\MeshCombineUtility.cs" />
      <Compile Include="Assets\Script\Utils\Utils.cs" />
      <Compile Include="Assets\Sonic Ether\Natural Bloom\Scripts\SENaturalBloomAndDirtyLens.cs" />
-     <Compile Include="Assets\TempScript.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\NoiseEffectShaderRGB.shader" />

@@ -111,4 +111,20 @@ public enum PrecParticle{
 		WAYOFF,
 		FREEZE,
 		MINE
-	}
+}
+
+public enum OptionsMod
+{
+	NOMINES,
+	NOJUMPS,
+	NOHANDS,
+	NOFREEZE,
+	NOROLLS,
+	ROLLTOFREEZE,
+	NOJUDGE,
+	NOBACKGROUND,
+	NOTARGET,
+	NOSCORE,
+	NOUI
+
+}
