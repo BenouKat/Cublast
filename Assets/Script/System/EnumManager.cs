@@ -128,3 +128,10 @@ public enum OptionsMod
 	NOUI
 
 }
+
+public enum ArrowState
+{
+	NONE,
+	VALIDATED,
+	MISSED
+}

@@ -21,6 +21,7 @@ public class ChartManager : MonoBehaviour {
 	public LaneManager mineLane;
 	
 	List<double> musicalBumps;
+	Vector2 rangeArrow = new Vector2(0f, 0f);
 	
 	// Use this for initialization
 	void Start () {
@@ -151,6 +152,9 @@ public class ChartManager : MonoBehaviour {
 				char[] finalBeatLine = unmanagedLine.ToCharArray();
 
 				//To do !!
+				List<Arrow> beatLineArrows = new List<Arrow>();
+
+
 			}
 		}
 	}

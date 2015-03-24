@@ -45,9 +45,9 @@ public class GameManager : MonoBehaviour{
 	public double globalOffsetSeconds = -0.100f;
 	
 	//DATA GAME
-	public Dictionary<Precision, double> ScoreWeightValues;
-	public Dictionary<Precision, double> LifeWeightValues;
-	public Dictionary<Precision, double> PrecisionValues;
+	[HideInInspector] public Dictionary<Precision, double> ScoreWeightValues;
+	[HideInInspector] public Dictionary<Precision, double> LifeWeightValues;
+	[HideInInspector] public Dictionary<Precision, double> PrecisionValues;
 	[HideInInspector] public int startRegenAfterMiss;
 
 
