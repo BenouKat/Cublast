@@ -16,7 +16,7 @@ public class Arrow : MonoBehaviour {
 
 	public Precision validateArrow(double currentTime)
 	{
-		if (state != ArrowState.NONE) return;
+		if (state != ArrowState.NONE) return Precision.NONE;
 		state = ArrowState.VALIDATED;
 		dateValidation = currentTime;
 		if (linkedArrows.Count != 0 && linkedArrows.Exists(c => c.state == ArrowState.NONE)) {
@@ -32,6 +32,6 @@ public class Arrow : MonoBehaviour {
 				}
 			}
 		}
-		return Utils.getPrec(Mathf.Abs(selected.scheduledTime - selected.dateValidation));
+		return Utils.getPrec((double)Mathf.Abs((float)(selected.scheduledTime - selected.dateValidation)));
 	}
 }

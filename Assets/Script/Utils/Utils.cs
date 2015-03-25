@@ -14,7 +14,7 @@ public class Utils {
 	{
 		double worst = 0;
 		foreach (double prec in allPrecs) {
-			if(prec > worst) prec = worst;
+			if(prec > worst) worst = prec;
 		}
 		return getPrec (worst);
 	}
@@ -22,10 +22,12 @@ public class Utils {
 	public static Precision getPrec(double prec)
 	{
 		foreach (KeyValuePair<Precision,double> p in GameManager.instance.PrecisionValues) {
+			if(p.Key == Precision.MISS) return Precision.MISS;
 			if(prec <= p.Value)
 			{
 				return p.Key;
 			}
 		}
+		return Precision.MISS;
 	}
 }
