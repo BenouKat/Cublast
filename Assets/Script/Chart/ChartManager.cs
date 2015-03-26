@@ -3,9 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+[System.Serializable]
 public class ArrowModel {
 	public GameObject model;
 	public bool canBeTurned;
+}
+
+public class TimeBuffer
+{
+	public double startvalue;
+	public double available;
+	public double buffer;
+	public double completed;
+
+	public void flushBuffer()
+	{
+		completed += buffer;
+		available -= buffer;
+	}
 }
 
 public class ChartManager : MonoBehaviour {
@@ -21,7 +36,7 @@ public class ChartManager : MonoBehaviour {
 		painter = GetComponent<ArrowPainter>();
 	}
 	
-	
+	//Models
 	public LaneManager modelLane;
 	public LaneManager chartLane;
 	public LaneManager mineLane;
@@ -29,32 +44,147 @@ public class ChartManager : MonoBehaviour {
 
 	public List<ArrowModel> arrowModels;
 	public List<ArrowModel> arrowColored;
+	public GameObject mine;
 	
+	//Manager global variable
+	public Transform scrollingObject;
+	public float systemSpeedmod = 1f; //Resize the chart to ITG Like base spacement
+
+
+	//Private global variable
 	List<double> musicalBumps;
 	Vector2 rangeArrow = new Vector2(0f, 0f);
-	
+
+	double actualBPM = 0;
+	double actualSTOP = 0;
+	int BPMIndex = 1;
+	int BPMCount;
+	int STOPIndex = 0;
+	int STOPCount;
+
+	//Time values
+	double lastScrollingPosition = 0; //Last scrolling position since last BPM change
+	double currentTime = 0; //Total time, stops included
+	double currentSyncTime = 0; //Total time since last BPM, stops excluded
+
+
+
 	// Use this for initialization
 	void Start () {
-		createChart(LoadManager.instance.FindSongData("???", "???").songs[Difficulty.EXPERT]);
+
+		//DEBUG
+		//###################
+		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Etude for a Dragon").songs [Difficulty.EXPERT];
+		//###################
+
+		//Chart and scene creation
+		ArrowModel modelSelected = arrowModels[SongOptionManager.instance.skinSelected];
+		for (int i=0; i<System.Enum.GetValues(typeof(Lanes)).Length; i++) {
+			GameObject modelInst = Instantiate(modelSelected.model, Vector3.zero, modelSelected.model.transform.rotation) as GameObject;
+			modelInst.transform.SetParent(modelLane.getLane((Lanes)i));
+			modelInst.transform.localPosition = Vector3.zero;
+			if(modelSelected.canBeTurned) Utils.turnOnLane(modelInst.transform, (Lanes)i);
+		}
+
+		createChart(SongOptionManager.instance.currentSongPlayed);
+
+		//Data initialization
+		actualBPM = SongOptionManager.instance.currentSongPlayed.bpms.First ().Value;
+		BPMIndex = 1;
+		STOPIndex = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
-	
+
+	#region updates methods
+	private TimeBuffer timeBuffer = new TimeBuffer();
+	private double nextBPMKey, nextBPMValue, nextSTOPKey, nextSTOPValue;
+	public void computeTime()
+	{
+		//The time is a buffer. This buffer will decrease for each time operation we're gonna make within the frame.
+		timeBuffer.startvalue = (double)Time.deltaTime;
+		timeBuffer.available = timeBuffer.startvalue;
+		timeBuffer.buffer = 0;
+		timeBuffer.completed = 0;
+
+		//The current time ins't affected by these operations, it increase directly with the full buffer.
+		currentTime += timeBuffer.startvalue;
+
+		//##############################################
+		//NOPE !! On doit vérifier les 2 en boucles, sans oublier les temps de pause
+		//{
+		if (BPMIndex < BPMCount) {
+		
+			nextBPMKey = SongOptionManager.instance.currentSongPlayed.bpms.ElementAt(BPMIndex).Key;
+			while(nextBPMKey <= currentTime)
+			{
+				//Move chart to the exact BPM change
+				nextBPMValue = SongOptionManager.instance.currentSongPlayed.bpms.ElementAt(BPMIndex).Value;
+				timeBuffer.buffer = nextBPMKey - (currentTime - timeBuffer.available);
+				currentSyncTime += timeBuffer.buffer;
+				timeBuffer.flushBuffer();
+
+				moveChart();
+				lastScrollingPosition = getScrollingObjectPosition();
+
+				actualBPM = nextBPMValue;
+				BPMIndex++;
+			}
+		}
+
+		if (STOPIndex < STOPCount) {
+
+			nextSTOPKey = SongOptionManager.instance.currentSongPlayed.stops.ElementAt(STOPIndex).Key;
+			while(nextSTOPKey <= currentTime)
+			{
+				nextSTOPValue = SongOptionManager.instance.currentSongPlayed.stops.ElementAt(STOPIndex).Value;
+				timeBuffer.buffer = nextSTOPKey - (currentTime - timeBuffer.available);
+				currentSyncTime += timeBuffer.buffer;
+				timeBuffer.flushBuffer();
+				moveChart();
+
+				actualSTOP = nextSTOPValue;
+				STOPIndex++;
+			}
+		}
+
+		//}
+		//##############################################
+
+		currentSyncTime += timeBuffer.available;
+	}
+
+	public void moveChart()
+	{
+		scrollingObject.position = -Vector3.up * (float)getScrollingObjectPosition ();
+	}
+	#endregion
+
+
+	#region Utils
+
+	public double getScrollingObjectPosition()
+	{
+		return (Utils.getBPS (actualBPM) * currentSyncTime) + lastScrollingPosition;
+	}
+
+	#endregion
 	
 	#region chartCreation
+
 	void createChart(Song s)
 	{
-		float currentYPosition = 0f;
+		float currentYPosition = -modelLane.transform.localPosition.y;
 		float cursorPrecision = 0.001f;
 
 		//BPM and STOPS indexs
-		int BPMIndex = 1;
-		int STOPIndex = 0;
-		int BPMCount = s.bpms.Count;
-		int STOPCount = s.stops.Count;
+		BPMIndex = 1;
+		STOPIndex = 0;
+		BPMCount = s.bpms.Count;
+		STOPCount = s.stops.Count;
 
 		//Mesure indexs
 		double mesureIndex = 0;
@@ -73,7 +203,7 @@ public class ChartManager : MonoBehaviour {
 			{
 
 				//Get current BPS for this beatLine
-				double currentBPS = s.getBPS(s.bpms.ElementAt(BPMIndex - 1).Value);
+				double currentBPS = Utils.getBPS(s.bpms.ElementAt(BPMIndex - 1).Value);
 
 				//If there's BPM or STOP changes
 				if(BPMIndex < BPMCount || STOPIndex < STOPCount)
@@ -90,7 +220,7 @@ public class ChartManager : MonoBehaviour {
 
 							prevMesureIndex = s.mesureBPMS[BPMIndex];
 							BPMIndex++;
-							currentBPS = s.getBPS(s.bpms.ElementAt(BPMIndex - 1).Value);
+							currentBPS = Utils.getBPS(s.bpms.ElementAt(BPMIndex - 1).Value);
 						}
 
 						if(STOPIndex < STOPCount && (BPMIndex >= BPMCount || s.mesureBPMS[BPMIndex] >= s.mesureSTOPS[STOPIndex]))
@@ -172,8 +302,13 @@ public class ChartManager : MonoBehaviour {
 					if("124M".Contains(finalBeatLine[i]))
 					{
 						currentLaneManager = chartLane;
-						if(finalBeatLine[i] == 'M') currentLaneManager = mineLane;
-						arrowObj = Instantiate(modelSkinSelected.model, Vector3.zero, modelSkinSelected.model.transform.rotation) as GameObject;
+						if(finalBeatLine[i] == 'M')
+						{
+							currentLaneManager = mineLane;
+							arrowObj = Instantiate(mine, Vector3.zero, mine.transform.rotation) as GameObject;
+						}else{
+							arrowObj = Instantiate(modelSkinSelected.model, Vector3.zero, modelSkinSelected.model.transform.rotation) as GameObject;
+						}
 						arrowObj.transform.SetParent(currentLaneManager.getLane((Lanes)i));
 						arrowObj.transform.localPosition = -Vector3.up*currentYPosition;
 						if(modelSkinSelected.canBeTurned) Utils.turnOnLane(arrowObj.transform, (Lanes)i);
@@ -240,7 +375,7 @@ public class ChartManager : MonoBehaviour {
 				prevMesureIndex = mesureIndex;
 				mesureIndex += ((double)4/(double)mesure.Count);
 
-				currentYPosition += (float)(((double)4/(double)mesure.Count)*SongOptionManager.instance.speedmodSelected);
+				currentYPosition += (float)(((double)4/(double)mesure.Count)*SongOptionManager.instance.speedmodSelected*systemSpeedmod);
 			}
 		}
 

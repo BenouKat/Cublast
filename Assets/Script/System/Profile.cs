@@ -29,9 +29,6 @@ public class Profile{
 	public bool quickMode;
 	public bool useTheCacheSystem;
 	
-	//Profiles
-	public int portPref;
-	
 	//Audio
 	public float generalVolume;
 	
@@ -62,13 +59,12 @@ public class Profile{
 		mouseMolSpeed = 1;
 		dancepadMode = false;
 		quickMode = false;
-		portPref = 25000;
 		generalVolume = 1f;
 		enableBloom = true;
 		enableDepthOfField = true;
 		onlyOnGame = true;
 		useTheCacheSystem = false;
-		antiAliasing = QualitySettings.antiAliasing;
+		antiAliasing = 0;
 		KeyCodeUp = KeyCode.UpArrow;
 		KeyCodeDown = KeyCode.DownArrow;
 		KeyCodeLeft = KeyCode.LeftArrow;

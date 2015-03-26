@@ -15,8 +15,10 @@ public class SongOptionManager : MonoBehaviour {
 	}
 
 
+	public Song currentSongPlayed;
+
 	public List<OptionsMod> currentOptions = new List<OptionsMod>();
-	public double speedmodSelected = 1f;
+	public double speedmodSelected = 2f;
 	public double rateSelected;
 	public int skinSelected = 0;
 }

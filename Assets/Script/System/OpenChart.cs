@@ -479,11 +479,11 @@ public class OpenChart{
 		var listNumberStep = new Dictionary<double, double>();
 		
 		foreach(var mesure in s.stepchart){
-			
+
 			for(int beat=0;beat<mesure.Count;beat++){
 			
 			#region BPMChange
-				var bps = s.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
+				var bps = Utils.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
 				if(theBPMCounter < s.bpms.Count && theSTOPCounter < s.stops.Count){
 					while((theBPMCounter < s.bpms.Count && theSTOPCounter < s.stops.Count) 
 						&& (s.mesureBPMS.ElementAt(theBPMCounter) < mesurecount - prec || s.mesureSTOPS.ElementAt(theSTOPCounter) < mesurecount - prec)){
@@ -495,7 +495,7 @@ public class OpenChart{
 							timecounter = 0;
 							prevmesure = s.mesureBPMS.ElementAt(theBPMCounter);
 							theBPMCounter++;
-							bps = s.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
+							bps = Utils.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
 							//Debug.Log("And bpm change before / bpm");
 						}else if(s.mesureBPMS.ElementAt(theBPMCounter) > s.mesureSTOPS.ElementAt(theSTOPCounter)){
 							timestop += s.stops.ElementAt(theSTOPCounter).Value;
@@ -507,7 +507,7 @@ public class OpenChart{
 							timecounter = 0;
 							prevmesure = s.mesureBPMS.ElementAt(theBPMCounter);
 							theBPMCounter++;
-							bps = s.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
+							bps = Utils.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
 							
 							timestop += s.stops.ElementAt(theSTOPCounter).Value;
 							theSTOPCounter++;
@@ -525,7 +525,7 @@ public class OpenChart{
 						timecounter = 0;
 						prevmesure = s.mesureBPMS.ElementAt(theBPMCounter);
 						theBPMCounter++;
-						bps = s.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
+						bps = Utils.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
 					
 					}
 				}else if(theSTOPCounter < s.stops.Count){

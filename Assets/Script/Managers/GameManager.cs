@@ -61,7 +61,11 @@ public class GameManager : MonoBehaviour{
 
 	//Debug
 	[HideInInspector]
-	public string DEBUGPATH = Application.isEditor ? "/../" : "/";
+#if UNITY_EDITOR || UNITY_EDITOR_64
+	public string DEBUGPATH = "/../";
+#else
+	public string DEBUGPATH = "/";
+#endif
 
 	public Profile prefs;
 
@@ -88,7 +92,7 @@ public class GameManager : MonoBehaviour{
 		for (int i=0; i<Enum.GetValues(typeof(Precision)).Length - 1; i++) {
 			ScoreWeightValues.Add((Precision)i, findPrecValue(scoreWeightBase, (Precision)i).value);
 			LifeWeightValues.Add((Precision)i, findPrecValue(lifeWeightBase, (Precision)i).value);
-			PrecisionValues.Add((Precision)i, findPrecValue(precisionBase, (Precision)i).value);
+			if(i < (int)Precision.MISS) PrecisionValues.Add((Precision)i, findPrecValue(precisionBase, (Precision)i).value);
 
 		}
 
@@ -118,13 +122,13 @@ public class GameManager : MonoBehaviour{
 	
 	public void LoadHitJudge(Judge j){
 		if (j == Judge.NORMAL) {
-			for (int i=0; i<Enum.GetValues(typeof(Precision)).Length - 1; i++) {
+			for (int i=0; i<(int)Precision.MISS; i++) {
 				PrecisionValues[(Precision)i] = findPrecValue(precisionBase, (Precision)i).value;
 			}
 		} else {
 			JudgeValue judgeVal = precisionJudgeBase.Find (c => c.judge == j);
 			
-			for (int i=0; i<Enum.GetValues(typeof(Precision)).Length - 1; i++) {
+			for (int i=0; i<(int)Precision.MISS; i++) {
 				PrecisionValue precValue =  findPrecValue(judgeVal.newValues, (Precision)i);
 				PrecisionValues[(Precision)i] = precValue == null ?  PrecisionValues[(Precision)i] : precValue.value;
 			}

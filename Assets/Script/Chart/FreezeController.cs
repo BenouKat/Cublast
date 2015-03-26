@@ -6,8 +6,9 @@ public class FreezeController : MonoBehaviour {
 	public Transform rootTransform;
 	public GameObject baseFreeze;
 	Material baseFreezeMaterial;
-	float baseEmissionValue;
-	float currentEmissionValue;
+	Color baseEmissionColor;
+	Color currentEmissionColor;
+	float currentEmissionPower = 1f;
 	public float speedEmissionDecrease = 0.5f;
 
 	public Transform clearZone;
@@ -21,13 +22,13 @@ public class FreezeController : MonoBehaviour {
 
 	Dictionary<float, Transform> warningObjectsPosition;
 
-	public double timeLastHit;
-	public double timeEndScheduled;
+	[HideInInspector] public double timeLastHit;
+	[HideInInspector] public double timeEndScheduled;
 
 	void Awake()
 	{
 		baseFreezeMaterial = baseFreeze.GetComponent<Renderer>().material;
-		baseEmissionValue = baseFreezeMaterial.GetFloat("_Emission");
+		baseEmissionColor = baseFreezeMaterial.GetColor("_EmissionColor");
 		clearZoneRenderer.enabled = false;
 		clearZoneMaterial = clearZoneRenderer.material;
 	}
@@ -56,19 +57,20 @@ public class FreezeController : MonoBehaviour {
 
 	public void hit(double currentTime)
 	{
-		currentEmissionValue = baseEmissionValue;
+		currentEmissionPower = 1f;
 		refreshEmission();
 		timeLastHit = currentTime;
 	}
 
 	public void let()
 	{
-		currentEmissionValue -= speedEmissionDecrease*Time.deltaTime;
+		currentEmissionPower -= speedEmissionDecrease * Time.deltaTime;
 		refreshEmission();
 	}
 
 	public void refreshEmission()
 	{
-		baseFreezeMaterial.SetFloat("_Emission", currentEmissionValue);
+		currentEmissionColor = currentEmissionPower*baseEmissionColor;
+		baseFreezeMaterial.SetColor("_EmissionColor", currentEmissionColor);
 	}
 }

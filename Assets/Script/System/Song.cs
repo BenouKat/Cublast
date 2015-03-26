@@ -164,10 +164,6 @@ public class Song {
 		return tex;
 	}
 	
-	public double getBPS(double bpmValue){
-		return bpmValue/(double)60.0;
-	}
-	
 	public void setDifficulty(string dif){
 		switch(dif){
 		case "Challenge":

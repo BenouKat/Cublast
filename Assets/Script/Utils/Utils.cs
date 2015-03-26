@@ -48,4 +48,8 @@ public class Utils {
 			break;
 		}
 	}
+
+	public static double getBPS(double bpmValue){
+		return bpmValue/(double)60.0;
+	}
 }

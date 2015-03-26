@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 public class Arrow : MonoBehaviour {
 
-	public ArrowState state = ArrowState.NONE;
-	public double dateValidation = 0;
-	public List<Arrow> linkedArrows;
-	public ArrowType type = ArrowType.NORMAL;
+	[HideInInspector] public ArrowState state = ArrowState.NONE;
+	[HideInInspector]public double dateValidation = 0;
+	[HideInInspector]public List<Arrow> linkedArrows;
+	[HideInInspector]public ArrowType type = ArrowType.NORMAL;
 
 	//Time related
-	public double scheduledTime;
+	[HideInInspector]public double scheduledTime;
 
 	//Object related
 	public MeshRenderer coloredObject;

@@ -25,9 +25,9 @@ public class ArrowPainter : MonoBehaviour {
 			
 		case 8:
 			if(posmesure%2 == 0){
-				return beat8;
+				return beat4;
 			}
-			return beat4;
+			return beat8;
 			
 			
 		case 12:
