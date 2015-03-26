@@ -4,14 +4,19 @@ using System.Collections.Generic;
 
 public class Arrow : MonoBehaviour {
 
-	public ArrowState state;
+	public ArrowState state = ArrowState.NONE;
 	public double dateValidation = 0;
 	public List<Arrow> linkedArrows;
-
-	public bool isMine;
+	public ArrowType type = ArrowType.NORMAL;
 
 	//Time related
 	public double scheduledTime;
+
+	//Object related
+	public MeshRenderer coloredObject;
+
+	public FreezeController freezeController;
+	public FreezeController rollController;
 
 
 	public Precision validateArrow(double currentTime)
@@ -33,5 +38,18 @@ public class Arrow : MonoBehaviour {
 			}
 		}
 		return Utils.getPrec((double)Mathf.Abs((float)(selected.scheduledTime - selected.dateValidation)));
+	}
+
+	public FreezeController getFreezeController(ArrowType type)
+	{
+		switch(type)
+		{
+		case ArrowType.FREEZE:
+			return freezeController;
+		case ArrowType.ROLL:
+			return rollController;
+		default:
+			return null;
+		}
 	}
 }

@@ -39,10 +39,10 @@
 	<Reference Include="System.Core" />
 	<Reference Include="System.Xml.Linq" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>E:/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>E:/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +51,7 @@
      <Compile Include="Assets\Script\Chart\AudioController.cs" />
      <Compile Include="Assets\Script\Chart\ChartManager.cs" />
      <Compile Include="Assets\Script\Chart\ComboController.cs" />
+     <Compile Include="Assets\Script\Chart\FreezeController.cs" />
      <Compile Include="Assets\Script\Chart\LaneManager.cs" />
      <Compile Include="Assets\Script\Chart\LifeController.cs" />
      <Compile Include="Assets\Script\Chart\ParticleEffectController.cs" />
@@ -75,6 +76,7 @@
      <Compile Include="Assets\Script\System\Song.cs" />
      <Compile Include="Assets\Script\System\SongInfoProfil.cs" />
      <Compile Include="Assets\Script\System\VersionDeserializationBinder.cs" />
+     <Compile Include="Assets\Script\TempPassScene.cs" />
      <Compile Include="Assets\Script\Utils\CombineChildrenExtended.cs" />
      <Compile Include="Assets\Script\Utils\MeshCombineUtility.cs" />
      <Compile Include="Assets\Script\Utils\Utils.cs" />
@@ -165,7 +167,7 @@
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlurAndFlares.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendForBloom.shader" />
  <Reference Include="UnityEngine.UI">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ <HintPath>E:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

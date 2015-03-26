@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour{
 	public List<NoteValue> noteBase;
 
 	public int baseRegenComboAfterMiss = 5;
-	public double globalOffsetSeconds = -0.100f;
+	public double globalOffsetSeconds = -0.1;
 	
 	//DATA GAME
 	[HideInInspector] public Dictionary<Precision, double> ScoreWeightValues;

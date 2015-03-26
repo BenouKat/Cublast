@@ -64,10 +64,10 @@ public class LoadManager : MonoBehaviour{
 	public int packBeforeReturn = 10;
 	public int songsBeforeReturn = 100;
 
-	[HideInInspector] public bool alreadyLoaded;
+	[HideInInspector] public bool loadingIsDone;
 	
 	void init(){
-		alreadyLoaded = false;
+		loadingIsDone = false;
 	}
 	
 	public void Loading()
@@ -89,7 +89,7 @@ public class LoadManager : MonoBehaviour{
 		
 		yield return StartCoroutine (LoadSongs ());
 		
-		alreadyLoaded = true;
+		loadingIsDone = true;
 	}
 
 	public IEnumerator LoadingFromCacheFile(SerializableSongStorage sss){
@@ -100,7 +100,7 @@ public class LoadManager : MonoBehaviour{
 		
 		yield return StartCoroutine (LoadSongsFromCache (sss));
 		
-		alreadyLoaded = true;
+		loadingIsDone = true;
 		
 		
 	}

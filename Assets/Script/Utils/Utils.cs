@@ -30,4 +30,22 @@ public class Utils {
 		}
 		return Precision.MISS;
 	}
+
+	public static void turnOnLane(Transform t, Lanes lane)
+	{
+		switch(lane)
+		{
+		case Lanes.DOWN:
+			t.Rotate(Vector3.forward*90f, Space.Self);
+			break;
+		case Lanes.UP:
+			t.Rotate(Vector3.forward*(-90f), Space.Self);
+			break;
+		case Lanes.RIGHT:
+			t.Rotate(Vector3.forward*180f, Space.Self);
+			break;
+		default:
+			break;
+		}
+	}
 }
