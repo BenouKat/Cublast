@@ -23,28 +23,65 @@ public class OpenChart{
 	private OpenChart(){
 	
 	}
-	
+
+	private enum FileTags
+	{
+		//Header tags
+		TITLE, SUBTITLE, ARTIST, OFFSET, SAMPLESTART, SAMPLELENGTH, HEADERTAG_LIMIT, 
+		//Other string tags
+		BANNER, DISPLAYBPM
+	}
 	
 	private static string songContent;
-	
-	
+
+	public string[] chartFileAllowed = new string[2] { ".sm", ".dwi" };
+	public string[] chartFileRestricted = new string[2] { ".old", "._" };
+	public string[] bannerFileAllowed = new string[4] { ".png", ".jpg", ".bmp", ".jpeg" };
+	public string[] audioFileAllowed = new string[4] { ".ogg", ".OGG", ".mp3", ".MP3" };
+	public string[] noteFileAllowed = new string[1] { "single" };
+	public string[] noteFileRestricted = new string[9] { "double", "pump", "ez2", "para", "ds3ddx", "pnm", "bm", "maniax", "techno" };
+
+	public bool isAllowedFile(string file, string[] allowedArray, string[] restrictedArray = null)
+	{
+		bool valid = false;
+		for (int i=0; i<allowedArray.Length; i++) {
+			if(file.Contains(allowedArray[i]))
+			{
+				valid = true;
+				break;
+			}
+		}
+
+		if (valid && restrictedArray != null) {
+			for(int i=0; i<restrictedArray.Length; i++)
+			{
+				if(file.Contains(restrictedArray[i]))
+				{
+					valid = false;
+					break;
+				}
+			}
+		}
+
+		return valid;
+		
+	}
+
+
 	public Dictionary<Difficulty, Song> readChart(string directory){
+
+		//read all file
+		string[] files = (string[]) Directory.GetFiles(directory);
 		
-		
-		
-		//read file
-		
-		var files = (string[]) Directory.GetFiles(directory);
-		
-		var stream = files.FirstOrDefault(c => (c.ToLower().Contains(".sm")) && !c.ToLower().Contains(".old")  && !c.ToLower().Contains(".dwi") && !c.Contains("._"));
-		if(stream == null) stream = files.FirstOrDefault(c => (c.ToLower().Contains(".dwi"))   && !c.ToLower().Contains(".old") && !c.Contains("._"));
+		string stream = files.FirstOrDefault(c => c.ToLower().Contains(".sm") && isAllowedFile(c.ToLower(), chartFileAllowed, chartFileRestricted));
+		if(stream == null) stream = files.FirstOrDefault(c => c.ToLower().Contains(".dwi") && isAllowedFile(c.ToLower(), chartFileAllowed, chartFileRestricted));
 		if(stream == null) return null;
 		StreamReader sr = new StreamReader(stream);
 		songContent = sr.ReadToEnd();
     	sr.Close();
 		
 		//split all line and put on a list
-		var thesong = songContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+		string[] thesong = songContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 		List<string> listLine = new List<string>();
 		listLine.AddRange(thesong);
 		List<int> indexNotes = new List<int>();
@@ -64,292 +101,298 @@ public class OpenChart{
 		}
 		
 		Dictionary<Difficulty, Song>  outputSongs = new Dictionary<Difficulty, Song> ();
-		
-		try{
-			//get generic information
-			var thetitle = listLine.FirstOrDefault(c => c.Contains("TITLE")).Split(':');
-			var title = thetitle[1].Replace(";","");
-			var thesubtitle = listLine.FirstOrDefault(c => c.Contains("SUBTITLE")).Split(':');
-			var subtitle = thesubtitle[1].Replace(";","");
-			var theartist = listLine.FirstOrDefault(c => c.Contains("ARTIST")).Split(':');
-			var artist = theartist[1].Replace(";","");
-			var theoffset = listLine.FirstOrDefault(c => c.Contains("OFFSET")).Split(':');
-			if(theoffset[1].Contains("//")) theoffset[1] = theoffset[1].Split('/')[0]; //Special Destination fix
-			var offset = System.Convert.ToDouble(theoffset[1].Replace(";",""));
-			var thesamplestart = listLine.FirstOrDefault(c => c.Contains("SAMPLESTART")).Split(':');
-			var samplestart = System.Convert.ToDouble(thesamplestart[1].Replace(";",""));
-			var thesamplelenght = listLine.FirstOrDefault(c => c.Contains("SAMPLELENGTH")).Split(':');
-			var samplelenght = System.Convert.ToDouble(thesamplelenght[1].Replace(";",""));
-			//"file://" + 
-			var theBanner = listLine.FirstOrDefault(c => c.Contains("BANNER")).Split(':');
-			var bannerTemp = "";
-			if(!String.IsNullOrEmpty(theBanner[1].Replace(";","")))
-			{
-				bannerTemp = files.FirstOrDefault(c => c.Contains(theBanner[1].Replace(";","")));
-			}else{
-				bannerTemp = files.FirstOrDefault(c => (c.ToLower().Contains("bn") || c.ToLower().Contains("banner")) && (c.ToLower().Contains(".png") || c.ToLower().Contains(".jpg") || c.ToLower().Contains(".bmp") || c.ToLower().Contains(".jpeg")));	
-			}
-			var banner = "noBanner";
-			if(!String.IsNullOrEmpty(bannerTemp)){
-				banner = "file://" +  bannerTemp.Replace('\\', '/');
-			}
-			Dictionary<double, double> ReferenceBPMList = new Dictionary<double, double>();
-			Dictionary<double, double> ReferenceSTOPList = new Dictionary<double, double>();
-			
-			Dictionary<double, double> BPMListInTime = new Dictionary<double, double>();
-			Dictionary<double, double> STOPListInTime = new Dictionary<double, double>();
-			
-			List<double> BPMListInMesure = new List<double>();
-			List<double> STOPListInMesure = new List<double>();
-			
-			
-			
-			//getting bpms with mesure
-			string[] thebpm = listLine.FirstOrDefault(c => c.Contains("BPMS")).Split(':');
-			string thebpmline = thebpm[1];
-			string[] splitbpm = thebpmline.Split(',');
-			/*double previousbps = 0;
-			double previoustime = 0;
-			double previousmesure = 0;
-			List<double> timeToMesureBPM = new List<double>();*/
-			foreach(string s in splitbpm){
-				string[] mysplit = s.Replace(";","").Split('=');
-				if(!ReferenceBPMList.ContainsKey(System.Convert.ToDouble(mysplit[0]))) ReferenceBPMList.Add(System.Convert.ToDouble(mysplit[0]), System.Convert.ToDouble(mysplit[1]));
-				//theBpmList.Add(previousbps == 0 ? 0 : previoustime + (System.Convert.ToDouble(mysplit[0]) - previousmesure)/previousbps, System.Convert.ToDouble(mysplit[1]));
-				/*previousbps = System.Convert.ToDouble(mysplit[1])/(double)60.0;
-				previoustime = theBpmList.Last().Key;
-				previousmesure = System.Convert.ToDouble(mysplit[0]);
-				timeToMesureBPM.Add(System.Convert.ToDouble(mysplit[0]));
-				Debug.Log ("bpm : " + theBpmList.Last().Key);*/
-			}
-			
-			//getting stops mesured
-			
-			int stopbegin = listLine.IndexOf(listLine.FirstOrDefault(c => c.Contains("STOPS")));
-			string thestop = "";
-			bool breaker = false;
-			if(!listLine.ElementAt(stopbegin).Contains("STOPS:;")){
-				for(int i=stopbegin; !breaker; i++){
-					if( listLine.ElementAt(i).Contains("//")){
-						thestop += listLine.ElementAt(i).Split('/')[0];
-					}else{
-						thestop += listLine.ElementAt(i);
-					}
-					
-					if(listLine.ElementAt(i).Contains(";")) breaker = true;
-				}
-				thestop = thestop.Replace("/n", "");
-				thestop = thestop.Replace(";", "");
-			}
-			
-			
-			if(thestop != ""){
-				string[] thestopsplit = thestop.Split(':');
-				string thestopline = thestopsplit[1];
-				string[] splitstop = thestopline.Split(',');
-				/*previousbps = theBpmList.First().Value;
-				previoustime = 0;
-				previousmesure = 0;*/
-				foreach(string s in splitstop){
-	
-					var mysplit = s.Split('=');
-					
-					ReferenceSTOPList.Add(System.Convert.ToDouble(mysplit[0]), System.Convert.ToDouble(mysplit[1]));
-					/*
-					var theMesure = timeToMesureBPM.IndexOf(timeToMesureBPM.FirstOrDefault(d => d == timeToMesureBPM.Where(c => c <= System.Convert.ToDouble(mysplit[0])).Max()));
-					previousbps = System.Convert.ToDouble(theBpmList.ElementAt(theMesure).Value)/(double)60.0;
-					previoustime = theBpmList.ElementAt(theMesure).Key;
-					previousmesure = timeToMesureBPM.ElementAt(theMesure);
-					
-					theStopList.Add(previoustime + ((System.Convert.ToDouble(mysplit[0])) - previousmesure)/previousbps, System.Convert.ToDouble(mysplit[1]));
-					
-					Debug.Log("real mesure : " + (System.Convert.ToDouble(mysplit[0])) + " analyse : " + theStopList.Last().Key + " : " + theStopList.Last().Value + " : " + 
-						theMesure + " previous time : " + previoustime + " previous mesure : " + 
-						previousmesure + " previous bps " + previousbps + " (" + previousbps*60.0 + ") bpm");*/
-				}
-			}
-			
-			//change bpm and stops mesured by time
-			double previousbps = 0;
-			double stoptime = 0;
-			double previoustime = 0;
-			double previousmesure = 0;
-			
-			while(ReferenceSTOPList.Count != 0 && ReferenceBPMList.Count != 0){
-				if((ReferenceSTOPList.First().Key < ReferenceBPMList.First().Key)){
-					
-					
-					STOPListInTime.Add(previoustime + stoptime + (ReferenceSTOPList.First().Key - previousmesure)/previousbps, ReferenceSTOPList.First().Value);
-					STOPListInMesure.Add(ReferenceSTOPList.First().Key);
-					
-					previoustime += (ReferenceSTOPList.First().Key - previousmesure)/previousbps;
-					previousmesure = ReferenceSTOPList.First().Key;
-					stoptime += ReferenceSTOPList.First().Value;
-					
-					
-					ReferenceSTOPList.Remove(ReferenceSTOPList.First().Key);
-				
-				
-				}else if((ReferenceSTOPList.First().Key > ReferenceBPMList.First().Key)){
-					
-					
-					BPMListInTime.Add(previousbps == 0 ? 0 : previoustime + stoptime + (ReferenceBPMList.First().Key - previousmesure)/previousbps, ReferenceBPMList.First().Value);
-					BPMListInMesure.Add(ReferenceBPMList.First().Key);
-					
-					previoustime += (previousbps == 0 ? 0 : (ReferenceBPMList.First().Key - previousmesure)/previousbps);
-					previousbps = BPMListInTime.Last().Value/(double)60.0;
-					previousmesure = ReferenceBPMList.First().Key;
-					
-					
-					ReferenceBPMList.Remove(ReferenceBPMList.First().Key);
-					
-				}else if(ReferenceSTOPList.First().Key == ReferenceBPMList.First().Key){
-					
-					
-					STOPListInTime.Add(previousbps == 0 ? 0 : previoustime + stoptime + (ReferenceSTOPList.First().Key - previousmesure)/previousbps, ReferenceSTOPList.First().Value);
-					STOPListInMesure.Add(ReferenceSTOPList.First().Key);
-					
-					BPMListInTime.Add(previousbps == 0 ? 0 : previoustime + stoptime + (ReferenceBPMList.First().Key - previousmesure)/previousbps, ReferenceBPMList.First().Value);
-					BPMListInMesure.Add(ReferenceBPMList.First().Key);
-					
-					previoustime += (previousbps == 0 ? 0 : (ReferenceBPMList.First().Key - previousmesure)/previousbps);
-					previousbps = BPMListInTime.Last().Value/(double)60.0;
-					previousmesure = ReferenceBPMList.First().Key;
-					stoptime += ReferenceSTOPList.First().Value;
-					
-					
-					
-					ReferenceSTOPList.Remove(ReferenceSTOPList.First().Key);
-					ReferenceBPMList.Remove(ReferenceBPMList.First().Key);
-				}
-				
-			}
-			
-			while(ReferenceSTOPList.Count != 0){
-	
-					
-					STOPListInTime.Add(previoustime + stoptime + (ReferenceSTOPList.First().Key - previousmesure)/previousbps, ReferenceSTOPList.First().Value);
-					STOPListInMesure.Add(ReferenceSTOPList.First().Key);
-					
-					previoustime += (ReferenceSTOPList.First().Key - previousmesure)/previousbps;
-					previousmesure = ReferenceSTOPList.First().Key;
-					stoptime += ReferenceSTOPList.First().Value;
-					
-					
-					ReferenceSTOPList.Remove(ReferenceSTOPList.First().Key);
-				
-			}
-			
-			while(ReferenceBPMList.Count != 0){
-				
-					
-					BPMListInTime.Add(previousbps == 0 ? 0 : previoustime + stoptime + (ReferenceBPMList.First().Key - previousmesure)/previousbps, ReferenceBPMList.First().Value);
-					BPMListInMesure.Add(ReferenceBPMList.First().Key);
-					
-					previoustime += (previousbps == 0 ? 0 : (ReferenceBPMList.First().Key - previousmesure)/previousbps);
-					previousbps = BPMListInTime.Last().Value/(double)60.0;
-					previousmesure = ReferenceBPMList.First().Key;
-					
-					
-					ReferenceBPMList.Remove(ReferenceBPMList.First().Key);
-					
-			}
-			
-			
-			var displayBPM = "";
-			if(listLine.FirstOrDefault(c => c.Contains("DISPLAYBPM")) != null){
-				try{
-					string[] thes = listLine.FirstOrDefault(c => c.Contains("DISPLAYBPM")).Split(':');
-					if(thes.Count() > 2){
-						displayBPM = System.Convert.ToDouble(thes[1].Replace(";", "")).ToString("0") + " -> " + System.Convert.ToDouble(thes[2].Replace(";", "")).ToString("0");
-					}else{
-						displayBPM = System.Convert.ToDouble(thes[1].Replace(";", "")).ToString("0");
-					}
-				}catch{ //Special Gravity Blast fix
-					string[] thes = listLine.FirstOrDefault(c => c.Contains("DISPLAYBPM")).Split(':');
-					var theindex = 0;
-					for(int o=0; o<thes.Count(); o++){
-						if(thes[o].Contains("DISPLAYBPM")){
-							theindex = o + 1;
-						}
-					}
-					if((thes.Count() - theindex - 1) > 2){
-						displayBPM = System.Convert.ToDouble(thes[theindex].Replace(";", "")).ToString("0") + " -> " + System.Convert.ToDouble(thes[theindex+1].Replace(";", "")).ToString("0");
-					}else{
-						displayBPM = System.Convert.ToDouble(thes[theindex].Replace(";", "")).ToString("0");
-					}
-				}
-			}else{
-				var themin = BPMListInTime.Min(c => c.Value);
-				var themax = BPMListInTime.Max(c => c.Value);
-				if(themin == themax){
-					displayBPM = themax.ToString("0");	
-				}else{
-					displayBPM = themin.ToString("0") + " -> " + themax.ToString("0");
-				}
-			}
-			
-			//debug
-			/*foreach(var el in theStopList){
-				Debug.Log(el.Key);	
-			}*/
-			
-			//For all difficulties
-			foreach(int index in indexNotes){
-			
-				var theNewsong = new Song();
-				
-				//easy variable getted
-				theNewsong.title = title;
-				theNewsong.subtitle = subtitle;
-				theNewsong.artist = artist;
-				theNewsong.banner = banner;
-				theNewsong.offset = offset;
-				theNewsong.samplestart = samplestart;
-				theNewsong.samplelenght = samplelenght;
-				theNewsong.bpms = BPMListInTime;
-				theNewsong.stops = STOPListInTime;
-				theNewsong.mesureBPMS = BPMListInMesure;
-				theNewsong.mesureSTOPS = STOPListInMesure;
-				theNewsong.bpmToDisplay = displayBPM;
-				/*if(files.FirstOrDefault(c => c.Contains(".ogg")) == null){
-					foreach(var fil in files){
-						Debug.Log(fil);	
-					}
-				}*/
-				theNewsong.song = "file://" + files.FirstOrDefault(c => c.Contains(".ogg") || c.Contains(".OGG") || c.Contains(".mp3") || c.Contains(".MP3")).Replace('\\', '/');
-				
-				
-				//getting song information
-				int beginInformation = index;
-				string dl = "";
-				var theinfo = listLine.ElementAt(beginInformation + 1).Replace(":","").Trim();
+		Dictionary<FileTags, string> wordDictionary = new Dictionary<FileTags, string> ();
 
-				if(!theinfo.Contains("single") || theinfo.Contains("double") || theinfo.Contains("pump") || theinfo.Contains("ez2") || 
-					theinfo.Contains("para") || theinfo.Contains("ds3ddx") || theinfo.Contains("pnm") || 
-					theinfo.Contains("bm") || theinfo.Contains("maniax") || theinfo.Contains("techno"))
+		//get generic information
+
+		//Classic headers
+		for (int i=0; i<System.Enum.GetValues(typeof(FileTags)).Length; i++) {
+			string tag = listLine.FirstOrDefault(c => c.Contains(((FileTags)i).ToString()));
+			string tagValue = "";
+			if(tag != null && tag.Contains(':') && i < (int)FileTags.HEADERTAG_LIMIT)
+			{
+				string[] tagSplit = tag.Split(':');
+				if(tagSplit.Length > 1)
 				{
-					dl = "STOP";
+					//Remove comments
+					if(tagSplit[1].Contains("//")) tagSplit[1] = tagSplit[1].Split('/')[0];
+					tagValue = tagSplit[1].Replace(";", "");
 				}
-				theNewsong.stepartist = listLine.ElementAt(beginInformation + 2).Replace(":","").Trim();
-				theNewsong.setDifficulty(dl + listLine.ElementAt(beginInformation + 3).Replace(":","").Trim());
-				theNewsong.level = System.Convert.ToInt32(listLine.ElementAt(beginInformation + 4).Replace(":","").Trim());
-				
-				
-				//getting stepchart
-				int beginstepchart = beginInformation+6;
-				while(listLine.ElementAt(beginstepchart).Contains("//") || 
-					String.IsNullOrEmpty(listLine.ElementAt(beginstepchart).Trim()) || 
-					listLine.ElementAt(beginstepchart) == ""){
+			}
+
+			if(!wordDictionary.ContainsKey((FileTags)i))
+				wordDictionary.Add((FileTags)i, tagValue);
+		}
+
+		//Others tags
+		//BANNER
+		string banner = listLine.FirstOrDefault(c => c.Contains("BANNER"));
+		string bannerValue = "";
+		string bannerDirectory = "";
+		if (banner != null && banner.Contains(':'))
+			bannerValue = banner.Split(':')[1].Replace(";", "");
+
+		if(!String.IsNullOrEmpty(bannerValue))
+		{
+			bannerDirectory = files.FirstOrDefault(c => c.Contains(bannerValue));
+		}else{
+			bannerDirectory = files.FirstOrDefault(c => (c.ToLower().Contains("bn") || c.ToLower().Contains("banner")) 
+			                                       && isAllowedFile (c.ToLower(), bannerFileAllowed));
+		}
+
+		if (!String.IsNullOrEmpty (bannerDirectory)) {
+			bannerDirectory = "file://" + bannerDirectory.Replace ('\\', '/');
+		}
+
+		wordDictionary[FileTags.BANNER] = bannerDirectory;
+
+
+		//BPM and STOP
+
+		Dictionary<double, double> ReferenceBPMList = new Dictionary<double, double>();
+		Dictionary<double, double> ReferenceSTOPList = new Dictionary<double, double>();
+		
+		Dictionary<double, double> BPMListInTime = new Dictionary<double, double>();
+		Dictionary<double, double> STOPListInTime = new Dictionary<double, double>();
+		
+		List<double> BPMListInMesure = new List<double>();
+		List<double> STOPListInMesure = new List<double>();
+			
+			
+			
+		//BPMS
+		string BPMLine = listLine.FirstOrDefault (c => c.Contains ("BPMS"));
+		string[] BPMLineSplit = (BPMLine != null && BPMLine.Contains (':')) ? BPMLine.Split (':') : null;
+		string[] BPMLineList = new string[0];
+
+		if (BPMLineSplit != null) BPMLineList = BPMLineSplit[1].Split(',');
+
+		double BPMLineKey = 0;
+		double BPMLineValue = 0;
+		foreach(string bpmValue in BPMLineList){
+			string[] BPMSeparator = bpmValue.Replace(";","").Split('=');
+
+			if(System.Double.TryParse(BPMSeparator[0], out BPMLineKey) 
+			   && System.Double.TryParse(BPMSeparator[1], out BPMLineValue))
+			{
+				if(!ReferenceBPMList.ContainsKey(BPMLineKey)) 
+					ReferenceBPMList.Add(BPMLineKey, BPMLineValue);
+			}
+		}
+			
+		//STOPS
+			
+		string STOPLine = listLine.FirstOrDefault(c => c.Contains("STOPS"));
+		if(STOPLine != null)
+		{
+			int indexSTOPLine = listLine.IndexOf(STOPLine);
+			string STOPBuffer = "";
+			if(!listLine.ElementAt(indexSTOPLine).Contains("STOPS:;")){
+				bool exitLoop = false;
+				while(!exitLoop){
+					if( listLine.ElementAt(indexSTOPLine).Contains("//")){
+						STOPBuffer += listLine.ElementAt(indexSTOPLine).Split('/')[0];
+					}else{
+						STOPBuffer += listLine.ElementAt(indexSTOPLine);
+					}
 					
-						if(listLine.ElementAt(beginstepchart).Contains("NOTES")) dl = "STOP";
-						beginstepchart++;	
+					if(listLine.ElementAt(indexSTOPLine).Contains(";")) exitLoop = true;
+					indexSTOPLine++;
+				}
+				STOPBuffer = STOPBuffer.Replace("/n", "");
+				STOPBuffer = STOPBuffer.Replace(";", "");
+			}
+			
+			
+			if(!string.IsNullOrEmpty (STOPBuffer)){
+				string[] STOPArraySplit = STOPBuffer.Split(':');
+				string[] STOPArray = STOPArraySplit[1].Split(',');
+
+				double STOPLineKey = 0;
+				double STOPLineValue = 0;
+				foreach(string stopValue in STOPArray){
+	
+					string[] STOPSeparator = stopValue.Split('=');
+
+					if(System.Double.TryParse(STOPSeparator[0], out STOPLineKey) 
+					   && System.Double.TryParse(STOPSeparator[1], out STOPLineValue))
+					{
+						if(!ReferenceSTOPList.ContainsKey(STOPLineKey)) 
+						ReferenceSTOPList.Add(STOPLineKey, STOPLineValue);
+					}
+				}
+			}
+		}
+			
+		//Not changed from old code but it's seems okay
+		double previousbps = 0;
+		double stoptime = 0;
+		double previoustime = 0;
+		double previousmesure = 0;
+		
+		while(ReferenceSTOPList.Count != 0 || ReferenceBPMList.Count != 0){
+			if(ReferenceBPMList.Count == 0 || (ReferenceSTOPList.First().Key < ReferenceBPMList.First().Key)){
+				
+				
+				STOPListInTime.Add(previoustime + stoptime + (ReferenceSTOPList.First().Key - previousmesure)/previousbps, ReferenceSTOPList.First().Value);
+				STOPListInMesure.Add(ReferenceSTOPList.First().Key);
+				
+				previoustime += (ReferenceSTOPList.First().Key - previousmesure)/previousbps;
+				previousmesure = ReferenceSTOPList.First().Key;
+				stoptime += ReferenceSTOPList.First().Value;
+
+				ReferenceSTOPList.Remove(ReferenceSTOPList.First().Key);
+			
+			
+			}else if(ReferenceSTOPList.Count != 0 || (ReferenceSTOPList.First().Key > ReferenceBPMList.First().Key)){
+				
+				
+				BPMListInTime.Add(previousbps == 0 ? 0 : previoustime + stoptime + (ReferenceBPMList.First().Key - previousmesure)/previousbps, ReferenceBPMList.First().Value);
+				BPMListInMesure.Add(ReferenceBPMList.First().Key);
+				
+				previoustime += (previousbps == 0 ? 0 : (ReferenceBPMList.First().Key - previousmesure)/previousbps);
+				previousbps = BPMListInTime.Last().Value/(double)60.0;
+				previousmesure = ReferenceBPMList.First().Key;
+				
+				ReferenceBPMList.Remove(ReferenceBPMList.First().Key);
+				
+			}else if(ReferenceSTOPList.First().Key == ReferenceBPMList.First().Key){
+				
+				
+				STOPListInTime.Add(previousbps == 0 ? 0 : previoustime + stoptime + (ReferenceSTOPList.First().Key - previousmesure)/previousbps, ReferenceSTOPList.First().Value);
+				STOPListInMesure.Add(ReferenceSTOPList.First().Key);
+				
+				BPMListInTime.Add(previousbps == 0 ? 0 : previoustime + stoptime + (ReferenceBPMList.First().Key - previousmesure)/previousbps, ReferenceBPMList.First().Value);
+				BPMListInMesure.Add(ReferenceBPMList.First().Key);
+				
+				previoustime += (previousbps == 0 ? 0 : (ReferenceBPMList.First().Key - previousmesure)/previousbps);
+				previousbps = BPMListInTime.Last().Value/(double)60.0;
+				previousmesure = ReferenceBPMList.First().Key;
+				stoptime += ReferenceSTOPList.First().Value;
+
+				ReferenceSTOPList.Remove(ReferenceSTOPList.First().Key);
+				ReferenceBPMList.Remove(ReferenceBPMList.First().Key);
+			}
+			
+		}
+			
+			
+		string displayBPM = listLine.FirstOrDefault(c => c.Contains("DISPLAYBPM"));
+		string displayBPMValue = "";
+		if(displayBPM != null){
+			string[] displayBPMSplit = displayBPM.Split(':');
+			double displayBPMFirstValue = 0;
+			double displayBPMSecondValue = 0;
+			bool displayBPMSucceed = false;
+
+			if(System.Double.TryParse(displayBPMSplit[1].Replace(";", ""), out displayBPMFirstValue))
+			{
+				if(displayBPMSplit.Count() > 2)
+				{
+					if(System.Double.TryParse(displayBPMSplit[2].Replace(";", ""), out displayBPMSecondValue))
+					{
+						displayBPMValue = displayBPMFirstValue.ToString("0") + "$" + displayBPMSecondValue.ToString("0");
+						displayBPMSucceed = true;
+					}
+				}else{
+					displayBPMValue = displayBPMFirstValue.ToString("0");
+					displayBPMSucceed = true;
+				}
+			}
+
+			//Gravity blast special fix
+			if(!displayBPMSucceed)
+			{
+				int indexDisplayBPM = 0;
+				for(int i=0; i<displayBPMSplit.Count(); i++){
+					if(displayBPMSplit[i].Contains("DISPLAYBPM")){
+						indexDisplayBPM = i + 1;
+					}
+				}
+
+				if(System.Double.TryParse(displayBPMSplit[indexDisplayBPM].Replace(";", ""), out displayBPMFirstValue))
+				{
+					if((displayBPMSplit.Count() - indexDisplayBPM - 1) > 2)
+					{
+						if(System.Double.TryParse(displayBPMSplit[indexDisplayBPM+1].Replace(";", ""), out displayBPMFirstValue))
+						{
+							displayBPMValue = displayBPMFirstValue.ToString("0") + "$" + displayBPMSecondValue.ToString("0");
+							displayBPMSucceed = true;
+						}
+					}else{
+						displayBPMValue = displayBPMFirstValue.ToString("0");
+						displayBPMSucceed = true;
+					}
+				}
+			}
+
+		}else{
+			double minBPM = BPMListInTime.Min(c => c.Value);
+			double maxBPM = BPMListInTime.Max(c => c.Value);
+			if(minBPM == maxBPM){
+				displayBPMValue = maxBPM.ToString("0");	
+			}else{
+				displayBPMValue = minBPM.ToString("0") + "$" + maxBPM.ToString("0");
+			}
+		}
+
+		wordDictionary [FileTags.DISPLAYBPM] = displayBPMValue;
+
+		//For all difficulties
+		foreach(int index in indexNotes){
+			
+			Song theNewsong = new Song();
+			
+			//Tag getted
+			theNewsong.title = wordDictionary[FileTags.TITLE];
+			theNewsong.subtitle = wordDictionary[FileTags.SUBTITLE];
+			theNewsong.artist = wordDictionary[FileTags.ARTIST];
+			theNewsong.banner = wordDictionary[FileTags.BANNER];
+			if(!System.Double.TryParse(wordDictionary[FileTags.OFFSET], out theNewsong.offset)) theNewsong.offset = 0;
+			if(!System.Double.TryParse(wordDictionary[FileTags.SAMPLESTART], out theNewsong.samplestart)) theNewsong.samplestart = 0;
+			if(!System.Double.TryParse(wordDictionary[FileTags.SAMPLELENGTH], out theNewsong.samplestart)) theNewsong.samplelenght = 0;
+			theNewsong.bpms = BPMListInTime;
+			theNewsong.stops = STOPListInTime;
+			theNewsong.mesureBPMS = BPMListInMesure;
+			theNewsong.mesureSTOPS = STOPListInMesure;
+			theNewsong.bpmToDisplay = displayBPM;
+
+			theNewsong.song = files.FirstOrDefault(c => isAllowedFile(c, audioFileAllowed));
+			if(theNewsong.song != null) theNewsong.song = "file://" + theNewsong.song.Replace('\\', '/');
+				
+				
+			//Song information
+			int indexBeginInformation = index;
+			bool exitTrigger = false;
+			string chartmode = listLine.ElementAt(indexBeginInformation + 1).Replace(":","").Trim();
+
+			if(isAllowedFile(chartmode, noteFileAllowed, noteFileRestricted))
+			{
+				theNewsong.stepartist = listLine.ElementAt(indexBeginInformation + 2).Replace(":","").Trim();
+				theNewsong.setDifficulty(listLine.ElementAt(indexBeginInformation + 3).Replace(":","").Trim());
+				if(!System.Int32.TryParse(listLine.ElementAt(indexBeginInformation + 4).Replace(":","").Trim(), out theNewsong.level))
+				{
+					exitTrigger = true;
+				}
+
+					
+					
+				//getting stepchart
+				int indexBeginStepchart = indexBeginInformation+6;
+				while(listLine.ElementAt(indexBeginStepchart).Contains("//") || 
+				      String.IsNullOrEmpty(listLine.ElementAt(indexBeginStepchart).Trim()) || 
+				      listLine.ElementAt(indexBeginStepchart) == "")
+				{
+					
+					if(listLine.ElementAt(indexBeginStepchart).Contains("NOTES")) exitTrigger = true;
+
+					indexBeginStepchart++;	
 				}
 				
-				if(listLine.ElementAt(beginstepchart).Contains("NOTES")) dl = "STOP";
+				if(listLine.ElementAt(indexBeginStepchart).Contains("NOTES")) exitTrigger = true;
 				//if(theNewsong.title == "The Last Kiss") Debug.Log(listLine.ElementAt(beginstepchart));
 				
-				if(dl != "STOP"){
+				if(!exitTrigger){
 					int numberOfSteps = 0;
 					int numberOfMines = 0;
 					int numberOfRoll = 0;
@@ -358,34 +401,27 @@ public class OpenChart{
 					int numberOfStepsWJ = 0;
 					int numberOfStepsAbs = 0;
 					theNewsong.stepchart.Add(new List<string>());
-					for(int i = beginstepchart; !listLine.ElementAt(i).Contains(";"); i++){
+					for(int i = indexBeginStepchart; !listLine.ElementAt(i).Contains(";"); i++){
 						if(listLine.ElementAt(i).Contains(",")){
 							theNewsong.stepchart.Add(new List<string>());
 						}else if(!String.IsNullOrEmpty(listLine.ElementAt(i))){
 							theNewsong.stepchart.Last().Add(listLine.ElementAt(i));	
-							numberOfSteps += listLine.ElementAt(i).Count(c => c == '1');
-							numberOfSteps += listLine.ElementAt(i).Count(c => c == '2');
-							numberOfSteps += listLine.ElementAt(i).Count(c => c == '4');
+							int stepThisMesure = listLine.ElementAt(i).Count(c => "124".Contains(c));
+							numberOfSteps += stepThisMesure;
 							numberOfFreezes += listLine.ElementAt(i).Count(c => c == '2');
 							numberOfRoll += listLine.ElementAt(i).Count(c => c == '4');
 							numberOfMines += listLine.ElementAt(i).Count(c => c == 'M');
-							numberOfStepsWJ += listLine.ElementAt(i).Count(c => c == '1');
-							numberOfStepsWJ += listLine.ElementAt(i).Count(c => c == '2');
-							numberOfStepsWJ += listLine.ElementAt(i).Count(c => c == '4');
-							numberOfStepsAbs += listLine.ElementAt(i).Count(c => c == '1');
-							numberOfStepsAbs += listLine.ElementAt(i).Count(c => c == '2');
-							numberOfStepsAbs += listLine.ElementAt(i).Count(c => c == '4');
+							numberOfStepsWJ += stepThisMesure;
+							numberOfStepsAbs += stepThisMesure;
 							
-							var countmesure = listLine.ElementAt(i).Count(c => c == '1') + listLine.ElementAt(i).Count(c => c == '2') + listLine.ElementAt(i).Count(c => c == '4');
-							if(countmesure == 2){
-								numberOfStepsWJ -= countmesure;
-								numberOfStepsAbs -= countmesure - 1;
+							if(stepThisMesure == 2){
+								numberOfStepsWJ -= stepThisMesure;
+								numberOfStepsAbs -= stepThisMesure - 1;
 								numberOfJump++;
 							}
-							if(countmesure >= 3){
-								numberOfStepsWJ -= countmesure;
-								numberOfStepsAbs -= countmesure - 1;
-								//numberOfStepsAbs++;
+							if(stepThisMesure >= 3){
+								numberOfStepsWJ -= stepThisMesure;
+								numberOfStepsAbs -= stepThisMesure - 1;
 							}
 						}
 					}
@@ -398,17 +434,14 @@ public class OpenChart{
 					theNewsong.numberOfStepsWithoutJumps = numberOfStepsWJ;
 					theNewsong.numberOfStepsAbsolute = numberOfStepsAbs;
 
-					if(dl == "") fakeCreation(theNewsong);
+					if(!exitTrigger) fakeCreation(theNewsong);
 						//A mettre
 					//if(outputSongs.ContainsKey(theNewsong.difficulty))
 					theNewsong.sip = new SongInfoProfil(theNewsong.title, theNewsong.subtitle, 
 						theNewsong.numberOfSteps, theNewsong.difficulty, theNewsong.level);
 					outputSongs.Add(theNewsong.difficulty, theNewsong);
 				}
-			
 			}
-		}catch(Exception e){
-			Debug.Log(directory + " // " + e.Message + " //st : " + e.StackTrace);	
 		}
 		
 		return outputSongs;
@@ -418,18 +451,29 @@ public class OpenChart{
 	
 	void fakeCreation(Song s){
 				
-		var theBPMCounter = 1;
-		var theSTOPCounter = 0;
-		double mesurecount = 0;
-		double prevmesure = 0;
-		double timecounter = 0;
-		double timeBPM = 0;
-		double timestop = 0;
-		double timetotal = 0;
-		float prec = 0.001f;
+		float cursorPrecision = 0.001f;
+		
+		//BPM and STOPS indexs
+		int BPMIndex = 1;
+		int STOPIndex = 0;
+		int BPMCount = s.bpms.Count;
+		int STOPCount = s.stops.Count;
+		
+		//Mesure indexs
+		double mesureIndex = 0;
+		double prevMesureIndex = 0;
+		
+		//Time indexs
+		double bufferBPMTime = 0;
+		double savedBPMTime = 0;
+		double currentSTOPTime = 0;
+		double currentTime = 0;
+
+
+
 		
 		//stepBySecondsAverage
-		double timestart = -10f;
+		double timestart = -1000;
 		double stoptime = 0;
 		int countStep = 0;
 		double stepbysecAv = 0f;
@@ -438,7 +482,7 @@ public class OpenChart{
 		//stepmax
 		double maxStepPerSeconds = 0f;
 		int numberStepBetweenTwoBeat = 0;
-		double timestartMax = -10f;
+		double timestartMax = 0f;
 		//double maxLenght = 0f;
 		
 		
@@ -447,110 +491,71 @@ public class OpenChart{
 		double maxLenghtStream = 0f;
 		double speedOfMaxStream = 0f;
 		double previousSpeed = 0f;
-		
-		
+
 		//Footswitch
 		int numberOfFootswitch = 0;
-		int[] casevalidate = new int[4]; //left down up right
-		casevalidate[0] = 0;
-		casevalidate[1] = 0;
-		casevalidate[2] = 0;
-		casevalidate[3] = 0;
-		
+	
 		//Cross
 		int numberOfCross = 0;
-		int[] caseCrossvalidate = new int[4]; //left down up right
-		caseCrossvalidate[0] = 0;
-		caseCrossvalidate[1] = 0;
-		caseCrossvalidate[2] = 0;
-		caseCrossvalidate[3] = 0;
-		
+	
 		//Hands
 		int numberOfHands = 0;
 		
 		//freeze
-		var freezed = new int[4];
-		freezed[0] = 0;
-		freezed[1] = 0;
-		freezed[2] = 0;
-		freezed[3] = 0;
+		bool[] freezed = new bool[4] { false, false, false, false };
 		
 		//graph
-		var listNumberStep = new Dictionary<double, double>();
+		Dictionary<double, double> listNumberStep = new Dictionary<double, double>();
 		
-		foreach(var mesure in s.stepchart){
-
-			for(int beat=0;beat<mesure.Count;beat++){
-			
-			#region BPMChange
-				var bps = Utils.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
-				if(theBPMCounter < s.bpms.Count && theSTOPCounter < s.stops.Count){
-					while((theBPMCounter < s.bpms.Count && theSTOPCounter < s.stops.Count) 
-						&& (s.mesureBPMS.ElementAt(theBPMCounter) < mesurecount - prec || s.mesureSTOPS.ElementAt(theSTOPCounter) < mesurecount - prec)){
-					
-						if(s.mesureBPMS.ElementAt(theBPMCounter) < s.mesureSTOPS.ElementAt(theSTOPCounter)){
-							timecounter += (s.mesureBPMS.ElementAt(theBPMCounter) - prevmesure)/bps;
+		foreach (List<string> mesure in s.stepchart) {
+			for(int beatLine=0; beatLine<mesure.Count; beatLine++)
+			{
+				
+				//Get current BPS for this beatLine
+				double currentBPS = Utils.getBPS(s.bpms.ElementAt(BPMIndex - 1).Value);
+				
+				//If there's BPM or STOP changes
+				if(BPMIndex < BPMCount || STOPIndex < STOPCount)
+				{
+					//Searching for BPM and STOP pass before the mesure
+					while((BPMIndex < BPMCount && s.mesureBPMS[BPMIndex] < mesureIndex - cursorPrecision)
+					      || STOPIndex < STOPCount && s.mesureSTOPS[STOPIndex] < mesureIndex - cursorPrecision)
+					{
+						if(BPMIndex < BPMCount && (STOPIndex >= STOPCount || s.mesureBPMS[BPMIndex] <= s.mesureSTOPS[STOPIndex]))
+						{
+							bufferBPMTime += (s.mesureBPMS[BPMIndex] - prevMesureIndex)/currentBPS;
+							savedBPMTime += bufferBPMTime;
+							bufferBPMTime = 0;
 							
-							timeBPM += timecounter;
-							timecounter = 0;
-							prevmesure = s.mesureBPMS.ElementAt(theBPMCounter);
-							theBPMCounter++;
-							bps = Utils.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
-							//Debug.Log("And bpm change before / bpm");
-						}else if(s.mesureBPMS.ElementAt(theBPMCounter) > s.mesureSTOPS.ElementAt(theSTOPCounter)){
-							timestop += s.stops.ElementAt(theSTOPCounter).Value;
-							theSTOPCounter++;
-							//Debug.Log("And stop change before");
-						}else{
-							timecounter += (s.mesureBPMS.ElementAt(theBPMCounter) - prevmesure)/bps;
-							timeBPM += timecounter;
-							timecounter = 0;
-							prevmesure = s.mesureBPMS.ElementAt(theBPMCounter);
-							theBPMCounter++;
-							bps = Utils.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
-							
-							timestop += s.stops.ElementAt(theSTOPCounter).Value;
-							theSTOPCounter++;
-							//Debug.Log("And bpm change before");
-							//Debug.Log("And stop change before");
+							prevMesureIndex = s.mesureBPMS[BPMIndex];
+							BPMIndex++;
+							currentBPS = Utils.getBPS(s.bpms.ElementAt(BPMIndex - 1).Value);
 						}
 						
-					}
-				}else if(theBPMCounter < s.bpms.Count){
-					while((theBPMCounter < s.bpms.Count) && s.mesureBPMS.ElementAt(theBPMCounter) < mesurecount - prec){
-						
-						timecounter += (s.mesureBPMS.ElementAt(theBPMCounter) - prevmesure)/bps;
-							
-						timeBPM += timecounter;
-						timecounter = 0;
-						prevmesure = s.mesureBPMS.ElementAt(theBPMCounter);
-						theBPMCounter++;
-						bps = Utils.getBPS(s.bpms.ElementAt(theBPMCounter-1).Value);
-					
-					}
-				}else if(theSTOPCounter < s.stops.Count){
-					while((theSTOPCounter < s.stops.Count) && s.mesureSTOPS.ElementAt(theSTOPCounter) < mesurecount - prec){
-						
-						timestop += s.stops.ElementAt(theSTOPCounter).Value;
-						theSTOPCounter++;
-					
+						if(STOPIndex < STOPCount && (BPMIndex >= BPMCount || s.mesureBPMS[BPMIndex] >= s.mesureSTOPS[STOPIndex]))
+						{
+							currentSTOPTime += s.stops.ElementAt(STOPIndex).Value;
+							STOPIndex++;
+						}
 					}
 				}
+
+
+		
+				bufferBPMTime += (mesureIndex - prevMesureIndex)/currentBPS;
+				currentTime = bufferBPMTime + savedBPMTime + currentSTOPTime;
 				
-				#endregion
-				timecounter += (mesurecount - prevmesure)/bps;
-				
-				
-				timetotal = timecounter + timeBPM + timestop;
-				
-				char[] note = mesure.ElementAt(beat).TrimStart(' ').Trim().ToCharArray();
-				
-				if((beat*8f)%(mesure.Count) == 0){
-					var newMax = numberStepBetweenTwoBeat/(timetotal - timestartMax);
-					if(!listNumberStep.ContainsKey(timetotal)){
-						listNumberStep.Add(timetotal, newMax);
+				char[] finalBeatLine = mesure[beatLine].Trim().ToCharArray();
+
+
+
+				//Start chart Analysis
+				if((beatLine*8f)%(mesure.Count) == 0){
+					var newMax = numberStepBetweenTwoBeat/(currentTime - timestartMax);
+					if(!listNumberStep.ContainsKey(currentTime)){
+						listNumberStep.Add(currentTime, newMax);
 					}else{
-						listNumberStep.Add(timetotal + 0.00001, newMax);
+						listNumberStep.Add(currentTime + 0.00001, newMax);
 					}
 					if(maxStepPerSeconds < newMax){
 						maxStepPerSeconds = newMax;
@@ -558,9 +563,10 @@ public class OpenChart{
 					
 					
 					
-					if(Mathf.Abs((float)(newMax - previousSpeed)) < 0.001f && numberStepBetweenTwoBeat > 0 && newMax > 4f){
+					if(Mathf.Abs((float)(newMax - previousSpeed)) < 0.001f 
+					   && numberStepBetweenTwoBeat > 0 && newMax > 4f){
 						
-						lenghtStream += (timetotal - timestartMax);
+						lenghtStream += (currentTime - timestartMax);
 						if(lenghtStream > maxLenghtStream){
 							speedOfMaxStream = newMax;
 							maxLenghtStream = lenghtStream;
@@ -570,225 +576,146 @@ public class OpenChart{
 					}
 					
 					previousSpeed = newMax;
-					
 					numberStepBetweenTwoBeat = 0;
-					timestartMax = timetotal;
+					timestartMax = currentTime;
 				}
-				var barr = false;
-				var barrstop = false;
-				var iselected = -1;
-				var doubleselection = false;
-				var tripleselect = 0;
+
+				bool arrowFound = finalBeatLine.Any(c => "124".Contains(c));
+				bool actionFound = finalBeatLine.Any(c => "1234M".Contains(c));
+				int numberOfArrows = 0;
+				Lanes laneSelected = Lanes.LEFT;
 				
 				
 				for(int i =0;i<4; i++){
-					
-					if(note[i] == '1'){
-						if(iselected == -1){
-							iselected = i;
-						}else{
-							doubleselection = true;
-						}
-						tripleselect++;
-						barr = true;
-						
-					}else if(note[i] == '2'){
-						barr = true;
-						if(iselected == -1){
-							iselected = i;
-						}else{
-							doubleselection = true;
-						}
-						freezed[i] = 1;
-					}else if(note[i] == '3'){
-						freezed[i] = 0;
-						barrstop = true;
-					}else if(note[i] == '4'){
-						barr = true;
-						if(iselected == -1){
-							iselected = i;
-						}else{
-							doubleselection = true;
-						}
-						freezed[i] = 1;
-					}else if(note[i] == 'M'){
-						barrstop = true;
+					if("24".Contains(finalBeatLine[i]))
+					{
+						freezed[i] = true;
+					}else if(finalBeatLine[i] == '3' && freezed[i])
+					{
+						freezed[i] = false;
 					}
-					
 				}
+
+				numberOfArrows = freezed.Count(c => c) + finalBeatLine.Count(c => c == '1');
 				
-				for(int i=0;i<4;i++){
-					if(freezed[i] == 1 && barr) tripleselect++;
-				}
-				
-				if(tripleselect >= 3f){
+				if(numberOfArrows >= 3f){
 					numberOfHands++;
 				}
-				if(barr || barrstop){
-					stoptime = timetotal;	
+
+
+				if(actionFound){
+					stoptime = currentTime;	
 				}
 				
-				if(barr){
+				if(arrowFound){
 				
-					if(timestart == -10f) timestart = timetotal;
+					if(timestart == -1000) timestart = currentTime;
 					
 					countStep++;
 					numberStepBetweenTwoBeat++;
 					
-					if(!doubleselection){
-						switch(iselected){
-							case 0:
-							//fs
-								if(((casevalidate[1] == 2 && casevalidate[2] == 0) || (casevalidate[2] == 2 && casevalidate[1] == 0)) && casevalidate[0] == 0 && casevalidate[3] == 1){
+					if(numberOfArrows < 2){
+						switch(laneSelected){
+							case Lanes.LEFT:
+								//fs
+								if(verifyFootswitch(0,2,0,1)
+								   || verifyFootswitch(0,0,2,1))
+								{
 									numberOfFootswitch++;
-									casevalidate[0] = 1;
-									casevalidate[1] = 0;
-									casevalidate[2] = 0;
-									casevalidate[3] = 0;
-								}else{
-									casevalidate[0] = 1;
-									casevalidate[1] = 0;
-									casevalidate[2] = 0;
-									casevalidate[3] = 0;
 								}
-							//cross
-								if((caseCrossvalidate[0] == 0 && (((caseCrossvalidate[1] == 1 || caseCrossvalidate[1] == 2) && caseCrossvalidate[2] == 0) 
-								|| (caseCrossvalidate[1] == 0 && (caseCrossvalidate[2] == 1 || caseCrossvalidate[2] == 2))) && caseCrossvalidate[3] == 1)){
+								setFootswitch(1,0,0,0);
+
+								//cross
+								if(verifyCross(0,1,0,1) || verifyCross(0,0,1,1))
+								{
 									numberOfCross++;
-									caseCrossvalidate[0] = 1;
-									caseCrossvalidate[1] = 0;
-									caseCrossvalidate[2] = 0;
-									caseCrossvalidate[3] = 0;
+								}
+								setCross(1,0,0,0);
+
+								break;
+
+							case Lanes.DOWN:
+								//fs
+								if(verifyFootswitch(1,0,0,0) || verifyFootswitch(1,1,0,0) || verifyFootswitch(0,0,0,1) || verifyFootswitch(0,1,0,1))
+								{
+									addFootswitch(0,1,0,0);
 								}else{
-									caseCrossvalidate[0] = 1;
-									caseCrossvalidate[1] = 0;
-									caseCrossvalidate[2] = 0;
-									caseCrossvalidate[3] = 0;
+									setFootswitch(0,0,0,0);
+								}
+
+								//cross
+								if(verifyCross(1,0,0,0) || verifyCross(0,0,0,1))
+								{
+									addCross(0,1,0,0);
+								}else if(verifyCross(1,0,1,0))
+								{
+									addCross(0,0,-1,0);
+								}
+
+								break;
+							case Lanes.UP:
+								//fs
+								if(verifyFootswitch(1,0,0,0) || verifyFootswitch(1,0,1,0) || verifyFootswitch(0,0,0,1) || verifyFootswitch(0,0,1,1))
+								{
+									addFootswitch(0,0,1,0);
+								}else{
+									setFootswitch(0,0,0,0);
+								}
+
+								//cross
+								if(verifyCross(1,0,0,0) || verifyCross(0,0,0,1))
+								{
+									addCross(0,0,1,0);
+								}else if(verifyCross(1,1,0,0))
+								{
+									addCross(0,-1,0,0);
 								}
 								break;
-							case 1:
-							//fs
-								if(((casevalidate[0] == 0 && casevalidate[3] == 1) || (casevalidate[0] == 1 && casevalidate[3] == 0)) && casevalidate[2] == 0 &&  casevalidate[1] < 2){
-									casevalidate[1]++;
-								}else{
-									casevalidate[0] = 0;
-									casevalidate[1] = 0;
-									casevalidate[2] = 0;
-									casevalidate[3] = 0;
-								}
-							//cross
-								if((caseCrossvalidate[0] == 1 || caseCrossvalidate[3] == 1)){
-									if(caseCrossvalidate[0] == 1 && caseCrossvalidate[1] == 1 && caseCrossvalidate[2] == 2 && caseCrossvalidate[3] == 0){
-										caseCrossvalidate[2] = 0;
-									}
-									if(caseCrossvalidate[0] == 0 && caseCrossvalidate[1] == 1 && caseCrossvalidate[2] == 2 && caseCrossvalidate[3] == 1){
-										caseCrossvalidate[2] = 0;
-									}
-								
-									caseCrossvalidate[1] = 2;
-									if(caseCrossvalidate[2] == 2) caseCrossvalidate[2] = 1;
-								
-								}else{
-									caseCrossvalidate[0] = 0;
-									caseCrossvalidate[1] = 0;
-									caseCrossvalidate[2] = 0;
-									caseCrossvalidate[3] = 0;
-								}
-								break;
-							case 2:
-							//fs
-								if(((casevalidate[0] == 0 && casevalidate[3] == 1) || (casevalidate[0] == 1 && casevalidate[3] == 0)) && casevalidate[1] == 0 &&  casevalidate[2] < 2){
-									casevalidate[2]++;
-								}else{
-									casevalidate[0] = 0;
-									casevalidate[1] = 0;
-									casevalidate[2] = 0;
-									casevalidate[3] = 0;
-								}
-							//cross
-								if((caseCrossvalidate[0] == 1 || caseCrossvalidate[3] == 1)){
-									if(caseCrossvalidate[0] == 1 && caseCrossvalidate[1] == 2 && caseCrossvalidate[2] == 1 && caseCrossvalidate[3] == 0){
-										caseCrossvalidate[1] = 0;
-									}
-									if(caseCrossvalidate[0] == 0 && caseCrossvalidate[1] == 2 && caseCrossvalidate[2] == 1 && caseCrossvalidate[3] == 1){
-										caseCrossvalidate[1] = 0;
-									}
-								
-									caseCrossvalidate[2] = 2;
-									if(caseCrossvalidate[1] == 2) caseCrossvalidate[1] = 1;
-									
-									
-								}else{
-									caseCrossvalidate[0] = 0;
-									caseCrossvalidate[1] = 0;
-									caseCrossvalidate[2] = 0;
-									caseCrossvalidate[3] = 0;
-								}
-								break;
-							case 3:
-							//fs
-								if(((casevalidate[1] == 2 && casevalidate[2] == 0) || (casevalidate[2] == 2 && casevalidate[1] == 0)) && casevalidate[3] == 0 && casevalidate[0] == 1){
+							case Lanes.RIGHT:
+								//fs
+								if(verifyFootswitch(1,2,0,0)
+								   || verifyFootswitch(1,0,2,0))
+								{
 									numberOfFootswitch++;
-									casevalidate[0] = 0;
-									casevalidate[1] = 0;
-									casevalidate[2] = 0;
-									casevalidate[3] = 1;
-								}else{
-									casevalidate[0] = 0;
-									casevalidate[1] = 0;
-									casevalidate[2] = 0;
-									casevalidate[3] = 1;
 								}
-							//cross
-								if(caseCrossvalidate[0] == 1 && (( caseCrossvalidate[1] == 2 && caseCrossvalidate[2] == 0) 
-									|| (caseCrossvalidate[1] == 0 &&  caseCrossvalidate[2] == 2) && caseCrossvalidate[3] == 0)){
+								setFootswitch(0,0,0,1);
+								
+								//cross
+								if(verifyCross(1,1,0,0) || verifyCross(1,0,1,0))
+								{
 									numberOfCross++;
-									caseCrossvalidate[0] = 0;
-									caseCrossvalidate[1] = 0;
-									caseCrossvalidate[2] = 0;
-									caseCrossvalidate[3] = 1;
-								}else{
-									caseCrossvalidate[0] = 0;
-									caseCrossvalidate[1] = 0;
-									caseCrossvalidate[2] = 0;
-									caseCrossvalidate[3] = 1;
 								}
+								setCross(0,0,0,1);
 								break;
 						}
 					}else{
-						casevalidate[0] = 0;
-						casevalidate[1] = 0;
-						casevalidate[2] = 0;
-						casevalidate[3] = 0;
-						caseCrossvalidate[0] = 0;
-						caseCrossvalidate[1] = 0;
-						caseCrossvalidate[2] = 0;
-						caseCrossvalidate[3] = 0;
+						setCross (0,0,0,0);
+						setFootswitch(0,0,0,0);
 					}
 				}
 				
-					
-				#region ChangeBPM
-				if(theBPMCounter < s.bpms.Count){
-					if(Mathf.Abs((float)(s.mesureBPMS.ElementAt(theBPMCounter) - mesurecount)) < prec){
-							timeBPM += timecounter;
-							timecounter = 0;
-							theBPMCounter++;
-							//Debug.Log("And bpm change");
+
+				if(BPMIndex < BPMCount)
+				{
+					if(Mathf.Abs((float)(s.mesureBPMS[BPMIndex] - mesureIndex)) < cursorPrecision)
+					{
+						savedBPMTime += bufferBPMTime;
+						bufferBPMTime = 0;
+						BPMIndex++;
 					}
 				}
 				
-				if(theSTOPCounter < s.stops.Count){
-					if(Mathf.Abs((float)(s.mesureSTOPS.ElementAt(theSTOPCounter) - mesurecount)) < prec){
-							timestop += s.stops.ElementAt(theSTOPCounter).Value;
-							theSTOPCounter++;
-							//Debug.Log("And stop");
+				if(STOPIndex < STOPCount)
+				{
+					if(Mathf.Abs((float)(s.mesureSTOPS[STOPIndex] - mesureIndex)) < cursorPrecision)
+					{
+						currentSTOPTime += s.stops.ElementAt(STOPIndex).Value;
+						STOPIndex++;
 					}
 				}
-				
-				#endregion
-				prevmesure = mesurecount;
-				mesurecount += (4f/(float)mesure.Count);
+
+				prevMesureIndex = mesureIndex;
+				mesureIndex += ((double)4/(double)mesure.Count);
 				
 			}
 		}
@@ -806,30 +733,8 @@ public class OpenChart{
 		
 		
 		
-		//Old Graph
+		//A revoir !!
 		s.intensityGraph = new double[100];
-		
-		/*
-		var theamountOfTime = s.duration/100f;
-		double thetotaltime = 0;
-		double themoy = 0;
-		double thecountmoy = 0;
-		var countintensity = 0;
-		double theprevioustimetotal = 0;
-		for(int i=0;i<listNumberStep.Count && thetotaltime < s.duration;i++){
-			if((thetotaltime - theprevioustimetotal) >= theamountOfTime){
-				var thevalue = themoy/thecountmoy;
-				s.intensityGraph[countintensity] = (float)thevalue;
-				countintensity++;
-				thecountmoy = 0;
-				themoy = 0;
-				theprevioustimetotal = thetotaltime;
-			}else{
-				themoy += listNumberStep.ElementAt(i).Value;
-				thecountmoy++;
-				thetotaltime = listNumberStep.ElementAt(i).Key;
-			}
-		}*/
 		
 		double thelastgoodvalue = 0;
 		var thecut = s.duration/(double)100;
@@ -860,6 +765,60 @@ public class OpenChart{
 		}
 		
 		
+	}
+
+	int[] footswitchStatus = new int[4] { 0, 0, 0, 0 }; //left down up right
+	int[] crossStatus = new int[4] { 0, 0, 0, 0 }; //left down up right
+	public bool verifyConcordance(int[] status, int[] step)
+	{
+		for (int i=0; i<step.Length; i++) {
+			if(status[i] != step[i]) return false;
+		}
+		return true;
+	}
+
+	public bool verifyFootswitch(params int[] step)
+	{
+		return verifyConcordance(footswitchStatus, step);
+	}
+
+	public bool verifyCross(params int[] step)
+	{
+		return verifyConcordance(crossStatus, step);
+	}
+
+	public void setConcordance(int[] status, int[] step)
+	{
+		for (int i=0; i<step.Length; i++) {
+			status[i] = step[i];
+		}
+	}
+	
+	public void setFootswitch(params int[] step)
+	{
+		setConcordance(footswitchStatus, step);
+	}
+	
+	public void setCross(params int[] step)
+	{
+		setConcordance(crossStatus, step);
+	}
+
+	public void addConcordance(int[] status, int[] step)
+	{
+		for (int i=0; i<step.Length; i++) {
+			status[i] += step[i];
+		}
+	}
+	
+	public void addFootswitch(params int[] step)
+	{
+		addConcordance(footswitchStatus, step);
+	}
+	
+	public void addCross(params int[] step)
+	{
+		addConcordance(crossStatus, step);
 	}
 	
 	
