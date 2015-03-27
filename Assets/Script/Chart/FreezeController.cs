@@ -52,6 +52,7 @@ public class FreezeController : MonoBehaviour {
 				warningInst.SetActive(true);
 				currentDistance -= warningSpacing;
 			}
+			warningObjectRoot.gameObject.SetActive(true);
 		}
 	}
 

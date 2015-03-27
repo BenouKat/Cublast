@@ -16,6 +16,14 @@ public class TimeBuffer
 	public double buffer;
 	public double completed;
 
+	public void init(double startValue)
+	{
+		startvalue = startValue;
+		available = startvalue;
+		buffer = 0;
+		completed = 0;
+	}
+
 	public void flushBuffer()
 	{
 		completed += buffer;
@@ -50,13 +58,13 @@ public class ChartManager : MonoBehaviour {
 	public Transform scrollingObject;
 	public float systemSpeedmod = 1f; //Resize the chart to ITG Like base spacement
 
-
 	//Private global variable
 	List<double> musicalBumps;
 	Vector2 rangeArrow = new Vector2(0f, 0f);
+	float cameraForward;
 
 	double actualBPM = 0;
-	double actualSTOP = 0;
+	TimeBuffer actualSTOPBuffer;
 	int BPMIndex = 1;
 	int BPMCount;
 	int STOPIndex = 0;
@@ -74,7 +82,7 @@ public class ChartManager : MonoBehaviour {
 
 		//DEBUG
 		//###################
-		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Etude for a Dragon").songs [Difficulty.EXPERT];
+		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Stompbox").songs [Difficulty.EXPERT];
 		//###################
 
 		//Chart and scene creation
@@ -90,76 +98,106 @@ public class ChartManager : MonoBehaviour {
 
 		//Data initialization
 		actualBPM = SongOptionManager.instance.currentSongPlayed.bpms.First ().Value;
+		actualSTOPBuffer = null;
 		BPMIndex = 1;
 		STOPIndex = 0;
+		BPMCount = SongOptionManager.instance.currentSongPlayed.bpms.Count;
+		STOPCount = SongOptionManager.instance.currentSongPlayed.stops.Count;
+
+
+		//Initialisations
+		initComputeTime ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
+		computeTime ();
+		moveChart ();
 	}
 
 	#region updates methods
 	private TimeBuffer timeBuffer = new TimeBuffer();
 	private double nextBPMKey, nextBPMValue, nextSTOPKey, nextSTOPValue;
+	public void initComputeTime()
+	{
+		if (BPMIndex < BPMCount) {
+			nextBPMKey = SongOptionManager.instance.currentSongPlayed.bpms.ElementAt (BPMIndex).Key;
+		} else {
+			nextBPMKey = 9999999;
+		}
+		if (STOPIndex < STOPCount) {
+			nextSTOPKey = SongOptionManager.instance.currentSongPlayed.stops.ElementAt (STOPIndex).Key;
+		} else {
+			nextSTOPKey = 9999999;
+		}
+			
+	}
+
 	public void computeTime()
 	{
 		//The time is a buffer. This buffer will decrease for each time operation we're gonna make within the frame.
-		timeBuffer.startvalue = (double)Time.deltaTime;
-		timeBuffer.available = timeBuffer.startvalue;
+		timeBuffer.init((double)Time.deltaTime);
 		timeBuffer.buffer = 0;
 		timeBuffer.completed = 0;
 
 		//The current time ins't affected by these operations, it increase directly with the full buffer.
 		currentTime += timeBuffer.startvalue;
 
-		//##############################################
-		//NOPE !! On doit vérifier les 2 en boucles, sans oublier les temps de pause
-		//{
-		if (BPMIndex < BPMCount) {
-		
-			nextBPMKey = SongOptionManager.instance.currentSongPlayed.bpms.ElementAt(BPMIndex).Key;
-			while(nextBPMKey <= currentTime)
+		if (BPMIndex < BPMCount || STOPIndex < STOPCount) {
+			while (nextBPMKey <= currentTime || nextSTOPKey <= currentTime) 
 			{
-				//Move chart to the exact BPM change
-				nextBPMValue = SongOptionManager.instance.currentSongPlayed.bpms.ElementAt(BPMIndex).Value;
-				timeBuffer.buffer = nextBPMKey - (currentTime - timeBuffer.available);
-				currentSyncTime += timeBuffer.buffer;
-				timeBuffer.flushBuffer();
+				if (nextBPMKey <= currentTime && nextBPMKey <= nextSTOPKey) {
+					//Move chart to the exact BPM change
+					nextBPMValue = SongOptionManager.instance.currentSongPlayed.bpms.ElementAt (BPMIndex).Value;
+					timeBuffer.buffer = nextBPMKey - (currentTime - timeBuffer.available);
+					addTimeToSyncTime (timeBuffer.buffer);
+					timeBuffer.flushBuffer ();
+					
+					moveChart ();
+					lastScrollingPosition = getScrollingObjectPosition ();
+					currentSyncTime = 0;
+					
+					actualBPM = nextBPMValue;
+					BPMIndex++;
+				} else if (nextSTOPKey <= currentTime && nextSTOPKey <= nextBPMKey) {
+					nextSTOPValue = SongOptionManager.instance.currentSongPlayed.stops.ElementAt (STOPIndex).Value;
+					timeBuffer.buffer = nextSTOPKey - (currentTime - timeBuffer.available);
+					addTimeToSyncTime (timeBuffer.buffer);
+					timeBuffer.flushBuffer ();
+					moveChart ();
+					
+					actualSTOPBuffer = new TimeBuffer ();
+					actualSTOPBuffer.init (nextSTOPValue);
+					STOPIndex++;
+				}
 
-				moveChart();
-				lastScrollingPosition = getScrollingObjectPosition();
-
-				actualBPM = nextBPMValue;
-				BPMIndex++;
+				initComputeTime ();
 			}
 		}
 
-		if (STOPIndex < STOPCount) {
+		addTimeToSyncTime(timeBuffer.available);
+	}
 
-			nextSTOPKey = SongOptionManager.instance.currentSongPlayed.stops.ElementAt(STOPIndex).Key;
-			while(nextSTOPKey <= currentTime)
+	public void addTimeToSyncTime(double time)
+	{
+		if (actualSTOPBuffer != null) {
+			actualSTOPBuffer.buffer = time;
+			if(actualSTOPBuffer.available < time)
 			{
-				nextSTOPValue = SongOptionManager.instance.currentSongPlayed.stops.ElementAt(STOPIndex).Value;
-				timeBuffer.buffer = nextSTOPKey - (currentTime - timeBuffer.available);
-				currentSyncTime += timeBuffer.buffer;
-				timeBuffer.flushBuffer();
-				moveChart();
-
-				actualSTOP = nextSTOPValue;
-				STOPIndex++;
+				time -= actualSTOPBuffer.available;
+			}else{
+				time = 0;
 			}
+			actualSTOPBuffer.flushBuffer();
+			if(actualSTOPBuffer.available <= 0) actualSTOPBuffer = null;
 		}
 
-		//}
-		//##############################################
-
-		currentSyncTime += timeBuffer.available;
+		currentSyncTime += time;
 	}
 
 	public void moveChart()
 	{
-		scrollingObject.position = -Vector3.up * (float)getScrollingObjectPosition ();
+		scrollingObject.position = -(Vector3.up * (float)getScrollingObjectPosition ()) + Vector3.forward*cameraForward;
 	}
 	#endregion
 
@@ -168,7 +206,7 @@ public class ChartManager : MonoBehaviour {
 
 	public double getScrollingObjectPosition()
 	{
-		return (Utils.getBPS (actualBPM) * currentSyncTime) + lastScrollingPosition;
+		return (Utils.getBPS (actualBPM) * currentSyncTime * SongOptionManager.instance.speedmodSelected) + lastScrollingPosition;
 	}
 
 	#endregion
@@ -178,6 +216,8 @@ public class ChartManager : MonoBehaviour {
 	void createChart(Song s)
 	{
 		float currentYPosition = -modelLane.transform.localPosition.y;
+		cameraForward = -modelLane.transform.localPosition.z;
+		
 		float cursorPrecision = 0.001f;
 
 		//BPM and STOPS indexs
@@ -314,7 +354,7 @@ public class ChartManager : MonoBehaviour {
 						if(modelSkinSelected.canBeTurned) Utils.turnOnLane(arrowObj.transform, (Lanes)i);
 
 						currentArrow = arrowObj.GetComponent<Arrow>();
-						currentArrow.coloredObject.material.color = painter.getMesureColor(mesure.Count, beatLine+1);
+						if(finalBeatLine[i] != 'M') currentArrow.coloredObject.material.color = painter.getMesureColor(mesure.Count, beatLine+1);
 						currentArrow.scheduledTime = currentTime;
 
 						Arrow savedArrow = currentArrow;
