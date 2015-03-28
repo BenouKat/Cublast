@@ -730,35 +730,32 @@ public class OpenChart{
 		s.numberOfFootswitch = numberOfFootswitch;
 		s.numberOfCross = numberOfCross - numberOfFootswitch;
 		s.numberOfHands = numberOfHands;
-		
-		
-		
-		//A revoir !!
+
 		s.intensityGraph = new double[100];
 		
-		double thelastgoodvalue = 0;
-		var thecut = s.duration/(double)100;
+		double lastSignificantValue = 0;
+		double cutLoop = s.duration/(double)100;
 		
 		for(int i=0; i<100; i++){
 			if(i == 0){
 				s.intensityGraph[i] = 0;
 			}else{
-				if(listNumberStep.Where(c => c.Key <= thecut*i).Count() == 0){
-					s.intensityGraph[i] = thelastgoodvalue;
+				if(listNumberStep.Where(c => c.Key <= cutLoop*i).Count() == 0){
+					s.intensityGraph[i] = lastSignificantValue;
 				}else{
-					double moy = 0;
-					int numbermoy = 0;
+					double average = 0;
+					int countAverage = 0;
 					List<double> keyToRemove = new List<double>();
-					foreach(var val in listNumberStep.Where(c => c.Key <= (thecut*i))){
-						moy += val.Value;
-						thelastgoodvalue = val.Value;
+					foreach(var val in listNumberStep.Where(c => c.Key <= (cutLoop*i))){
+						average += val.Value;
+						lastSignificantValue = val.Value;
 						keyToRemove.Add(val.Key);
-						numbermoy++;
+						countAverage++;
 					}
 					foreach(var rem in keyToRemove){
 						listNumberStep.Remove(rem);	
 					}
-					s.intensityGraph[i] = moy/(double)numbermoy;
+					s.intensityGraph[i] = average/(double)countAverage;
 				}
 				
 			}
