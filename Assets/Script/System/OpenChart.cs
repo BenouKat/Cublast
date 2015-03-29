@@ -760,8 +760,6 @@ public class OpenChart{
 				
 			}
 		}
-		
-		
 	}
 
 	int[] footswitchStatus = new int[4] { 0, 0, 0, 0 }; //left down up right

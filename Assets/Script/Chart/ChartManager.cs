@@ -199,8 +199,31 @@ public class ChartManager : MonoBehaviour {
 	{
 		scrollingObject.position = -(Vector3.up * (float)getScrollingObjectPosition ()) + Vector3.forward*cameraForward;
 	}
+
+	public void checkLanesStatus()
+	{
+
+	}
 	#endregion
 
+	#region Inputs
+
+	public void hitLane(Lanes lane)
+	{
+
+	}
+
+	public void holdLane(Lanes lane)
+	{
+
+	}
+
+	public void releaseLane(Lanes lane)
+	{
+
+	}
+
+	#endregion
 
 	#region Utils
 
