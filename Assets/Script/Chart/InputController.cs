@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class InputController : MonoBehaviour {
 
-	ChartManager manager;
-
 	Dictionary<Lanes, KeyCode> primaryInputs = new Dictionary<Lanes, KeyCode>();
 	Dictionary<Lanes, KeyCode> secondaryInputs = new Dictionary<Lanes, KeyCode>();
 
@@ -28,17 +26,17 @@ public class InputController : MonoBehaviour {
 		{
 			if(Input.GetKeyDown(primaryInputs[(Lanes)i]) || Input.GetKeyDown(secondaryInputs[(Lanes)i]))
 			{
-				manager.hitLane((Lanes)i);
+				ChartManager.instance.hitLane((Lanes)i);
 			}
 
 			if(Input.GetKey(primaryInputs[(Lanes)i]) || Input.GetKey(secondaryInputs[(Lanes)i]))
 			{
-				manager.holdLane((Lanes)i);
+				ChartManager.instance.holdLane((Lanes)i);
 			}
 
 			if(Input.GetKeyUp(primaryInputs[(Lanes)i]) || Input.GetKeyUp(secondaryInputs[(Lanes)i]))
 			{
-				manager.releaseLane((Lanes)i);
+				ChartManager.instance.releaseLane((Lanes)i);
 			}
 		}
 	}

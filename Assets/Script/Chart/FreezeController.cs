@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 public class FreezeController : MonoBehaviour {
 
+	Arrow parentArrow;
+	float distanceFreeze;
+
 	public Transform rootTransform;
 	public GameObject baseFreeze;
 	Material baseFreezeMaterial;
@@ -20,10 +23,15 @@ public class FreezeController : MonoBehaviour {
 	public float initWarningSpacing;
 	public float warningSpacing;
 
-	Dictionary<float, Transform> warningObjectsPosition;
+	//For animation
+	List<Transform> warningObjectsPosition = new List<Transform> ();
+	Transform[] warningObjectsPositionArray;
+	int indexWarningObject;
 
 	[HideInInspector] public double timeLastHit;
 	[HideInInspector] public double timeEndScheduled;
+
+	bool letInUpdate;
 
 	void Awake()
 	{
@@ -33,9 +41,18 @@ public class FreezeController : MonoBehaviour {
 		clearZoneMaterial = clearZoneRenderer.material;
 	}
 
-	public void init(float distanceFreeze, double timeEndScheduled, Color colorZone)
+	void Update()
 	{
+		if (letInUpdate) {
+			let ();
+		}
+	}
+
+	public void init(Arrow parentArrow, float distanceFreeze, double timeEndScheduled, Color colorZone)
+	{
+		this.parentArrow = parentArrow;
 		this.timeEndScheduled = timeEndScheduled;
+		this.distanceFreeze = distanceFreeze;
 		//Augmenter le rootFreeze
 		rootTransform.localScale = Vector3.right + Vector3.forward + (Vector3.up*distanceFreeze);
 		//Changer la couleur de la freeze zone
@@ -49,11 +66,33 @@ public class FreezeController : MonoBehaviour {
 				GameObject warningInst = Instantiate(warningObject, warningObject.transform.position, warningObject.transform.rotation) as GameObject;
 				warningInst.transform.SetParent(warningObjectRoot);
 				warningInst.transform.localPosition = -Vector3.up*(distanceFreeze - currentDistance);
+				warningObjectsPosition.Add(warningInst.transform);
 				warningInst.SetActive(true);
 				currentDistance -= warningSpacing;
 			}
+			warningObjectsPositionArray = warningObjectsPosition.ToArray();
+			indexWarningObject = 0;
 			warningObjectRoot.gameObject.SetActive(true);
 		}
+	}
+
+	public void animFreeze(double currentTime)
+	{
+		//Scale
+		rootTransform.localScale = Vector3.right + Vector3.forward 
+			+ (Vector3.up*distanceFreeze*(float)((1 - ((currentTime - parentArrow.scheduledTime) / (timeEndScheduled - parentArrow.scheduledTime)))));
+
+		//Objects
+		if (warningObject != null) {
+			warningObjectRoot.transform.localPosition = Vector3.up * distanceFreeze * (float)(((currentTime - parentArrow.scheduledTime) / (timeEndScheduled - parentArrow.scheduledTime)));
+			if (indexWarningObject < warningObjectsPositionArray.Length && 
+			    warningObjectRoot.transform.localPosition.y >= -warningObjectsPositionArray [indexWarningObject].localPosition.y) 
+			{
+				warningObjectsPositionArray [indexWarningObject].gameObject.SetActive(false);
+				indexWarningObject++;
+			}
+		}
+
 	}
 
 	public void hit(double currentTime)
@@ -61,6 +100,11 @@ public class FreezeController : MonoBehaviour {
 		currentEmissionPower = 1f;
 		refreshEmission();
 		timeLastHit = currentTime;
+	}
+
+	public void enableLetInUpdate(bool active)
+	{
+		letInUpdate = active;
 	}
 
 	public void let()

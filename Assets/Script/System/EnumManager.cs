@@ -132,6 +132,7 @@ public enum OptionsMod
 public enum ArrowState
 {
 	NONE,
+	WAITINGLINKED,
 	VALIDATED,
 	MISSED
 }

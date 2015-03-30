@@ -229,9 +229,10 @@ public class OpenChart{
 		double stoptime = 0;
 		double previoustime = 0;
 		double previousmesure = 0;
+
 		
 		while(ReferenceSTOPList.Count != 0 || ReferenceBPMList.Count != 0){
-			if(ReferenceBPMList.Count == 0 || (ReferenceSTOPList.First().Key < ReferenceBPMList.First().Key)){
+			if(ReferenceBPMList.Count == 0 || (ReferenceSTOPList.Count != 0 && (ReferenceSTOPList.First().Key < ReferenceBPMList.First().Key))){
 				
 				
 				STOPListInTime.Add(previoustime + stoptime + (ReferenceSTOPList.First().Key - previousmesure)/previousbps, ReferenceSTOPList.First().Value);
@@ -244,7 +245,7 @@ public class OpenChart{
 				ReferenceSTOPList.Remove(ReferenceSTOPList.First().Key);
 			
 			
-			}else if(ReferenceSTOPList.Count != 0 || (ReferenceSTOPList.First().Key > ReferenceBPMList.First().Key)){
+			}else if(ReferenceSTOPList.Count == 0 || (ReferenceBPMList.Count != 0 && (ReferenceSTOPList.First().Key > ReferenceBPMList.First().Key))){
 				
 				
 				BPMListInTime.Add(previousbps == 0 ? 0 : previoustime + stoptime + (ReferenceBPMList.First().Key - previousmesure)/previousbps, ReferenceBPMList.First().Value);

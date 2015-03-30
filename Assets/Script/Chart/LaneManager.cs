@@ -23,6 +23,22 @@ public class LaneManager : MonoBehaviour {
 	List<Arrow> upArrows = new List<Arrow>();
 	List<Arrow> downArrows = new List<Arrow>();
 
+	Arrow[] leftArrowsArray;
+	Arrow[] rightArrowsArray;
+	Arrow[] upArrowsArray;
+	Arrow[] downArrowsArray;
+
+	Arrow nextLeft;
+	Arrow nextRight;
+	Arrow nextUp;
+	Arrow nextDown;
+
+	int[] indexes = new int[4] { 0,0,0,0 };
+
+
+	//Once locked, arrow list will turn to arrowArray for performance, which increase the cost of some functions.
+	public bool locked;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -54,17 +70,144 @@ public class LaneManager : MonoBehaviour {
 		switch(lane)
 		{
 			case Lanes.LEFT:
-				return leftArrows;
+				return locked ? leftArrowsArray.ToList() : leftArrows;
 			case Lanes.DOWN:
-				return downArrows;
+				return locked ? downArrowsArray.ToList() : downArrows;
 			case Lanes.UP:
-				return upArrows;
+				return locked ? upArrowsArray.ToList() : upArrows;
 			case Lanes.RIGHT:
-				return rightArrows;				
+				return locked ? rightArrowsArray.ToList() : rightArrows;				
 		}
 		return null;
 	}
-	
+
+	public Arrow[] getLaneArrowsArray(Lanes lane)
+	{
+		switch(lane)
+		{
+		case Lanes.LEFT:
+			return leftArrowsArray;
+		case Lanes.DOWN:
+			return downArrowsArray;
+		case Lanes.UP:
+			return upArrowsArray;
+		case Lanes.RIGHT:
+			return rightArrowsArray;				
+		}
+		return null;
+	}
+
+	public void lockLane()
+	{
+		locked = true;
+		leftArrowsArray = leftArrows.ToArray ();
+		leftArrows.Clear ();
+		if(leftArrowsArray.Length > 0) nextLeft = leftArrowsArray[0];
+		rightArrowsArray = rightArrows.ToArray ();
+		rightArrows.Clear ();
+		if(rightArrowsArray.Length > 0) nextRight = rightArrowsArray[0];
+		upArrowsArray = upArrows.ToArray ();
+		upArrows.Clear ();
+		if(upArrowsArray.Length > 0) nextUp = upArrowsArray[0];
+		downArrowsArray = downArrows.ToArray ();
+		downArrows.Clear ();
+		if(downArrowsArray.Length > 0) nextDown = downArrowsArray[0];
+	}
+
+	public void validArrow(Lanes lane, bool checkLinked = true)
+	{
+		getNextLaneArrows (lane).gameObject.SetActive (false);
+		if (checkLinked && getNextLaneArrows (lane).linkedArrows.Count != 0) {
+			foreach(Arrow arrow in getNextLaneArrows (lane).linkedArrows)
+			{
+				validArrow(arrow.currentLane, false);
+			}
+		}
+		pushNextArrow (lane);
+	}
+
+	public void attachToModelLane(LaneManager modelLane, Arrow arrow, Lanes lane)
+	{
+		arrow.transform.SetParent (modelLane.getLane (lane));
+		arrow.transform.localPosition = new Vector3 (0f, 0f, arrow.transform.localPosition.z);
+		modelLane.getLaneArrows(lane).Add (arrow);
+		arrow.attached = true;
+	}
+
+	public void distachFromModelLane(LaneManager modelLane, Lanes lane)
+	{
+		foreach(Arrow arrow in modelLane.getLaneArrows(lane))
+		{
+			arrow.transform.SetParent(getLane(lane));
+			arrow.attached = false;
+		}
+		modelLane.getLaneArrows(lane).Clear();
+	}
+
+	public void missArrow(Lanes lane, bool checkLinked = true)
+	{
+		if (getNextLaneArrows (lane).attached)
+			distachFromModelLane (ChartManager.instance.modelLane, lane);
+
+		if (checkLinked && getNextLaneArrows (lane).linkedArrows.Count != 0) {
+			foreach(Arrow arrow in getNextLaneArrows (lane).linkedArrows)
+			{
+				missArrow(arrow.currentLane, false);
+			}
+		}
+
+		pushNextArrow (lane);
+	}
+
+	#region ArrayAndSinglecontrollers
+	private Arrow[] currentArray;
+	private int newIndex;
+	public void pushNextArrow(Lanes lane)
+	{
+		indexes [(int)lane] += 1;
+		newIndex = indexes [(int)lane];
+		currentArray = getLaneArrowsArray (lane);
+		if (newIndex < currentArray.Length) {
+			setNextLaneArrows (lane, currentArray [newIndex]);
+		} else {
+			setNextLaneArrows (lane, null);
+		}
+	}
+
+	public Arrow getNextLaneArrows(Lanes lane)
+	{
+		switch(lane)
+		{
+		case Lanes.LEFT:
+			return nextLeft;
+		case Lanes.DOWN:
+			return nextDown;
+		case Lanes.UP:
+			return nextUp;
+		case Lanes.RIGHT:
+			return nextRight;				
+		}
+		return null;
+	}
+
+	public Arrow setNextLaneArrows(Lanes lane, Arrow arrow)
+	{
+		switch(lane)
+		{
+		case Lanes.LEFT:
+			return nextLeft = arrow;
+		case Lanes.DOWN:
+			return nextDown = arrow;
+		case Lanes.UP:
+			return nextUp = arrow;
+		case Lanes.RIGHT:
+			return nextRight = arrow;				
+		}
+		return null;
+	}
+	#endregion
+
+	#region Listcontrollers
 	public void pushArrow(Arrow ar, Lanes lane)
 	{
 		getLaneArrows(lane).Add(ar);
@@ -112,4 +255,6 @@ public class LaneManager : MonoBehaviour {
 		}
 		return times.Count > 0 ? times.Max() : (double)-999999;
 	}
+	#endregion
+
 }

@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour{
 
 	public int baseRegenComboAfterMiss = 5;
 	public double globalOffsetSeconds = -0.1;
+	public double timeBeforeFreezeMiss = 0.350;
 	
 	//DATA GAME
 	[HideInInspector] public Dictionary<Precision, double> ScoreWeightValues;

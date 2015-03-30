@@ -76,6 +76,10 @@ public class ChartManager : MonoBehaviour {
 	double currentSyncTime = 0; //Total time since last BPM, stops excluded
 
 
+	//Variable Pool
+	private Arrow currentCheckedArrow;
+
+
 
 	// Use this for initialization
 	void Start () {
@@ -83,6 +87,9 @@ public class ChartManager : MonoBehaviour {
 		//DEBUG
 		//###################
 		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Stompbox").songs [Difficulty.EXPERT];
+		currentTime = -1;
+		currentSyncTime = -1;
+		//Time.timeScale = 0.3f;
 		//###################
 
 		//Chart and scene creation
@@ -104,13 +111,15 @@ public class ChartManager : MonoBehaviour {
 		BPMCount = SongOptionManager.instance.currentSongPlayed.bpms.Count;
 		STOPCount = SongOptionManager.instance.currentSongPlayed.stops.Count;
 
-
 		//Initialisations
+		chartLane.lockLane ();
+		mineLane.lockLane ();
 		initComputeTime ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		checkLanesStatus ();
 		computeTime ();
 		moveChart ();
 	}
@@ -200,27 +209,120 @@ public class ChartManager : MonoBehaviour {
 		scrollingObject.position = -(Vector3.up * (float)getScrollingObjectPosition ()) + Vector3.forward*cameraForward;
 	}
 
+	//Check for misses or freeze validation
 	public void checkLanesStatus()
 	{
+		for (int i=0; i<4; i++) {
+			currentCheckedArrow = chartLane.getNextLaneArrows((Lanes)i);
+			//Debug.Log("current Checked Arrow on lane " + ((Lanes)i).ToString() + " : " + currentCheckedArrow.scheduledTime + " // " + currentTime);
+			if(currentCheckedArrow != null)
+			{
+				//Validated arrow for previous inputs : Confirmation
+				if(currentCheckedArrow.state == ArrowState.VALIDATED)
+				{
+					if(currentCheckedArrow.type == ArrowType.NORMAL) {
+						chartLane.validArrow((Lanes)i);
+					}else if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL){
+						chartLane.attachToModelLane(modelLane, currentCheckedArrow, (Lanes)i);
+					}
 
+					//Compute freeze validation
+					if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
+					{
+						currentCheckedArrow.computeFreezePosition(currentTime);
+						
+						if(currentCheckedArrow.checkTimeEndFreeze(currentTime))
+						{
+							chartLane.validArrow((Lanes)i);
+						}else if(currentCheckedArrow.checkMissFreeze(currentTime))
+						{
+							chartLane.missArrow((Lanes)i);
+						}
+					}
+				}
+
+				//Check missed arrow this turn
+				if((currentCheckedArrow.state == ArrowState.NONE || currentCheckedArrow.state == ArrowState.WAITINGLINKED) 
+				   && currentCheckedArrow.checkAndProcessMissArrow(currentTime))
+				{
+					chartLane.missArrow((Lanes)i);
+				}
+				  
+			}
+
+			//Mines
+			currentCheckedArrow = mineLane.getNextLaneArrows((Lanes)i);
+			if(currentCheckedArrow != null && currentCheckedArrow.state == ArrowState.NONE 
+			   && currentCheckedArrow.checkAndProcessMissMine(currentTime))
+			{
+				mineLane.missArrow((Lanes)i);
+			}
+		}
 	}
 	#endregion
 
 	#region Inputs
-
+	//Validation des notes, maintien des rolls, activations des freezes
+	//Pas de validation directe : En attente de la routine de chart manager
 	public void hitLane(Lanes lane)
 	{
+		currentCheckedArrow = chartLane.getNextLaneArrows(lane);
+		if (currentCheckedArrow != null) {
+
+			currentCheckedArrow.checkAndProcessValidateArrow (currentTime);
+
+			if(currentCheckedArrow.state == ArrowState.VALIDATED) {
+				if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
+				{
+					//Compute Freeze
+					currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
+					if(currentCheckedArrow.type == ArrowType.ROLL)
+					{
+						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(true);
+					}else{
+						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(false);
+					}
+				}
+			}
+		}
 
 	}
 
+	//Maintien des frrezes, explosion des mines
 	public void holdLane(Lanes lane)
 	{
+		currentCheckedArrow = chartLane.getNextLaneArrows(lane);
+		if (currentCheckedArrow != null)
+		{
+			if(currentCheckedArrow.state == ArrowState.VALIDATED) {
+				if(currentCheckedArrow.type == ArrowType.FREEZE)
+				{
+					currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
+				}
+			}
+		}
 
+		currentCheckedArrow = mineLane.getNextLaneArrows(lane);
+		if(currentCheckedArrow != null && currentCheckedArrow.state == ArrowState.NONE 
+		   && currentCheckedArrow.checkAndProcessValidateMine(currentTime))
+		{
+			mineLane.validArrow(lane);
+		}
 	}
 
+	//Desactivation des freezes
 	public void releaseLane(Lanes lane)
 	{
-
+		currentCheckedArrow = chartLane.getNextLaneArrows(lane);
+		if (currentCheckedArrow != null)
+		{
+			if(currentCheckedArrow.state == ArrowState.VALIDATED) {
+				if(currentCheckedArrow.type == ArrowType.FREEZE)
+				{
+					currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(true);
+				}
+			}
+		}
 	}
 
 	#endregion
@@ -379,6 +481,7 @@ public class ChartManager : MonoBehaviour {
 						currentArrow = arrowObj.GetComponent<Arrow>();
 						if(finalBeatLine[i] != 'M') currentArrow.coloredObject.material.color = painter.getMesureColor(mesure.Count, beatLine+1);
 						currentArrow.scheduledTime = currentTime;
+						currentArrow.currentLane = (Lanes)i;
 
 						Arrow savedArrow = currentArrow;
 						beatLineArrows.Add(savedArrow);
@@ -398,7 +501,7 @@ public class ChartManager : MonoBehaviour {
 						currentArrow = chartLane.getLaneArrows((Lanes)i).Last();
 						FreezeController controller = currentArrow.getFreezeController(currentArrow.type);
 						controller.gameObject.SetActive(true);
-						controller.init(currentYPosition - Mathf.Abs(currentArrow.transform.position.y), currentTime, currentArrow.coloredObject.material.color);
+						controller.init(currentArrow, currentYPosition - Mathf.Abs(currentArrow.transform.position.y), currentTime, currentArrow.coloredObject.material.color);
 						break;
 					case 'M':
 						currentArrow.type = ArrowType.MINE;
