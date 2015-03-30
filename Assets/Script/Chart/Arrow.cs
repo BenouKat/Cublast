@@ -23,29 +23,21 @@ public class Arrow : MonoBehaviour {
 
 	public Precision checkAndProcessValidateArrow(double currentTime)
 	{
+		if (linkedArrows.Count > 0) Debug.Log ("blum 1 !");
 		if (state != ArrowState.NONE) return Precision.NONE;
 		if (currentTime + GameManager.instance.PrecisionValues [Precision.WAYOFF] < scheduledTime)
 			return Precision.NONE;
-
+		if (linkedArrows.Count > 0) Debug.Log ("blum 2 !");
 		state = ArrowState.WAITINGLINKED;
 		dateValidation = currentTime;
 		if (linkedArrows.Count != 0 && linkedArrows.Exists(c => c.state != ArrowState.WAITINGLINKED)) {
 			return Precision.NONE;
 		}
+		if (linkedArrows.Count > 0) Debug.Log ("blum 3 !");
 		foreach (Arrow linkArrow in linkedArrows) { linkArrow.state = ArrowState.VALIDATED; }
 		state = ArrowState.VALIDATED;
-		double maxDateValid = dateValidation;
-		Arrow selected = this;
-		if (linkedArrows.Count != 0) {
-
-			foreach (Arrow linkArrow in linkedArrows) {
-				if (linkArrow.dateValidation > maxDateValid) {
-					selected = linkArrow;
-				}
-			}
-		}
-		Debug.Log (Utils.getPrec ((double)Mathf.Abs ((float)(selected.scheduledTime - selected.dateValidation))).ToString ());
-		return Utils.getPrec((double)Mathf.Abs((float)(selected.scheduledTime - selected.dateValidation)));
+		Debug.Log (Utils.getPrec ((double)Mathf.Abs ((float)(scheduledTime - dateValidation))).ToString ());
+		return Utils.getPrec((double)Mathf.Abs((float)(scheduledTime - dateValidation)));
 	}
 
 	public bool checkAndProcessValidateMine(double currentTime)

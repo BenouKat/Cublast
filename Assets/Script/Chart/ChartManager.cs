@@ -217,26 +217,37 @@ public class ChartManager : MonoBehaviour {
 			//Debug.Log("current Checked Arrow on lane " + ((Lanes)i).ToString() + " : " + currentCheckedArrow.scheduledTime + " // " + currentTime);
 			if(currentCheckedArrow != null)
 			{
+				Debug.Log("check : " + currentCheckedArrow.currentLane + " // " + currentCheckedArrow.type + " // " + currentCheckedArrow.state); 
 				//Validated arrow for previous inputs : Confirmation
 				if(currentCheckedArrow.state == ArrowState.VALIDATED)
 				{
+					Debug.Log("validatay !");
 					if(currentCheckedArrow.type == ArrowType.NORMAL) {
 						chartLane.validArrow((Lanes)i);
-					}else if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL){
+					}else if(!currentCheckedArrow.attached && (currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)){
+						Debug.Log("attachay !");
 						chartLane.attachToModelLane(modelLane, currentCheckedArrow, (Lanes)i);
-					}
+						currentCheckedArrow.computeFreezePosition(currentTime);
 
-					//Compute freeze validation
-					if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
+						//Enable freeze
+						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
+						if(currentCheckedArrow.type == ArrowType.ROLL)
+						{
+							currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(true);
+						}
+	
+					}else if (currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
 					{
 						currentCheckedArrow.computeFreezePosition(currentTime);
 						
 						if(currentCheckedArrow.checkTimeEndFreeze(currentTime))
 						{
 							chartLane.validArrow((Lanes)i);
+							Debug.Log("C'est validay");
 						}else if(currentCheckedArrow.checkMissFreeze(currentTime))
 						{
 							chartLane.missArrow((Lanes)i);
+							Debug.Log("C'est ratay");
 						}
 					}
 				}
@@ -246,6 +257,7 @@ public class ChartManager : MonoBehaviour {
 				   && currentCheckedArrow.checkAndProcessMissArrow(currentTime))
 				{
 					chartLane.missArrow((Lanes)i);
+					Debug.Log("C'est completement ratay");
 				}
 				  
 			}
@@ -274,12 +286,9 @@ public class ChartManager : MonoBehaviour {
 			if(currentCheckedArrow.state == ArrowState.VALIDATED) {
 				if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
 				{
-					//Compute Freeze
 					currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
-					if(currentCheckedArrow.type == ArrowType.ROLL)
+					if(currentCheckedArrow.type == ArrowType.FREEZE)
 					{
-						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(true);
-					}else{
 						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(false);
 					}
 				}
