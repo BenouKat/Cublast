@@ -23,20 +23,19 @@ public class Arrow : MonoBehaviour {
 
 	public Precision checkAndProcessValidateArrow(double currentTime)
 	{
-		if (linkedArrows.Count > 0) Debug.Log ("blum 1 !");
 		if (state != ArrowState.NONE) return Precision.NONE;
 		if (currentTime + GameManager.instance.PrecisionValues [Precision.WAYOFF] < scheduledTime)
 			return Precision.NONE;
-		if (linkedArrows.Count > 0) Debug.Log ("blum 2 !");
 		state = ArrowState.WAITINGLINKED;
 		dateValidation = currentTime;
+		Debug.Log ("waiting at " + dateValidation);
 		if (linkedArrows.Count != 0 && linkedArrows.Exists(c => c.state != ArrowState.WAITINGLINKED)) {
 			return Precision.NONE;
 		}
-		if (linkedArrows.Count > 0) Debug.Log ("blum 3 !");
 		foreach (Arrow linkArrow in linkedArrows) { linkArrow.state = ArrowState.VALIDATED; }
 		state = ArrowState.VALIDATED;
-		Debug.Log (Utils.getPrec ((double)Mathf.Abs ((float)(scheduledTime - dateValidation))).ToString ());
+		Debug.Log ("validate ! at " + dateValidation);
+		Debug.Log (Utils.getPrec ((double)Mathf.Abs ((float)(scheduledTime - dateValidation))).ToString () + " // " + Mathf.Abs ((float)(scheduledTime - dateValidation)).ToString("0.0000"));
 		return Utils.getPrec((double)Mathf.Abs((float)(scheduledTime - dateValidation)));
 	}
 

@@ -72,7 +72,7 @@ public class ChartManager : MonoBehaviour {
 
 	//Time values
 	double lastScrollingPosition = 0; //Last scrolling position since last BPM change
-	double currentTime = 0; //Total time, stops included
+	public double currentTime = 0; //Total time, stops included
 	double currentSyncTime = 0; //Total time since last BPM, stops excluded
 
 
@@ -217,15 +217,13 @@ public class ChartManager : MonoBehaviour {
 			//Debug.Log("current Checked Arrow on lane " + ((Lanes)i).ToString() + " : " + currentCheckedArrow.scheduledTime + " // " + currentTime);
 			if(currentCheckedArrow != null)
 			{
-				Debug.Log("check : " + currentCheckedArrow.currentLane + " // " + currentCheckedArrow.type + " // " + currentCheckedArrow.state); 
+				//Debug.Log("check : " + currentCheckedArrow.currentLane + " // " + currentCheckedArrow.type + " // " + currentCheckedArrow.state); 
 				//Validated arrow for previous inputs : Confirmation
 				if(currentCheckedArrow.state == ArrowState.VALIDATED)
 				{
-					Debug.Log("validatay !");
 					if(currentCheckedArrow.type == ArrowType.NORMAL) {
 						chartLane.validArrow((Lanes)i);
 					}else if(!currentCheckedArrow.attached && (currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)){
-						Debug.Log("attachay !");
 						chartLane.attachToModelLane(modelLane, currentCheckedArrow, (Lanes)i);
 						currentCheckedArrow.computeFreezePosition(currentTime);
 
@@ -243,11 +241,9 @@ public class ChartManager : MonoBehaviour {
 						if(currentCheckedArrow.checkTimeEndFreeze(currentTime))
 						{
 							chartLane.validArrow((Lanes)i);
-							Debug.Log("C'est validay");
 						}else if(currentCheckedArrow.checkMissFreeze(currentTime))
 						{
 							chartLane.missArrow((Lanes)i);
-							Debug.Log("C'est ratay");
 						}
 					}
 				}
@@ -257,7 +253,6 @@ public class ChartManager : MonoBehaviour {
 				   && currentCheckedArrow.checkAndProcessMissArrow(currentTime))
 				{
 					chartLane.missArrow((Lanes)i);
-					Debug.Log("C'est completement ratay");
 				}
 				  
 			}

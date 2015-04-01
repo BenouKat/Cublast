@@ -1,8 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\ECV\Assets\OVR\Scripts\Util\OVRVisionGuide.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\Arrow.cs">
     <Files>
-      <File FileName="..\..\ECV\Assets\OVR\Scripts\Util\OVRVisionGuide.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="106" Column="24" />
+      <File FileName="Assets\Script\Chart\Arrow.cs" Line="26" Column="55" />
+      <File FileName="Assets\Script\Chart\LaneManager.cs" Line="117" Column="2" />
+      <File FileName="Assets\Script\Chart\FreezeController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\System\EnumManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\InputController.cs" Line="12" Column="66" />
+      <File FileName="Assets\Script\Managers\GameManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\System\Profile.cs" Line="13" Column="2" />
+      <File FileName="Assets\Script\Utils\Utils.cs" Line="22" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
