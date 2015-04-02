@@ -59,7 +59,7 @@ public class ChartManager : MonoBehaviour {
 	public float systemSpeedmod = 1f; //Resize the chart to ITG Like base spacement
 
 	//Private global variable
-	List<double> musicalBumps;
+	double[] musicalBumps;
 	Vector2 rangeArrow = new Vector2(0f, 0f);
 	float cameraForward;
 
@@ -270,6 +270,11 @@ public class ChartManager : MonoBehaviour {
 		//Go to trash old tag as missed but not officialy missed yet
 		chartLane.autoMissArrowFromTrash ();
 	}
+
+	public void bumpArrows()
+	{
+
+	}
 	#endregion
 
 	#region Inputs
@@ -389,7 +394,7 @@ public class ChartManager : MonoBehaviour {
 		double currentSTOPTime = 0;
 		double currentTime = 0;
 
-		musicalBumps = new List<double>();
+		List<double> tempMusicalBumps = new List<double>();
 
 		foreach (List<string> mesure in s.stepchart) {
 			for(int beatLine=0; beatLine<mesure.Count; beatLine++)
@@ -428,7 +433,7 @@ public class ChartManager : MonoBehaviour {
 				bufferBPMTime += (mesureIndex - prevMesureIndex)/currentBPS;
 				currentTime = bufferBPMTime + savedBPMTime + currentSTOPTime;
 
-				if((beatLine)%(mesure.Count/4) == 0) musicalBumps.Add(currentTime);
+				if((beatLine)%(mesure.Count/4) == 0) tempMusicalBumps.Add(currentTime);
 
 
 				//Unmanaged beat line, parsing to options
@@ -573,6 +578,7 @@ public class ChartManager : MonoBehaviour {
 			}
 		}
 
+		musicalBumps = tempMusicalBumps.ToArray ();
 		rangeArrow = new Vector2(Mathf.Min((float)chartLane.getMinArrowTime(), (float)mineLane.getMinArrowTime()), Mathf.Max((float)chartLane.getMaxArrowTime(), (float)mineLane.getMaxArrowTime()));
 	}
 	#endregion

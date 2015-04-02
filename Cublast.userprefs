@@ -1,11 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\ChartManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\FreezeController.cs">
     <Files>
-      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="247" Column="17" />
-      <File FileName="Assets\Script\Chart\Arrow.cs" Line="85" Column="2" />
-      <File FileName="Assets\Script\Chart\LaneManager.cs" Line="185" Column="5" />
-      <File FileName="Assets\Script\Chart\FreezeController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="276" Column="3" />
+      <File FileName="Assets\Script\Chart\Arrow.cs" Line="69" Column="3" />
+      <File FileName="Assets\Script\Chart\LaneManager.cs" Line="148" Column="60" />
+      <File FileName="Assets\Script\Chart\FreezeController.cs" Line="83" Column="86" />
       <File FileName="Assets\Script\System\EnumManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Chart\InputController.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Managers\GameManager.cs" Line="1" Column="1" />

@@ -9,12 +9,8 @@ public class FreezeController : MonoBehaviour {
 	public Transform rootTransform;
 	public GameObject baseFreeze;
 	Material baseFreezeMaterial;
-	Color baseEmissionColor;
-	Color currentEmissionColor;
-	float currentEmissionPower = 1f;
-	public float speedEmissionDecrease = 0.5f;
-
 	public Transform clearZone;
+	float clearZoneBaseX = 0f;
 	public MeshRenderer clearZoneRenderer;
 	Material clearZoneMaterial;
 
@@ -31,21 +27,17 @@ public class FreezeController : MonoBehaviour {
 	[HideInInspector] public double timeLastHit;
 	[HideInInspector] public double timeEndScheduled;
 
-	bool letInUpdate;
+	EmissionTweener emissionTweener;
 
 	void Awake()
 	{
+		emissionTweener = GetComponent<EmissionTweener> ();
 		baseFreezeMaterial = baseFreeze.GetComponent<Renderer>().material;
-		baseEmissionColor = baseFreezeMaterial.GetColor("_EmissionColor");
+		emissionTweener.concernedMaterial = baseFreezeMaterial;
+		emissionTweener.speedEmissionDecrease = (float)GameManager.instance.timeBeforeFreezeMiss;
 		clearZoneRenderer.enabled = false;
+		clearZoneBaseX = clearZone.localScale.x;
 		clearZoneMaterial = clearZoneRenderer.material;
-	}
-
-	void Update()
-	{
-		if (letInUpdate) {
-			let ();
-		}
 	}
 
 	public void init(Arrow parentArrow, float distanceFreeze, double timeEndScheduled, Color colorZone)
@@ -56,6 +48,7 @@ public class FreezeController : MonoBehaviour {
 		//Augmenter le rootFreeze
 		rootTransform.localScale = Vector3.right + Vector3.forward + (Vector3.up*distanceFreeze);
 		//Changer la couleur de la freeze zone
+		colorZone.a = clearZoneMaterial.color.a;
 		clearZoneMaterial.color = colorZone;
 		//Instantier les warning;
 		if(warningObject != null)
@@ -76,15 +69,18 @@ public class FreezeController : MonoBehaviour {
 		}
 	}
 
+	private float percentLeft = 0f;
 	public void animFreeze(double currentTime)
 	{
+		percentLeft = (float)((currentTime - parentArrow.scheduledTime) / (timeEndScheduled - parentArrow.scheduledTime));
 		//Scale
 		rootTransform.localScale = Vector3.right + Vector3.forward 
-			+ (Vector3.up*distanceFreeze*(float)((1 - ((currentTime - parentArrow.scheduledTime) / (timeEndScheduled - parentArrow.scheduledTime)))));
+				+ (Vector3.up*distanceFreeze*(1 - percentLeft));
 
+		clearZone.localScale = (Vector3.right * (clearZoneBaseX * (1 - percentLeft))) + (Vector3.up * clearZone.localScale.y) + (Vector3.forward * clearZone.localScale.z);
 		//Objects
 		if (warningObject != null) {
-			warningObjectRoot.transform.localPosition = Vector3.up * distanceFreeze * (float)(((currentTime - parentArrow.scheduledTime) / (timeEndScheduled - parentArrow.scheduledTime)));
+			warningObjectRoot.transform.localPosition = Vector3.up * distanceFreeze * percentLeft;
 			if (indexWarningObject < warningObjectsPositionArray.Length && 
 			    warningObjectRoot.transform.localPosition.y >= -warningObjectsPositionArray [indexWarningObject].localPosition.y) 
 			{
@@ -97,25 +93,19 @@ public class FreezeController : MonoBehaviour {
 
 	public void hit(double currentTime)
 	{
-		currentEmissionPower = 1f;
-		refreshEmission();
+		emissionTweener.pulse ();
 		timeLastHit = currentTime;
-	}
-
-	public void enableLetInUpdate(bool active)
-	{
-		letInUpdate = active;
+		clearZoneRenderer.enabled = true;
 	}
 
 	public void let()
 	{
-		currentEmissionPower -= speedEmissionDecrease * Time.deltaTime;
-		refreshEmission();
+		emissionTweener.let ();
 	}
 
-	public void refreshEmission()
+	public void enableLetInUpdate(bool active)
 	{
-		currentEmissionColor = currentEmissionPower*baseEmissionColor;
-		baseFreezeMaterial.SetColor("_EmissionColor", currentEmissionColor);
+		emissionTweener.enableLetInUpdate (active);
 	}
+
 }
