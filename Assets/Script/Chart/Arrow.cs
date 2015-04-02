@@ -9,7 +9,10 @@ public class Arrow : MonoBehaviour {
 	public List<Arrow> linkedArrows;
 	public ArrowType type = ArrowType.NORMAL;
 	public Lanes currentLane;
-	public bool attached;
+	public bool attached; //Attached for freeze
+	//This tag indicate if an arrow is already "too late" (decent +)
+	//If it's the case and if the next arrow is valid, 
+	public bool tagAsMissed;
 
 	//Time related
 	public double scheduledTime;
@@ -28,13 +31,11 @@ public class Arrow : MonoBehaviour {
 			return Precision.NONE;
 		state = ArrowState.WAITINGLINKED;
 		dateValidation = currentTime;
-		Debug.Log ("waiting at " + dateValidation);
 		if (linkedArrows.Count != 0 && linkedArrows.Exists(c => c.state != ArrowState.WAITINGLINKED)) {
 			return Precision.NONE;
 		}
 		foreach (Arrow linkArrow in linkedArrows) { linkArrow.state = ArrowState.VALIDATED; }
 		state = ArrowState.VALIDATED;
-		Debug.Log ("validate ! at " + dateValidation);
 		Debug.Log (Utils.getPrec ((double)Mathf.Abs ((float)(scheduledTime - dateValidation))).ToString () + " // " + Mathf.Abs ((float)(scheduledTime - dateValidation)).ToString("0.0000"));
 		return Utils.getPrec((double)Mathf.Abs((float)(scheduledTime - dateValidation)));
 	}
@@ -50,7 +51,19 @@ public class Arrow : MonoBehaviour {
 		return false;
 	}
 
+	public Precision getArrowPrec(double currentTime)
+	{
+		return Utils.getPrec((double)Mathf.Abs((float)(scheduledTime - currentTime)));
+	}
 
+	public void tryTagAsMissed(double currentTime)
+	{
+		if (state != ArrowState.VALIDATED && !tagAsMissed 
+		    && currentTime > scheduledTime &&
+		    getArrowPrec (currentTime) > Precision.GREAT) {
+			tagAsMissed = true;
+		}
+	}
 
 	public bool checkMissFreeze(double currentTime)
 	{
@@ -67,7 +80,6 @@ public class Arrow : MonoBehaviour {
 		if (state == ArrowState.VALIDATED) {
 			getFreezeController (type).animFreeze (currentTime);
 		}
-
 	}
 
 	public bool checkAndProcessMissArrow(double currentTime)

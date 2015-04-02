@@ -22,6 +22,7 @@ public class LaneManager : MonoBehaviour {
 	List<Arrow> rightArrows = new List<Arrow>();
 	List<Arrow> upArrows = new List<Arrow>();
 	List<Arrow> downArrows = new List<Arrow>();
+	List<Arrow> trashOfArrowMissed = new List<Arrow> ();
 
 	Arrow[] leftArrowsArray;
 	Arrow[] rightArrowsArray;
@@ -159,14 +160,70 @@ public class LaneManager : MonoBehaviour {
 		pushNextArrow (lane);
 	}
 
+	private List<Arrow> removeFromTrash = new List<Arrow>();
+	public void autoMissArrowFromTrash()
+	{
+		if (trashOfArrowMissed.Count > 0) {
+			removeFromTrash.Clear();
+			foreach(Arrow trashedArrow in trashOfArrowMissed)
+			{
+				if(trashedArrow.checkAndProcessMissArrow(ChartManager.instance.currentTime))
+				{
+					missTrashedArrow(trashedArrow);
+
+					if(trashedArrow.linkedArrows.Count != 0) {
+						foreach(Arrow arrowLinked in trashedArrow.linkedArrows)
+						{
+							missTrashedArrow(arrowLinked, false);
+						}
+					}
+				}
+			}
+			if(removeFromTrash.Count > 0)
+			{
+				foreach(Arrow arrowToRemove in removeFromTrash) { trashOfArrowMissed.Remove(arrowToRemove); }
+			}
+		}
+	}
+
+	public void missTrashedArrow(Arrow arrow, bool checkLinked = true)
+	{
+		if (arrow.attached)
+			distachFromModelLane (ChartManager.instance.modelLane, arrow.currentLane);
+
+		removeFromTrash.Add (arrow);
+	}
+
 	#region ArrayAndSinglecontrollers
 	private Arrow[] currentArray;
 	private int newIndex;
-	public void pushNextArrow(Lanes lane)
+	public void pushNextArrow(Lanes lane, bool untilNextValid = false)
 	{
-		indexes [(int)lane] += 1;
-		newIndex = indexes [(int)lane];
 		currentArray = getLaneArrowsArray (lane);
+
+		if (untilNextValid) {
+			trashOfArrowMissed.Add(currentArray[indexes[(int)lane]]);
+			for(int i=indexes[(int)lane]+1; i<=currentArray.Length; i++)
+			{
+				newIndex = i;
+				if(i == currentArray.Length)
+				{
+					newIndex = currentArray.Length;
+				}else{
+					currentArray[i].tryTagAsMissed(ChartManager.instance.currentTime);
+					if(currentArray[i].tagAsMissed){
+						trashOfArrowMissed.Add(currentArray[i]);
+					}else{
+						break;
+					}
+				}
+			}
+			indexes[(int)lane] = newIndex;
+		} else {
+			indexes [(int)lane] += 1;
+			newIndex = indexes [(int)lane];
+		}
+		
 		if (newIndex < currentArray.Length) {
 			setNextLaneArrows (lane, currentArray [newIndex]);
 		} else {
@@ -186,6 +243,21 @@ public class LaneManager : MonoBehaviour {
 			return nextUp;
 		case Lanes.RIGHT:
 			return nextRight;				
+		}
+		return null;
+	}
+
+	public Arrow getNextLaneValidArrows(Lanes lane)
+	{
+		currentArray = getLaneArrowsArray (lane);
+		for(int i=indexes[(int)lane]; i<=currentArray.Length; i++)
+		{
+			if(i == currentArray.Length)
+			{
+				return null;
+			}else if(!currentArray[i].tagAsMissed){
+				return currentArray[i];
+			}
 		}
 		return null;
 	}

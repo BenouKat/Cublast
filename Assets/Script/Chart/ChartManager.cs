@@ -221,6 +221,7 @@ public class ChartManager : MonoBehaviour {
 				//Validated arrow for previous inputs : Confirmation
 				if(currentCheckedArrow.state == ArrowState.VALIDATED)
 				{
+					//Normal is validated, freeze are staying until end of freeze
 					if(currentCheckedArrow.type == ArrowType.NORMAL) {
 						chartLane.validArrow((Lanes)i);
 					}else if(!currentCheckedArrow.attached && (currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)){
@@ -265,6 +266,9 @@ public class ChartManager : MonoBehaviour {
 				mineLane.missArrow((Lanes)i);
 			}
 		}
+
+		//Go to trash old tag as missed but not officialy missed yet
+		chartLane.autoMissArrowFromTrash ();
 	}
 	#endregion
 
@@ -273,11 +277,31 @@ public class ChartManager : MonoBehaviour {
 	//Pas de validation directe : En attente de la routine de chart manager
 	public void hitLane(Lanes lane)
 	{
+		//Check the next arrow
 		currentCheckedArrow = chartLane.getNextLaneArrows(lane);
 		if (currentCheckedArrow != null) {
 
+			//Tag the next arrow as missed : If the precision is more than decent
+			currentCheckedArrow.tryTagAsMissed(currentTime);
+
+			//If it's the case, the arrow is missed, so we check the next one
+			if(currentCheckedArrow.tagAsMissed)
+			{
+				//If the next one is ok to be valid, we valid it instead of the missed one
+				currentCheckedArrow = chartLane.getNextLaneValidArrows(lane);
+				if(currentCheckedArrow != null && 
+				   currentCheckedArrow.getArrowPrec(currentTime) <= Precision.GREAT)
+				{
+					chartLane.pushNextArrow(lane, true);
+				}
+
+				currentCheckedArrow = chartLane.getNextLaneArrows(lane);
+			}
+
+			//Validation process of an arrow
 			currentCheckedArrow.checkAndProcessValidateArrow (currentTime);
 
+			//Start the freeze computing
 			if(currentCheckedArrow.state == ArrowState.VALIDATED) {
 				if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
 				{
@@ -488,7 +512,7 @@ public class ChartManager : MonoBehaviour {
 						currentArrow.currentLane = (Lanes)i;
 
 						Arrow savedArrow = currentArrow;
-						beatLineArrows.Add(savedArrow);
+						if(finalBeatLine[i] != 'M') beatLineArrows.Add(savedArrow);
 						
 						currentLaneManager.pushArrow(currentArrow, (Lanes)i);
 					}
