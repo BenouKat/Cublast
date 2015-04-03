@@ -77,7 +77,7 @@ public class FreezeController : MonoBehaviour {
 		rootTransform.localScale = Vector3.right + Vector3.forward 
 				+ (Vector3.up*distanceFreeze*(1 - percentLeft));
 
-		clearZone.localScale = (Vector3.right * (clearZoneBaseX * (1 - percentLeft))) + (Vector3.up * clearZone.localScale.y) + (Vector3.forward * clearZone.localScale.z);
+		clearZone.localScale = (Vector3.right * (clearZoneBaseX * (1 - Mathf.Clamp(percentLeft, 0f, 1f)))) + (Vector3.up * clearZone.localScale.y) + (Vector3.forward * clearZone.localScale.z);
 		//Objects
 		if (warningObject != null) {
 			warningObjectRoot.transform.localPosition = Vector3.up * distanceFreeze * percentLeft;

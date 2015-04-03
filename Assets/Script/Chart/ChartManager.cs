@@ -7,6 +7,7 @@ using System.Linq;
 public class ArrowModel {
 	public GameObject model;
 	public bool canBeTurned;
+	public Material associatedMaterial;
 }
 
 public class TimeBuffer
@@ -42,6 +43,7 @@ public class ChartManager : MonoBehaviour {
 			instance = this;
 		}
 		painter = GetComponent<ArrowPainter>();
+		emissionTweener = GetComponent<EmissionTweener> ();
 	}
 	
 	//Models
@@ -49,6 +51,7 @@ public class ChartManager : MonoBehaviour {
 	public LaneManager chartLane;
 	public LaneManager mineLane;
 	ArrowPainter painter;
+	EmissionTweener emissionTweener;
 
 	public List<ArrowModel> arrowModels;
 	public List<ArrowModel> arrowColored;
@@ -103,6 +106,9 @@ public class ChartManager : MonoBehaviour {
 
 		createChart(SongOptionManager.instance.currentSongPlayed);
 
+		emissionTweener.concernedMaterial = modelSelected.associatedMaterial;
+		emissionTweener.init ();
+
 		//Data initialization
 		actualBPM = SongOptionManager.instance.currentSongPlayed.bpms.First ().Value;
 		actualSTOPBuffer = null;
@@ -122,6 +128,7 @@ public class ChartManager : MonoBehaviour {
 		checkLanesStatus ();
 		computeTime ();
 		moveChart ();
+		bumpArrows ();
 	}
 
 	#region updates methods
@@ -250,7 +257,7 @@ public class ChartManager : MonoBehaviour {
 				}
 
 				//Check missed arrow this turn
-				if((currentCheckedArrow.state == ArrowState.NONE || currentCheckedArrow.state == ArrowState.WAITINGLINKED) 
+				if(currentCheckedArrow.state == ArrowState.MISSED || (currentCheckedArrow.state == ArrowState.NONE || currentCheckedArrow.state == ArrowState.WAITINGLINKED) 
 				   && currentCheckedArrow.checkAndProcessMissArrow(currentTime))
 				{
 					chartLane.missArrow((Lanes)i);
@@ -271,9 +278,13 @@ public class ChartManager : MonoBehaviour {
 		chartLane.autoMissArrowFromTrash ();
 	}
 
+	public int indexBump = 0;
 	public void bumpArrows()
 	{
-
+		if (indexBump < musicalBumps.Length && musicalBumps [indexBump] <= currentTime) {
+			indexBump++;
+			emissionTweener.pulse();
+		}
 	}
 	#endregion
 

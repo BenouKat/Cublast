@@ -17,6 +17,13 @@ public class LaneManager : MonoBehaviour {
 	public Transform right;
 	public Transform up;
 	public Transform down;
+
+	public GameObject particleControllerModel;
+
+	ParticleEffectController particleControllerLeft;
+	ParticleEffectController particleControllerRight;
+	ParticleEffectController particleControllerUp;
+	ParticleEffectController particleControllerDown;
 	
 	List<Arrow> leftArrows = new List<Arrow>();
 	List<Arrow> rightArrows = new List<Arrow>();
@@ -36,13 +43,18 @@ public class LaneManager : MonoBehaviour {
 
 	int[] indexes = new int[4] { 0,0,0,0 };
 
+	//Set the particles controller
+	public bool setParticleControllersAtStart = false;
+
 
 	//Once locked, arrow list will turn to arrowArray for performance, which increase the cost of some functions.
 	public bool locked;
 
 	// Use this for initialization
 	void Start () {
-	
+		if (setParticleControllersAtStart) {
+			setParticleSystemController();
+		}
 	}
 	
 	// Update is called once per frame
@@ -62,6 +74,42 @@ public class LaneManager : MonoBehaviour {
 			return up;
 		case Lanes.RIGHT:
 			return right;				
+		}
+		return null;
+	}
+
+	public ParticleEffectController getParticleEffect(Lanes lane)
+	{
+		switch(lane)
+		{
+		case Lanes.LEFT:
+			return particleControllerLeft;
+		case Lanes.DOWN:
+			return particleControllerDown;
+		case Lanes.UP:
+			return particleControllerUp;
+		case Lanes.RIGHT:
+			return particleControllerRight;				
+		}
+		return null;
+	}
+
+	public ParticleEffectController setParticleEffect(Lanes lane, ParticleEffectController pec)
+	{
+		switch(lane)
+		{
+		case Lanes.LEFT:
+			particleControllerLeft = pec;
+			break;
+		case Lanes.DOWN:
+			particleControllerDown = pec;
+			break;
+		case Lanes.UP:
+			particleControllerUp = pec;
+			break;
+		case Lanes.RIGHT:
+			particleControllerRight = pec;		
+			break;
 		}
 		return null;
 	}
@@ -96,6 +144,18 @@ public class LaneManager : MonoBehaviour {
 			return rightArrowsArray;				
 		}
 		return null;
+	}
+
+	public void setParticleSystemController()
+	{
+		for(int i=0;i<4;i++)
+		{
+			GameObject pecInst = Instantiate(particleControllerModel, 
+			                                 getLane((Lanes)i).position, 
+			                                 particleControllerModel.transform.rotation) as GameObject;
+			pecInst.transform.SetParent(getLane((Lanes)i));
+			setParticleEffect((Lanes)i, pecInst.GetComponent<ParticleEffectController>());
+		}
 	}
 
 	public void lockLane()
@@ -192,6 +252,11 @@ public class LaneManager : MonoBehaviour {
 			distachFromModelLane (ChartManager.instance.modelLane, arrow.currentLane);
 
 		removeFromTrash.Add (arrow);
+	}
+
+	public void playParticleEffect(Precision precision, Lanes lane)
+	{
+		getParticleEffect (lane).play (precision);
 	}
 
 	#region ArrayAndSinglecontrollers

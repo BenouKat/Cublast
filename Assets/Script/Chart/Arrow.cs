@@ -16,6 +16,7 @@ public class Arrow : MonoBehaviour {
 
 	//Time related
 	public double scheduledTime;
+	public Precision precisionValid = Precision.NONE;
 
 	//Object related
 	public MeshRenderer coloredObject;
@@ -31,13 +32,18 @@ public class Arrow : MonoBehaviour {
 			return Precision.NONE;
 		state = ArrowState.WAITINGLINKED;
 		dateValidation = currentTime;
-		if (linkedArrows.Count != 0 && linkedArrows.Exists(c => c.state != ArrowState.WAITINGLINKED)) {
+		if (linkedArrows.Count != 0 && linkedArrows.Exists (c => c.state != ArrowState.WAITINGLINKED)) {
 			return Precision.NONE;
 		}
-		foreach (Arrow linkArrow in linkedArrows) { linkArrow.state = ArrowState.VALIDATED; }
-		state = ArrowState.VALIDATED;
-		Debug.Log (Utils.getPrec ((double)Mathf.Abs ((float)(scheduledTime - dateValidation))).ToString () + " // " + Mathf.Abs ((float)(scheduledTime - dateValidation)).ToString("0.0000"));
-		return Utils.getPrec((double)Mathf.Abs((float)(scheduledTime - dateValidation)));
+
+		precisionValid = Utils.getPrec ((double)Mathf.Abs ((float)(scheduledTime - dateValidation)));
+		state = precisionValid <= Precision.GREAT ? ArrowState.VALIDATED : ArrowState.MISSED;
+		foreach (Arrow linkArrow in linkedArrows) { 
+			linkArrow.state = state; 
+			linkArrow.precisionValid = precisionValid;
+		}
+		//Debug.Log (precisionValid.ToString() + " // " + Mathf.Abs ((float)(scheduledTime - dateValidation)).ToString("0.0000"));
+		return precisionValid;
 	}
 
 	public bool checkAndProcessValidateMine(double currentTime)

@@ -56,7 +56,6 @@
      <Compile Include="Assets\Script\Chart\LaneManager.cs" />
      <Compile Include="Assets\Script\Chart\LifeController.cs" />
      <Compile Include="Assets\Script\Chart\ParticleEffectController.cs" />
-     <Compile Include="Assets\Script\Chart\SkinManager.cs" />
      <Compile Include="Assets\Script\Chart\VisualizerController.cs" />
      <Compile Include="Assets\Script\Managers\GameManager.cs" />
      <Compile Include="Assets\Script\Managers\SongOptionManager.cs" />

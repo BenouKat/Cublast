@@ -6,6 +6,7 @@ public class EmissionTweener : MonoBehaviour {
 	public Color baseEmissionColor;
 	Color currentEmissionColor;
 	public float baseEmissionPower = 1f;
+	public float maxEmissionPower = 1f;
 	float currentEmissionPower = 1f;
 	public float speedEmissionDecrease = 1f;
 	public Material concernedMaterial;
@@ -14,8 +15,8 @@ public class EmissionTweener : MonoBehaviour {
 
 	void Start()
 	{
-		currentEmissionPower = baseEmissionPower;
-		refreshEmission ();
+		if (concernedMaterial != null)
+			init ();
 	}
 
 	void Update()
@@ -25,9 +26,15 @@ public class EmissionTweener : MonoBehaviour {
 		}
 	}
 
+	public void init()
+	{
+		currentEmissionPower = baseEmissionPower;
+		refreshEmission ();
+	}
+
 	public void pulse()
 	{
-		currentEmissionPower = 1f;
+		currentEmissionPower = maxEmissionPower;
 		refreshEmission();
 	}
 	
@@ -38,7 +45,9 @@ public class EmissionTweener : MonoBehaviour {
 	
 	public void let()
 	{
-		currentEmissionPower -= Time.deltaTime / speedEmissionDecrease;
+		if (currentEmissionPower <= 0)
+			return;
+		currentEmissionPower -= (Time.deltaTime / speedEmissionDecrease) * maxEmissionPower;
 		refreshEmission();
 	}
 	
