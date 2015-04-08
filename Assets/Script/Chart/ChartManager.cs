@@ -230,16 +230,21 @@ public class ChartManager : MonoBehaviour {
 				{
 					//Normal is validated, freeze are staying until end of freeze
 					if(currentCheckedArrow.type == ArrowType.NORMAL) {
-						chartLane.validArrow((Lanes)i);
+						chartLane.validArrow((Lanes)i, currentCheckedArrow);
 					}else if(!currentCheckedArrow.attached && (currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)){
 						chartLane.attachToModelLane(modelLane, currentCheckedArrow, (Lanes)i);
 						currentCheckedArrow.computeFreezePosition(currentTime);
+
+						modelLane.getParticleEffect((Lanes)i).play(currentCheckedArrow.precisionValid);
 
 						//Enable freeze
 						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
 						if(currentCheckedArrow.type == ArrowType.ROLL)
 						{
+							modelLane.getParticleEffect((Lanes)i).playRoll();
 							currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(true);
+						}else{
+							modelLane.getParticleEffect((Lanes)i).playFreeze();
 						}
 	
 					}else if (currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
@@ -248,10 +253,10 @@ public class ChartManager : MonoBehaviour {
 						
 						if(currentCheckedArrow.checkTimeEndFreeze(currentTime))
 						{
-							chartLane.validArrow((Lanes)i);
+							chartLane.validArrow((Lanes)i, currentCheckedArrow);
 						}else if(currentCheckedArrow.checkMissFreeze(currentTime))
 						{
-							chartLane.missArrow((Lanes)i);
+							chartLane.missArrow((Lanes)i, true);
 						}
 					}
 				}
@@ -260,7 +265,7 @@ public class ChartManager : MonoBehaviour {
 				if(currentCheckedArrow.state == ArrowState.MISSED || (currentCheckedArrow.state == ArrowState.NONE || currentCheckedArrow.state == ArrowState.WAITINGLINKED) 
 				   && currentCheckedArrow.checkAndProcessMissArrow(currentTime))
 				{
-					chartLane.missArrow((Lanes)i);
+					chartLane.missArrow((Lanes)i, true);
 				}
 				  
 			}
@@ -350,7 +355,7 @@ public class ChartManager : MonoBehaviour {
 		if(currentCheckedArrow != null && currentCheckedArrow.state == ArrowState.NONE 
 		   && currentCheckedArrow.checkAndProcessValidateMine(currentTime))
 		{
-			mineLane.validArrow(lane);
+			mineLane.validArrow(lane, currentCheckedArrow);
 		}
 	}
 

@@ -175,13 +175,28 @@ public class LaneManager : MonoBehaviour {
 		if(downArrowsArray.Length > 0) nextDown = downArrowsArray[0];
 	}
 
-	public void validArrow(Lanes lane, bool checkLinked = true)
+	public void validArrow(Lanes lane, Arrow arrowValid, bool checkLinked = true)
 	{
+		if (arrowValid != null) {
+			if (arrowValid.type == ArrowType.MINE) {
+				ChartManager.instance.modelLane.getParticleEffect (lane).playMine();
+			} else {
+				if(arrowValid.type != ArrowType.NORMAL)
+				{
+					ChartManager.instance.modelLane.getParticleEffect (lane).play (Precision.FANTASTIC);
+					ChartManager.instance.modelLane.getParticleEffect(lane).stopFreezeOrRoll();
+				}else{
+					ChartManager.instance.modelLane.getParticleEffect (lane).play (arrowValid.precisionValid);
+				}
+			}
+		}
+
+
 		getNextLaneArrows (lane).gameObject.SetActive (false);
 		if (checkLinked && getNextLaneArrows (lane).linkedArrows.Count != 0) {
 			foreach(Arrow arrow in getNextLaneArrows (lane).linkedArrows)
 			{
-				validArrow(arrow.currentLane, false);
+				validArrow(arrow.currentLane, arrow, false);
 			}
 		}
 		pushNextArrow (lane);
@@ -205,15 +220,24 @@ public class LaneManager : MonoBehaviour {
 		modelLane.getLaneArrows(lane).Clear();
 	}
 
-	public void missArrow(Lanes lane, bool checkLinked = true)
+	public void missArrow(Lanes lane, bool displayEffect = false, bool checkLinked = true)
 	{
+		if (displayEffect) {
+			if(getNextLaneArrows (lane).type == ArrowType.NORMAL) {
+				ChartManager.instance.modelLane.getParticleEffect (lane).play (getNextLaneArrows (lane).precisionValid);
+			}else if(getNextLaneArrows (lane).type != ArrowType.MINE && getNextLaneArrows (lane).attached)
+			{
+				ChartManager.instance.modelLane.getParticleEffect (lane).stopFreezeOrRoll();
+			}
+		}
+
 		if (getNextLaneArrows (lane).attached)
 			distachFromModelLane (ChartManager.instance.modelLane, lane);
 
 		if (checkLinked && getNextLaneArrows (lane).linkedArrows.Count != 0) {
 			foreach(Arrow arrow in getNextLaneArrows (lane).linkedArrows)
 			{
-				missArrow(arrow.currentLane, false);
+				missArrow(arrow.currentLane, displayEffect, false);
 			}
 		}
 
