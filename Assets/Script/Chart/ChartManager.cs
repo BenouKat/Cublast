@@ -52,6 +52,7 @@ public class ChartManager : MonoBehaviour {
 	public LaneManager mineLane;
 	ArrowPainter painter;
 	EmissionTweener emissionTweener;
+	ScaleTweener[] scaleTweeners;
 
 	public List<ArrowModel> arrowModels;
 	public List<ArrowModel> arrowColored;
@@ -65,6 +66,7 @@ public class ChartManager : MonoBehaviour {
 	double[] musicalBumps;
 	Vector2 rangeArrow = new Vector2(0f, 0f);
 	float cameraForward;
+	int numberOfLanes;
 
 	double actualBPM = 0;
 	TimeBuffer actualSTOPBuffer;
@@ -95,13 +97,18 @@ public class ChartManager : MonoBehaviour {
 		//Time.timeScale = 0.3f;
 		//###################
 
+		//Inital values
+		numberOfLanes = System.Enum.GetValues (typeof(Lanes)).Length;
+
 		//Chart and scene creation
 		ArrowModel modelSelected = arrowModels[SongOptionManager.instance.skinSelected];
-		for (int i=0; i<System.Enum.GetValues(typeof(Lanes)).Length; i++) {
+		scaleTweeners = new ScaleTweener[numberOfLanes];
+		for (int i=0; i<numberOfLanes; i++) {
 			GameObject modelInst = Instantiate(modelSelected.model, Vector3.zero, modelSelected.model.transform.rotation) as GameObject;
 			modelInst.transform.SetParent(modelLane.getLane((Lanes)i));
 			modelInst.transform.localPosition = Vector3.zero;
 			if(modelSelected.canBeTurned) Utils.turnOnLane(modelInst.transform, (Lanes)i);
+			scaleTweeners[i] = modelInst.GetComponent<ScaleTweener>();
 		}
 
 		createChart(SongOptionManager.instance.currentSongPlayed);
@@ -219,7 +226,7 @@ public class ChartManager : MonoBehaviour {
 	//Check for misses or freeze validation
 	public void checkLanesStatus()
 	{
-		for (int i=0; i<4; i++) {
+		for (int i=0; i<numberOfLanes; i++) {
 			currentCheckedArrow = chartLane.getNextLaneArrows((Lanes)i);
 			//Debug.Log("current Checked Arrow on lane " + ((Lanes)i).ToString() + " : " + currentCheckedArrow.scheduledTime + " // " + currentTime);
 			if(currentCheckedArrow != null)
@@ -334,6 +341,8 @@ public class ChartManager : MonoBehaviour {
 				}
 			}
 		}
+
+		scaleTweeners [(int)lane].activeTween ();
 
 	}
 
@@ -511,7 +520,7 @@ public class ChartManager : MonoBehaviour {
 				Arrow currentArrow = null; //Arrow variable;
 				LaneManager currentLaneManager = chartLane;
 				//Read the 4 lane of a beat
-				for(int i=0; i<4; i++)
+				for(int i=0; i<numberOfLanes; i++)
 				{
 					if("124M".Contains(finalBeatLine[i]))
 					{

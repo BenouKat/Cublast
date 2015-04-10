@@ -73,4 +73,10 @@ public class VisualizerController : MonoBehaviour {
 		}
 
 	}
+
+	public float getCurrentSpectrum(int index)
+	{
+		if(index < 0 || index >= leftVisualizer.Length) return 0f;
+		return leftVisualizer [index].localScale.y / heightLimit;
+	}
 }

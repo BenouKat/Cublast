@@ -13,6 +13,8 @@ public enum Lanes
 
 public class LaneManager : MonoBehaviour {
 
+	int numberOfLanes;
+
 	public Transform left;
 	public Transform right;
 	public Transform up;
@@ -41,7 +43,7 @@ public class LaneManager : MonoBehaviour {
 	Arrow nextUp;
 	Arrow nextDown;
 
-	int[] indexes = new int[4] { 0,0,0,0 };
+	int[] indexes;
 
 	//Set the particles controller
 	public bool setParticleControllersAtStart = false;
@@ -49,6 +51,13 @@ public class LaneManager : MonoBehaviour {
 
 	//Once locked, arrow list will turn to arrowArray for performance, which increase the cost of some functions.
 	public bool locked;
+
+	void Awake()
+	{
+		numberOfLanes = System.Enum.GetValues (typeof(Lanes)).Length;
+		indexes = new int[numberOfLanes];
+		for(int i=0; i<numberOfLanes; i++){ indexes[i] = 0; };
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -148,7 +157,7 @@ public class LaneManager : MonoBehaviour {
 
 	public void setParticleSystemController()
 	{
-		for(int i=0;i<4;i++)
+		for(int i=0;i<numberOfLanes;i++)
 		{
 			GameObject pecInst = Instantiate(particleControllerModel, 
 			                                 getLane((Lanes)i).position, 
