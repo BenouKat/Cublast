@@ -9,6 +9,7 @@ public class ParticleEffectController : MonoBehaviour {
 	public ParticleSystem freeze;
 	public ParticleSystem roll;
 	public ParticleSystem mine;
+	public ParticleSystem endFreeze;
 
 	void Awake()
 	{
@@ -45,6 +46,11 @@ public class ParticleEffectController : MonoBehaviour {
 	{
 		freeze.Stop ();
 		roll.Stop ();
+	}
+
+	public void playEndFreeze()
+	{
+
 	}
 
 

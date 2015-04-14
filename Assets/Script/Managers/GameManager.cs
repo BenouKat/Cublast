@@ -46,9 +46,9 @@ public class GameManager : MonoBehaviour{
 	public double timeBeforeFreezeMiss = 0.350;
 	
 	//DATA GAME
-	[HideInInspector] public Dictionary<Precision, double> ScoreWeightValues;
-	[HideInInspector] public Dictionary<Precision, double> LifeWeightValues;
-	[HideInInspector] public Dictionary<Precision, double> PrecisionValues;
+	[HideInInspector] public double[] ScoreWeightValues;
+	[HideInInspector] public double[] LifeWeightValues;
+	[HideInInspector] public double[] PrecisionValues;
 	[HideInInspector] public int startRegenAfterMiss;
 
 
@@ -86,14 +86,14 @@ public class GameManager : MonoBehaviour{
 	}
 	
 	public void init(){
-		ScoreWeightValues = new Dictionary<Precision, double>();
-		LifeWeightValues = new Dictionary<Precision, double>();
-		PrecisionValues = new Dictionary<Precision, double>();
+		ScoreWeightValues = new double[System.Enum.GetValues(typeof(Precision)).Length];
+		LifeWeightValues = new double[System.Enum.GetValues(typeof(Precision)).Length];
+		PrecisionValues = new double[System.Enum.GetValues(typeof(Precision)).Length];
 
 		for (int i=0; i<Enum.GetValues(typeof(Precision)).Length - 1; i++) {
-			ScoreWeightValues.Add((Precision)i, findPrecValue(scoreWeightBase, (Precision)i).value);
-			LifeWeightValues.Add((Precision)i, findPrecValue(lifeWeightBase, (Precision)i).value);
-			if(i < (int)Precision.MISS) PrecisionValues.Add((Precision)i, findPrecValue(precisionBase, (Precision)i).value);
+			ScoreWeightValues[i] = findPrecValue(scoreWeightBase, (Precision)i).value;
+			LifeWeightValues[i] = findPrecValue(lifeWeightBase, (Precision)i).value;
+			if(i < (int)Precision.MISS) PrecisionValues[i] = findPrecValue(precisionBase, (Precision)i).value;
 
 		}
 
@@ -107,14 +107,14 @@ public class GameManager : MonoBehaviour{
 
 		if (j == Judge.NORMAL) {
 			for (int i=0; i<Enum.GetValues(typeof(Precision)).Length - 1; i++) {
-				ScoreWeightValues[(Precision)i] = findPrecValue(scoreWeightBase, (Precision)i).value;
+				ScoreWeightValues[i] = findPrecValue(scoreWeightBase, (Precision)i).value;
 			}
 		} else {
 			JudgeValue judgeVal = scoreJudgeBase.Find (c => c.judge == j);
 
 			for (int i=0; i<Enum.GetValues(typeof(Precision)).Length - 1; i++) {
 				PrecisionValue precValue =  findPrecValue(judgeVal.newValues, (Precision)i);
-				ScoreWeightValues[(Precision)i] = precValue == null ? ScoreWeightValues[(Precision)i] : precValue.value;
+				ScoreWeightValues[i] = precValue == null ? ScoreWeightValues[i] : precValue.value;
 			}
 		}
 
@@ -124,14 +124,14 @@ public class GameManager : MonoBehaviour{
 	public void LoadHitJudge(Judge j){
 		if (j == Judge.NORMAL) {
 			for (int i=0; i<(int)Precision.MISS; i++) {
-				PrecisionValues[(Precision)i] = findPrecValue(precisionBase, (Precision)i).value;
+				PrecisionValues[i] = findPrecValue(precisionBase, (Precision)i).value;
 			}
 		} else {
 			JudgeValue judgeVal = precisionJudgeBase.Find (c => c.judge == j);
 			
 			for (int i=0; i<(int)Precision.MISS; i++) {
 				PrecisionValue precValue =  findPrecValue(judgeVal.newValues, (Precision)i);
-				PrecisionValues[(Precision)i] = precValue == null ?  PrecisionValues[(Precision)i] : precValue.value;
+				PrecisionValues[i] = precValue == null ?  PrecisionValues[i] : precValue.value;
 			}
 		}
 	}
@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour{
 	public void LoadLifeJudge(Judge j){
 		if (j == Judge.NORMAL) {
 			for (int i=0; i<Enum.GetValues(typeof(Precision)).Length - 1; i++) {
-				LifeWeightValues[(Precision)i] = findPrecValue(lifeWeightBase, (Precision)i).value;
+				LifeWeightValues[i] = findPrecValue(lifeWeightBase, (Precision)i).value;
 			}
 			startRegenAfterMiss = baseRegenComboAfterMiss;
 		} else {
@@ -148,7 +148,7 @@ public class GameManager : MonoBehaviour{
 			
 			for (int i=0; i<Enum.GetValues(typeof(Precision)).Length - 1; i++) {
 				PrecisionValue precValue =  findPrecValue(judgeVal.newValues, (Precision)i);
-				LifeWeightValues[(Precision)i] = precValue == null ?  LifeWeightValues[(Precision)i] : precValue.value;
+				LifeWeightValues[i] = precValue == null ?  LifeWeightValues[i] : precValue.value;
 			}
 			startRegenAfterMiss = judgeVal.regenAfterMiss;
 		}

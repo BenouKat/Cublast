@@ -13,10 +13,12 @@ public class EmissionTweener : MonoBehaviour {
 
 	public bool letInUpdate;
 
-	void Start()
+	void Awake()
 	{
 		if (concernedMaterial != null)
 			init ();
+
+		enabled = false;
 	}
 
 	void Update()
@@ -34,12 +36,14 @@ public class EmissionTweener : MonoBehaviour {
 
 	public void pulse()
 	{
+		if(!enabled) enabled = true;
 		currentEmissionPower = maxEmissionPower;
 		refreshEmission();
 	}
 	
 	public void enableLetInUpdate(bool active)
 	{
+		if(!enabled) enabled = true;
 		letInUpdate = active;
 	}
 	

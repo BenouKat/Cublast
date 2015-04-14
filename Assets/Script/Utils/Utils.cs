@@ -21,11 +21,11 @@ public class Utils {
 
 	public static Precision getPrec(double prec)
 	{
-		foreach (KeyValuePair<Precision,double> p in GameManager.instance.PrecisionValues) {
-			if(p.Key == Precision.MISS) return Precision.MISS;
-			if(prec <= p.Value)
+		for(int i=0; i<GameManager.instance.PrecisionValues.Length; i++) {
+			if((Precision)i == Precision.MISS) return Precision.MISS;
+			if(prec <= GameManager.instance.PrecisionValues[i])
 			{
-				return p.Key;
+				return (Precision)i;
 			}
 		}
 		return Precision.MISS;

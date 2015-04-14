@@ -24,11 +24,10 @@ public class Arrow : MonoBehaviour {
 	public FreezeController freezeController;
 	public FreezeController rollController;
 
-
 	public Precision checkAndProcessValidateArrow(double currentTime)
 	{
 		if (state != ArrowState.NONE) return Precision.NONE;
-		if (currentTime + GameManager.instance.PrecisionValues [Precision.WAYOFF] < scheduledTime)
+		if (currentTime + GameManager.instance.PrecisionValues [(int)Precision.WAYOFF] < scheduledTime)
 			return Precision.NONE;
 		state = ArrowState.WAITINGLINKED;
 		dateValidation = currentTime;
@@ -93,7 +92,7 @@ public class Arrow : MonoBehaviour {
 		if (state != ArrowState.NONE && state != ArrowState.WAITINGLINKED)
 			return false; //Already treated
 
-		if ((currentTime - scheduledTime) > GameManager.instance.PrecisionValues [Precision.WAYOFF]) {
+		if ((currentTime - scheduledTime) > GameManager.instance.PrecisionValues [(int)Precision.WAYOFF]) {
 			state = ArrowState.MISSED;
 			if (linkedArrows.Count != 0) {
 				

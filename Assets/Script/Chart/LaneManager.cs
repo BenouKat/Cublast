@@ -192,7 +192,7 @@ public class LaneManager : MonoBehaviour {
 			} else {
 				if(arrowValid.type != ArrowType.NORMAL)
 				{
-					ChartManager.instance.modelLane.getParticleEffect (lane).play (Precision.FANTASTIC);
+					ChartManager.instance.modelLane.getParticleEffect (lane).playEndFreeze();
 					ChartManager.instance.modelLane.getParticleEffect(lane).stopFreezeOrRoll();
 				}else{
 					ChartManager.instance.modelLane.getParticleEffect (lane).play (arrowValid.precisionValid);
