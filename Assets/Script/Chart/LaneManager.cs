@@ -189,13 +189,16 @@ public class LaneManager : MonoBehaviour {
 		if (arrowValid != null) {
 			if (arrowValid.type == ArrowType.MINE) {
 				ChartManager.instance.modelLane.getParticleEffect (lane).playMine();
+				LifeController.instance.addHPbyPrecision(Precision.MINE);
 			} else {
 				if(arrowValid.type != ArrowType.NORMAL)
 				{
 					ChartManager.instance.modelLane.getParticleEffect (lane).playEndFreeze();
 					ChartManager.instance.modelLane.getParticleEffect(lane).stopFreezeOrRoll();
+					LifeController.instance.addHPbyPrecision(Precision.FREEZE);
 				}else{
 					ChartManager.instance.modelLane.getParticleEffect (lane).play (arrowValid.precisionValid);
+					LifeController.instance.addHPbyPrecision(arrowValid.precisionValid);
 				}
 			}
 		}
@@ -229,24 +232,31 @@ public class LaneManager : MonoBehaviour {
 		modelLane.getLaneArrows(lane).Clear();
 	}
 
-	public void missArrow(Lanes lane, bool displayEffect = false, bool checkLinked = true)
+	public void missArrow(Lanes lane, bool missIsBad = false, bool firstCall = true)
 	{
-		if (displayEffect) {
+		if (missIsBad) {
 			if(getNextLaneArrows (lane).type == ArrowType.NORMAL) {
 				ChartManager.instance.modelLane.getParticleEffect (lane).play (getNextLaneArrows (lane).precisionValid);
-			}else if(getNextLaneArrows (lane).type != ArrowType.MINE && getNextLaneArrows (lane).attached)
+				if(firstCall) LifeController.instance.addHPbyPrecision(Precision.MISS);
+			}else if(getNextLaneArrows (lane).type != ArrowType.MINE)
 			{
-				ChartManager.instance.modelLane.getParticleEffect (lane).stopFreezeOrRoll();
+				if(getNextLaneArrows (lane).attached)
+				{
+					ChartManager.instance.modelLane.getParticleEffect (lane).stopFreezeOrRoll();
+					if(firstCall) LifeController.instance.addHPbyPrecision(Precision.UNFREEZE);
+				}else{
+					if(firstCall) LifeController.instance.addHPbyPrecision(Precision.MISS);
+				}
 			}
 		}
 
 		if (getNextLaneArrows (lane).attached)
 			distachFromModelLane (ChartManager.instance.modelLane, lane);
 
-		if (checkLinked && getNextLaneArrows (lane).linkedArrows.Count != 0) {
+		if (firstCall && getNextLaneArrows (lane).linkedArrows.Count != 0) {
 			foreach(Arrow arrow in getNextLaneArrows (lane).linkedArrows)
 			{
-				missArrow(arrow.currentLane, displayEffect, false);
+				missArrow(arrow.currentLane, missIsBad, false);
 			}
 		}
 

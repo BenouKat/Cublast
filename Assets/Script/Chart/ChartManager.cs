@@ -242,7 +242,9 @@ public class ChartManager : MonoBehaviour {
 						chartLane.attachToModelLane(modelLane, currentCheckedArrow, (Lanes)i);
 						currentCheckedArrow.computeFreezePosition(currentTime);
 
+						//Valid the arrow (copy from valid arrow method in Lane Manager)
 						modelLane.getParticleEffect((Lanes)i).play(currentCheckedArrow.precisionValid);
+						LifeController.instance.addHPbyPrecision(currentCheckedArrow.precisionValid);
 
 						//Enable freeze
 						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
