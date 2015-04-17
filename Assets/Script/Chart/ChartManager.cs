@@ -68,6 +68,8 @@ public class ChartManager : MonoBehaviour {
 	float cameraForward;
 	int numberOfLanes;
 
+	bool gameOver;
+
 	double actualBPM = 0;
 	TimeBuffer actualSTOPBuffer;
 	int BPMIndex = 1;
@@ -135,7 +137,7 @@ public class ChartManager : MonoBehaviour {
 		checkLanesStatus ();
 		computeTime ();
 		moveChart ();
-		bumpArrows ();
+		processMusicalBump ();
 	}
 
 	#region updates methods
@@ -293,12 +295,17 @@ public class ChartManager : MonoBehaviour {
 	}
 
 	public int indexBump = 0;
-	public void bumpArrows()
+	public void processMusicalBump()
 	{
 		if (indexBump < musicalBumps.Length && musicalBumps [indexBump] <= currentTime) {
+
 			indexBump++;
+
+			//All bumps effect
 			emissionTweener.pulse();
+			if((indexBump-1) % 2 == 0)LifeController.instance.rotateTick.tick ();
 		}
+
 	}
 	#endregion
 
@@ -383,6 +390,19 @@ public class ChartManager : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	#endregion
+
+	#region management
+
+	public void callGameOver()
+	{
+		if (!gameOver) {
+			gameOver = true;
+			LifeController.instance.playDeath ();
+		}
+
 	}
 
 	#endregion

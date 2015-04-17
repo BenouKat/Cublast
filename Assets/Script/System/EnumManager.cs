@@ -136,3 +136,9 @@ public enum ArrowState
 	VALIDATED,
 	MISSED
 }
+
+public enum Language
+{
+	FR,
+	EN
+}

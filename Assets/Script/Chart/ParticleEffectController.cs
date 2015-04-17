@@ -19,7 +19,6 @@ public class ParticleEffectController : MonoBehaviour {
 	public void play(Precision prec)
 	{
 		if (prec <= Precision.WAYOFF) {
-			//if(particlesPrecision[(int)prec].isPlaying) particlesPrecision[(int)prec].Stop();
 			particlesPrecision[(int)prec].Play();
 		}
 
@@ -50,7 +49,7 @@ public class ParticleEffectController : MonoBehaviour {
 
 	public void playEndFreeze()
 	{
-
+		endFreeze.Play ();
 	}
 
 
