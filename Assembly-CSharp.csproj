@@ -58,11 +58,11 @@
      <Compile Include="Assets\Script\Chart\ParticleEffectController.cs" />
      <Compile Include="Assets\Script\Chart\ScoreController.cs" />
      <Compile Include="Assets\Script\Chart\VisualizerController.cs" />
+     <Compile Include="Assets\Script\Managers\GameLocalization.cs" />
      <Compile Include="Assets\Script\Managers\GameManager.cs" />
      <Compile Include="Assets\Script\Managers\SongOptionManager.cs" />
      <Compile Include="Assets\Script\Managers\SoundWaveManager.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
-     <Compile Include="Assets\Script\System\GameLocalization.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
      <Compile Include="Assets\Script\System\OGGScripts\ByteUtilities.cs" />
      <Compile Include="Assets\Script\System\OGGScripts\LiveDebugger.cs" />
@@ -79,6 +79,7 @@
      <Compile Include="Assets\Script\System\SongInfoProfil.cs" />
      <Compile Include="Assets\Script\System\VersionDeserializationBinder.cs" />
      <Compile Include="Assets\Script\TempPassScene.cs" />
+     <Compile Include="Assets\Script\Utils\AutoLocalize.cs" />
      <Compile Include="Assets\Script\Utils\CombineChildrenExtended.cs" />
      <Compile Include="Assets\Script\Utils\EmissionTweener.cs" />
      <Compile Include="Assets\Script\Utils\LensFlareTweener.cs" />

@@ -18,6 +18,7 @@ public class SongOptionManager : MonoBehaviour {
 	public Song currentSongPlayed;
 	public double currentBestPersonal;
 	public double currentBestInternet;
+	public string currentBestInternetName;
 
 	public List<OptionsMod> currentOptions = new List<OptionsMod>();
 	public double speedmodSelected = 2f;

@@ -190,15 +190,18 @@ public class LaneManager : MonoBehaviour {
 			if (arrowValid.type == ArrowType.MINE) {
 				ChartManager.instance.modelLane.getParticleEffect (lane).playMine();
 				LifeController.instance.addHPbyPrecision(Precision.MINE);
+				ScoreController.instance.addScoreByPrecision(Precision.MINE);
 			} else {
 				if(arrowValid.type != ArrowType.NORMAL)
 				{
 					ChartManager.instance.modelLane.getParticleEffect (lane).playEndFreeze();
 					ChartManager.instance.modelLane.getParticleEffect(lane).stopFreezeOrRoll();
 					LifeController.instance.addHPbyPrecision(Precision.FREEZE);
+					ScoreController.instance.addScoreByPrecision(Precision.FREEZE);
 				}else{
 					ChartManager.instance.modelLane.getParticleEffect (lane).play (arrowValid.precisionValid);
 					LifeController.instance.addHPbyPrecision(arrowValid.precisionValid);
+					ScoreController.instance.addScoreByPrecision(arrowValid.precisionValid);
 				}
 			}
 		}
@@ -237,15 +240,27 @@ public class LaneManager : MonoBehaviour {
 		if (missIsBad) {
 			if(getNextLaneArrows (lane).type == ArrowType.NORMAL) {
 				ChartManager.instance.modelLane.getParticleEffect (lane).play (getNextLaneArrows (lane).precisionValid);
-				if(firstCall) LifeController.instance.addHPbyPrecision(Precision.MISS);
+				if(firstCall)
+				{
+					LifeController.instance.addHPbyPrecision(Precision.MISS);
+					ScoreController.instance.addScoreByPrecision(Precision.MISS);
+				}
 			}else if(getNextLaneArrows (lane).type != ArrowType.MINE)
 			{
 				if(getNextLaneArrows (lane).attached)
 				{
 					ChartManager.instance.modelLane.getParticleEffect (lane).stopFreezeOrRoll();
-					if(firstCall) LifeController.instance.addHPbyPrecision(Precision.UNFREEZE);
+					if(firstCall)
+					{
+						LifeController.instance.addHPbyPrecision(Precision.UNFREEZE);
+						ScoreController.instance.addScoreByPrecision(Precision.UNFREEZE);
+					}
 				}else{
-					if(firstCall) LifeController.instance.addHPbyPrecision(Precision.MISS);
+					if(firstCall)
+					{
+						LifeController.instance.addHPbyPrecision(Precision.MISS);
+						ScoreController.instance.addScoreByPrecision(Precision.MISS);
+					}
 				}
 			}
 		}

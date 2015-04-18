@@ -1,15 +1,18 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\ScoreController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Managers\SongOptionManager.cs">
     <Files>
-      <File FileName="E:\Projets\TropicalWars\Assets\Scripts\GUI\AttackedPopup.cs" Line="48" Column="6" />
-      <File FileName="E:\Projets\TropicalWars\Assets\ProjectResources\Localization\globalLoc.txt" Line="1" Column="1" />
-      <File FileName="Assets\Script\Chart\LifeController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Chart\ScoreController.cs" Line="15" Column="10" />
-      <File FileName="Assets\Script\Managers\SongOptionManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\System\GameLocalization.cs" Line="31" Column="4" />
+      <File FileName="Assets\Script\Chart\ScoreController.cs" Line="49" Column="63" />
+      <File FileName="Assets\Script\Chart\LifeController.cs" Line="202" Column="3" />
+      <File FileName="Assets\Script\Managers\SongOptionManager.cs" Line="20" Column="36" />
       <File FileName="Assets\Script\System\EnumManager.cs" Line="143" Column="4" />
-      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="67" Column="1" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="414" Column="26" />
+      <File FileName="Assets\Script\Utils\AutoLocalize.cs" Line="10" Column="72" />
+      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="1" Column="43" />
+      <File FileName="Assets\Script\Managers\GameLocalization.cs" Line="18" Column="13" />
+      <File FileName="Assets\Script\Chart\LaneManager.cs" Line="244" Column="6" />
+      <File FileName="Assets\Script\System\OpenChart.cs" Line="422" Column="9" />
+      <File FileName="Assets\Script\System\Song.cs" Line="26" Column="34" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -44,6 +44,13 @@ public class ChartManager : MonoBehaviour {
 		}
 		painter = GetComponent<ArrowPainter>();
 		emissionTweener = GetComponent<EmissionTweener> ();
+
+		//DEBUG
+		//###################
+		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Stompbox").songs [Difficulty.EXPERT];
+		currentTime = -1;
+		currentSyncTime = -1;
+		//###################
 	}
 	
 	//Models
@@ -86,18 +93,8 @@ public class ChartManager : MonoBehaviour {
 	//Variable Pool
 	private Arrow currentCheckedArrow;
 
-
-
 	// Use this for initialization
 	void Start () {
-
-		//DEBUG
-		//###################
-		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Stompbox").songs [Difficulty.EXPERT];
-		currentTime = -1;
-		currentSyncTime = -1;
-		//Time.timeScale = 0.3f;
-		//###################
 
 		//Inital values
 		numberOfLanes = System.Enum.GetValues (typeof(Lanes)).Length;
@@ -247,7 +244,7 @@ public class ChartManager : MonoBehaviour {
 						//Valid the arrow (copy from valid arrow method in Lane Manager)
 						modelLane.getParticleEffect((Lanes)i).play(currentCheckedArrow.precisionValid);
 						LifeController.instance.addHPbyPrecision(currentCheckedArrow.precisionValid);
-
+						ScoreController.instance.addScoreByPrecision(currentCheckedArrow.precisionValid);
 						//Enable freeze
 						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
 						if(currentCheckedArrow.type == ArrowType.ROLL)
@@ -412,6 +409,11 @@ public class ChartManager : MonoBehaviour {
 	public double getScrollingObjectPosition()
 	{
 		return (Utils.getBPS (actualBPM) * currentSyncTime * SongOptionManager.instance.speedmodSelected) + lastScrollingPosition;
+	}
+
+	public bool isGameOver()
+	{
+		return gameOver;
 	}
 
 	#endregion

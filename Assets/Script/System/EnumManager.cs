@@ -139,6 +139,6 @@ public enum ArrowState
 
 public enum Language
 {
-	FR,
-	EN
+	EN,
+	FR
 }

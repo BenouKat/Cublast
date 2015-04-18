@@ -209,7 +209,7 @@ public class LifeController : MonoBehaviour {
 
 		for (int i=0; i<lifeBars.Length; i++) {
 			lifeBarsCubes[i].enabled = false;
-			lifeBarsCubes[i].transform.rotation = Quaternion.identity;
+			lifeBarsCubes[i].transform.localRotation = Quaternion.identity;
 			lifeBars[i].localPosition = lifeInitialPosition[i];
 		}
 
