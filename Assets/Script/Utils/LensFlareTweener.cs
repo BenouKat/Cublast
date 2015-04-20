@@ -8,11 +8,6 @@ public class LensFlareTweener : MonoBehaviour {
 	public float startBrightness;
 	public float endBrightness;
 	public float time;
-
-	// Use this for initialization
-	void Start () {
-		flare = GetComponent<LensFlare> ();
-	}
 	
 	IEnumerator tween()
 	{
@@ -28,6 +23,7 @@ public class LensFlareTweener : MonoBehaviour {
 
 	public void enableTween()
 	{
+		flare = GetComponent<LensFlare> ();
 		flare.enabled = true;
 		StartCoroutine (tween ());
 	}

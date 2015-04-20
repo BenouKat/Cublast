@@ -228,6 +228,7 @@ public class LifeController : MonoBehaviour {
 
 		dangerParticle.Stop();
 		fullLifeParticle.Stop ();
+		deadParticle.gameObject.SetActive (true);		
 		deadParticle.Play ();
 		lensFlareDead.enableTween ();
 	}

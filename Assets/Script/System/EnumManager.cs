@@ -92,6 +92,12 @@ public enum ComboType{
 		NONE
 }
 
+public enum NoneComboType{
+	GREAT,
+	NORMAL,
+	MISSED
+}
+
 
 public enum ArrowPosition{
 	RIGHT,

@@ -202,6 +202,7 @@ public class LaneManager : MonoBehaviour {
 					ChartManager.instance.modelLane.getParticleEffect (lane).play (arrowValid.precisionValid);
 					LifeController.instance.addHPbyPrecision(arrowValid.precisionValid);
 					ScoreController.instance.addScoreByPrecision(arrowValid.precisionValid);
+					ComboController.instance.addCombo(arrowValid.precisionValid);
 				}
 			}
 		}
@@ -244,6 +245,7 @@ public class LaneManager : MonoBehaviour {
 				{
 					LifeController.instance.addHPbyPrecision(Precision.MISS);
 					ScoreController.instance.addScoreByPrecision(Precision.MISS);
+					ComboController.instance.breakCombo();
 				}
 			}else if(getNextLaneArrows (lane).type != ArrowType.MINE)
 			{
@@ -260,6 +262,7 @@ public class LaneManager : MonoBehaviour {
 					{
 						LifeController.instance.addHPbyPrecision(Precision.MISS);
 						ScoreController.instance.addScoreByPrecision(Precision.MISS);
+						ComboController.instance.breakCombo();
 					}
 				}
 			}

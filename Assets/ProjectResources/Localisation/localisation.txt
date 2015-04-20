@@ -1,1 +1,2 @@
 BestPersonal;Best Personal;Record personel
+Streak;Streak;Série

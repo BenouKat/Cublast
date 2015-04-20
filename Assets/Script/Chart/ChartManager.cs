@@ -245,6 +245,8 @@ public class ChartManager : MonoBehaviour {
 						modelLane.getParticleEffect((Lanes)i).play(currentCheckedArrow.precisionValid);
 						LifeController.instance.addHPbyPrecision(currentCheckedArrow.precisionValid);
 						ScoreController.instance.addScoreByPrecision(currentCheckedArrow.precisionValid);
+						ComboController.instance.addCombo(currentCheckedArrow.precisionValid);
+
 						//Enable freeze
 						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
 						if(currentCheckedArrow.type == ArrowType.ROLL)
