@@ -21,7 +21,7 @@ public class GameLocalization : MonoBehaviour {
 
 	public void reloadDictionary()
 	{
-		string[] allLines = localisation.text.Split (new string[] { System.Environment.NewLine }, System.StringSplitOptions.None);
+		string[] allLines = localisation.text.Split ('\n');
 
 		dictionary = new Hashtable();
 
