@@ -71,6 +71,7 @@ public class ChartManager : MonoBehaviour {
 
 	//Private global variable
 	double[] musicalBumps;
+	double[] musicalJumps;
 	Vector2 rangeArrow = new Vector2(0f, 0f);
 	float cameraForward;
 	int numberOfLanes;
@@ -246,6 +247,7 @@ public class ChartManager : MonoBehaviour {
 						LifeController.instance.addHPbyPrecision(currentCheckedArrow.precisionValid);
 						ScoreController.instance.addScoreByPrecision(currentCheckedArrow.precisionValid);
 						ComboController.instance.addCombo(currentCheckedArrow.precisionValid);
+						NoteController.instance.showNote(currentCheckedArrow.precisionValid);
 
 						//Enable freeze
 						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
@@ -294,6 +296,7 @@ public class ChartManager : MonoBehaviour {
 	}
 
 	public int indexBump = 0;
+	public int indexJump = 0;
 	public void processMusicalBump()
 	{
 		if (indexBump < musicalBumps.Length && musicalBumps [indexBump] <= currentTime) {
@@ -305,6 +308,14 @@ public class ChartManager : MonoBehaviour {
 			if((indexBump-1) % 2 == 0)LifeController.instance.rotateTick.tick ();
 		}
 
+
+		if (indexJump < musicalJumps.Length && musicalJumps [indexJump] <= currentTime) {
+			
+			indexJump++;
+			
+			//All jumps effect
+			BackgroundColorController.instance.bumpExposure();
+		}
 	}
 	#endregion
 
@@ -410,7 +421,7 @@ public class ChartManager : MonoBehaviour {
 
 	public double getScrollingObjectPosition()
 	{
-		return (Utils.getBPS (actualBPM) * currentSyncTime * SongOptionManager.instance.speedmodSelected) + lastScrollingPosition;
+		return (Utils.getBPS (actualBPM) * currentSyncTime * SongOptionManager.instance.speedmodSelected * systemSpeedmod) + lastScrollingPosition;
 	}
 
 	public bool isGameOver()
@@ -446,6 +457,7 @@ public class ChartManager : MonoBehaviour {
 		double currentTime = 0;
 
 		List<double> tempMusicalBumps = new List<double>();
+		List<double> tempMusicalJumps = new List<double>();
 
 		foreach (List<string> mesure in s.stepchart) {
 			for(int beatLine=0; beatLine<mesure.Count; beatLine++)
@@ -571,6 +583,7 @@ public class ChartManager : MonoBehaviour {
 						if(finalBeatLine[i] != 'M') beatLineArrows.Add(savedArrow);
 						
 						currentLaneManager.pushArrow(currentArrow, (Lanes)i);
+
 					}
 
 					switch(finalBeatLine[i])
@@ -585,7 +598,7 @@ public class ChartManager : MonoBehaviour {
 						currentArrow = chartLane.getLaneArrows((Lanes)i).Last();
 						FreezeController controller = currentArrow.getFreezeController(currentArrow.type);
 						controller.gameObject.SetActive(true);
-						controller.init(currentArrow, currentYPosition - Mathf.Abs(currentArrow.transform.position.y), currentTime, currentArrow.coloredObject.material.color);
+						controller.init(currentArrow, currentYPosition + currentArrow.transform.position.y, currentTime, currentArrow.coloredObject.material.color);
 						break;
 					case 'M':
 						currentArrow.type = ArrowType.MINE;
@@ -596,6 +609,7 @@ public class ChartManager : MonoBehaviour {
 
 				if(beatLineArrows.Count > 1)
 				{
+					tempMusicalJumps.Add(currentTime);
 					foreach(Arrow arrow in beatLineArrows)
 					{
 						arrow.linkedArrows.AddRange(beatLineArrows);
@@ -630,6 +644,7 @@ public class ChartManager : MonoBehaviour {
 		}
 
 		musicalBumps = tempMusicalBumps.ToArray ();
+		musicalJumps = tempMusicalJumps.ToArray ();
 		rangeArrow = new Vector2(Mathf.Min((float)chartLane.getMinArrowTime(), (float)mineLane.getMinArrowTime()), Mathf.Max((float)chartLane.getMaxArrowTime(), (float)mineLane.getMaxArrowTime()));
 	}
 	#endregion

@@ -1,2 +1,10 @@
 BestPersonal;Best Personal;Record personel
 Streak;Streak;Série
+Fantastic;Perfect;Parfait
+Excellent;Excellent;Excellent
+Great;Great;Bien
+Decent;Cheap;Moyen
+Wayoff;Awful;Mauvais
+Miss;Miss;Raté
+Cleared;CLEARED;TERMINÉ
+Failed;FAILED;ECHEC

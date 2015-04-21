@@ -203,6 +203,7 @@ public class LaneManager : MonoBehaviour {
 					LifeController.instance.addHPbyPrecision(arrowValid.precisionValid);
 					ScoreController.instance.addScoreByPrecision(arrowValid.precisionValid);
 					ComboController.instance.addCombo(arrowValid.precisionValid);
+					NoteController.instance.showNote(arrowValid.precisionValid);
 				}
 			}
 		}
@@ -246,6 +247,7 @@ public class LaneManager : MonoBehaviour {
 					LifeController.instance.addHPbyPrecision(Precision.MISS);
 					ScoreController.instance.addScoreByPrecision(Precision.MISS);
 					ComboController.instance.breakCombo();
+					NoteController.instance.showNote(Precision.MISS);
 				}
 			}else if(getNextLaneArrows (lane).type != ArrowType.MINE)
 			{
@@ -263,6 +265,7 @@ public class LaneManager : MonoBehaviour {
 						LifeController.instance.addHPbyPrecision(Precision.MISS);
 						ScoreController.instance.addScoreByPrecision(Precision.MISS);
 						ComboController.instance.breakCombo();
+						NoteController.instance.showNote(Precision.MISS);
 					}
 				}
 			}

@@ -1,16 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\ChartManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ProjectResources\Localisation\localisation.txt">
     <Files>
-      <File FileName="Assets\Script\Chart\ComboController.cs" Line="81" Column="39" />
+      <File FileName="Assets\Script\Chart\NoteController.cs" Line="19" Column="1" />
+      <File FileName="Assets\Script\Chart\ComboController.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\System\EnumManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="416" Column="26" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="600" Column="45" />
       <File FileName="Assets\Script\Chart\LaneManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Utils\LensFlareTweener.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Utils\AutoLocalize.cs" Line="10" Column="60" />
-      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="1" Column="43" />
-      <File FileName="Assets\Script\Managers\GameLocalization.cs" Line="36" Column="34" />
-      <File FileName="Assets\Script\Chart\LifeController.cs" Line="40" Column="24" />
+      <File FileName="Assets\Script\Utils\AutoLocalize.cs" Line="1" Column="1" />
+      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="10" Column="20" />
+      <File FileName="Assets\Script\Managers\GameLocalization.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\LifeController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\BackgroundColorController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\FreezeController.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
