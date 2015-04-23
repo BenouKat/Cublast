@@ -187,4 +187,9 @@ public class ComboController : MonoBehaviour {
 		ps.Play ();
 		currentlyPlaying = ps;
 	}
+
+	public ComboType getCurrentComboType()
+	{
+		return currentComboType;
+	}
 }

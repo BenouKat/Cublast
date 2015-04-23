@@ -39,10 +39,10 @@
 	<Reference Include="System.Core" />
 	<Reference Include="System.Xml.Linq" />
 	<Reference Include="UnityEngine">
-	  <HintPath>E:/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>E:/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +52,7 @@
      <Compile Include="Assets\Script\Chart\BackgroundColorController.cs" />
      <Compile Include="Assets\Script\Chart\ChartManager.cs" />
      <Compile Include="Assets\Script\Chart\ComboController.cs" />
+     <Compile Include="Assets\Script\Chart\EndingController.cs" />
      <Compile Include="Assets\Script\Chart\FreezeController.cs" />
      <Compile Include="Assets\Script\Chart\InputController.cs" />
      <Compile Include="Assets\Script\Chart\LaneManager.cs" />
@@ -59,6 +60,7 @@
      <Compile Include="Assets\Script\Chart\NoteController.cs" />
      <Compile Include="Assets\Script\Chart\ParticleEffectController.cs" />
      <Compile Include="Assets\Script\Chart\ScoreController.cs" />
+     <Compile Include="Assets\Script\Chart\TimeController.cs" />
      <Compile Include="Assets\Script\Chart\VisualizerController.cs" />
      <Compile Include="Assets\Script\Managers\GameLocalization.cs" />
      <Compile Include="Assets\Script\Managers\GameManager.cs" />
@@ -178,7 +180,7 @@
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlurAndFlares.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendForBloom.shader" />
  <Reference Include="UnityEngine.UI">
- <HintPath>E:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

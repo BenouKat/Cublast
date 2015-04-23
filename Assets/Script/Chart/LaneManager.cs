@@ -167,6 +167,11 @@ public class LaneManager : MonoBehaviour {
 		}
 	}
 
+	public bool isNoMoreArrow()
+	{
+		return nextLeft == null && nextDown == null && nextUp == null && nextRight == null;
+	}
+
 	public void lockLane()
 	{
 		locked = true;
@@ -217,6 +222,10 @@ public class LaneManager : MonoBehaviour {
 			}
 		}
 		pushNextArrow (lane);
+
+		if (checkLinked && isNoMoreArrow()) {
+			ChartManager.instance.callGameOver(true);
+		}
 	}
 
 	public void attachToModelLane(LaneManager modelLane, Arrow arrow, Lanes lane)

@@ -38,6 +38,8 @@ public class InputController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (ChartManager.instance.isGameOver ())
+			return;
 		for(int i=0;i<4;i++)
 		{
 			if(Input.GetKeyDown(primaryInputs[i]) || Input.GetKeyDown(secondaryInputs[i]))

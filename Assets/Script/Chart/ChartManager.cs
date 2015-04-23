@@ -128,14 +128,17 @@ public class ChartManager : MonoBehaviour {
 		chartLane.lockLane ();
 		mineLane.lockLane ();
 		initComputeTime ();
+		TimeController.instance.init (rangeArrow);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		checkLanesStatus ();
-		computeTime ();
-		moveChart ();
-		processMusicalBump ();
+		if (!gameOver) {
+			checkLanesStatus ();
+			computeTime ();
+			moveChart ();
+			processMusicalBump ();
+		}
 	}
 
 	#region updates methods
@@ -406,13 +409,19 @@ public class ChartManager : MonoBehaviour {
 
 	#region management
 
-	public void callGameOver()
+	public void callGameOver(bool clear = false)
 	{
 		if (!gameOver) {
 			gameOver = true;
-			LifeController.instance.playDeath ();
-		}
 
+			if(clear)
+			{
+				EndingController.instance.showCleared(ComboController.instance.getCurrentComboType());
+			}else{
+				EndingController.instance.showFailed();
+			}
+
+		}
 	}
 
 	#endregion
