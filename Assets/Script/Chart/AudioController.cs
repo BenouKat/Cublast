@@ -3,13 +3,31 @@ using System.Collections;
 
 public class AudioController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
+	public static AudioController instance;
+	void Awake()
+	{
+		if (instance == null)
+			instance = this;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public AudioSource audioSource;
+
+	public void loadSong(Song s)
+	{
+		audioSource.clip = s.SetAudioClip ();
+		audioSource.clip.LoadAudioData ();
+	}
+
+	public void startSong()
+	{
+		audioSource.Play ();
+		
+		SoundWaveManager.instance.init(audioSource);
+		SoundWaveManager.instance.activeAnalysis(true);
+	}
+
+	public void stopSongFailed()
+	{
+		audioSource.Stop ();
 	}
 }

@@ -14,6 +14,7 @@ public class EndingController : MonoBehaviour {
 	public GameObject FailedObject;
 	public GameObject[] ComboObjects;
 	public float grayscaleTransition;
+	public float slowdownTransition;
 
 	public UnityStandardAssets.ImageEffects.Grayscale grayscale;
 
@@ -28,18 +29,32 @@ public class EndingController : MonoBehaviour {
 
 	public void showFailed()
 	{
-		FailedObject.SetActive (true);
 		LifeController.instance.playDeath ();
 		TimeController.instance.stopUpdate ();
+		AudioController.instance.stopSongFailed();
 		StartCoroutine (endingAnimation ());
 	}
 
 	IEnumerator endingAnimation()
 	{
+		float positionFirst = ChartManager.instance.scrollingObject.position.y;
+		ChartManager.instance.computeTime ();
+		ChartManager.instance.moveChart ();
+		float positionLast = ChartManager.instance.scrollingObject.position.y;
+		float distance = Mathf.Abs (positionLast - positionFirst);
+
+		float timeSpent = 0f;
+		while (timeSpent < slowdownTransition) {
+			timeSpent += Time.deltaTime;
+			ChartManager.instance.manualMoveChart(Mathf.Lerp(distance, 0f, timeSpent/slowdownTransition));
+			yield return 0;
+		}
+
+		FailedObject.SetActive (true);
 		grayscale.enabled = true;
 		grayscale.effectAmount = 0f;
 
-		float timeSpent = 0f;
+		timeSpent = 0f;
 		while (timeSpent < grayscaleTransition) {
 			timeSpent += Time.deltaTime;
 			grayscale.effectAmount = Mathf.Lerp(0f, 1f, timeSpent/grayscaleTransition);

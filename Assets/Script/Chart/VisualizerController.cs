@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class VisualizerController : MonoBehaviour {
 
-	public AudioSource source;
-
 	public GameObject cubeModel;
 	Transform[] leftVisualizer;
 	Transform[] rightVisualizer;
@@ -53,10 +51,6 @@ public class VisualizerController : MonoBehaviour {
 		}
 
 		cubeModel.SetActive(false);
-
-		SoundWaveManager.instance.init(source);
-		SoundWaveManager.instance.activeAnalysis(true);
-
 	}
 	
 	// Update is called once per frame

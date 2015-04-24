@@ -189,43 +189,46 @@ public class LaneManager : MonoBehaviour {
 		if(downArrowsArray.Length > 0) nextDown = downArrowsArray[0];
 	}
 
-	public void validArrow(Lanes lane, Arrow arrowValid, bool checkLinked = true)
+	public void validArrow(Lanes lane, Arrow arrowValid, bool checkLinked = true, bool endFreezeValidation = false)
 	{
 		if (arrowValid != null) {
-			if (arrowValid.type == ArrowType.MINE) {
+			if(arrowValid.type == ArrowType.MINE)
+			{
 				ChartManager.instance.modelLane.getParticleEffect (lane).playMine();
 				LifeController.instance.addHPbyPrecision(Precision.MINE);
 				ScoreController.instance.addScoreByPrecision(Precision.MINE);
-			} else {
-				if(arrowValid.type != ArrowType.NORMAL)
+			}else{
+				if(arrowValid.type == ArrowType.NORMAL || !endFreezeValidation)
 				{
-					ChartManager.instance.modelLane.getParticleEffect (lane).playEndFreeze();
-					ChartManager.instance.modelLane.getParticleEffect(lane).stopFreezeOrRoll();
-					LifeController.instance.addHPbyPrecision(Precision.FREEZE);
-					ScoreController.instance.addScoreByPrecision(Precision.FREEZE);
-				}else{
 					ChartManager.instance.modelLane.getParticleEffect (lane).play (arrowValid.precisionValid);
 					LifeController.instance.addHPbyPrecision(arrowValid.precisionValid);
 					ScoreController.instance.addScoreByPrecision(arrowValid.precisionValid);
 					ComboController.instance.addCombo(arrowValid.precisionValid);
 					NoteController.instance.showNote(arrowValid.precisionValid);
+				}else{
+					ChartManager.instance.modelLane.getParticleEffect (lane).playEndFreeze();
+					ChartManager.instance.modelLane.getParticleEffect(lane).stopFreezeOrRoll();
+					LifeController.instance.addHPbyPrecision(Precision.FREEZE);
+					ScoreController.instance.addScoreByPrecision(Precision.FREEZE);
 				}
 			}
 		}
 
-
-		getNextLaneArrows (lane).gameObject.SetActive (false);
-		if (checkLinked && getNextLaneArrows (lane).linkedArrows.Count != 0) {
+		if (!endFreezeValidation && checkLinked && getNextLaneArrows (lane).linkedArrows.Count != 0) {
 			foreach(Arrow arrow in getNextLaneArrows (lane).linkedArrows)
 			{
 				validArrow(arrow.currentLane, arrow, false);
 			}
 		}
-		pushNextArrow (lane);
 
-		if (checkLinked && isNoMoreArrow()) {
-			ChartManager.instance.callGameOver(true);
+		//If its not a freeze waiting to be completed
+		if (!((arrowValid.type == ArrowType.FREEZE || arrowValid.type == ArrowType.ROLL) && !endFreezeValidation)) {
+			getNextLaneArrows (lane).gameObject.SetActive (false);
+			pushNextArrow (lane);
 		}
+
+
+
 	}
 
 	public void attachToModelLane(LaneManager modelLane, Arrow arrow, Lanes lane)

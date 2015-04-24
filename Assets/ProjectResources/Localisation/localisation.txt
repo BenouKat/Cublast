@@ -8,3 +8,6 @@ Wayoff;Awful;Mauvais
 Miss;Miss;Raté
 Cleared;CLEARED;TERMINÉ
 Failed;FAILED;ECHEC
+FC;Full\ncombo;Série\nsaute faute
+FEC;Full Excellent\ncombo;Excellente série\nsans faute
+FFC;Full Perfect\ncombo;Parfaite série\nsans faute

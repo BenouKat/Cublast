@@ -47,10 +47,11 @@ public class ChartManager : MonoBehaviour {
 
 		//DEBUG
 		//###################
-		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Stompbox").songs [Difficulty.EXPERT];
+		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Etude for a Dragon").songs [Difficulty.HARD];
+		//###################
+
 		currentTime = -1;
 		currentSyncTime = -1;
-		//###################
 	}
 	
 	//Models
@@ -68,6 +69,7 @@ public class ChartManager : MonoBehaviour {
 	//Manager global variable
 	public Transform scrollingObject;
 	public float systemSpeedmod = 1f; //Resize the chart to ITG Like base spacement
+	public float timeBeforeStart;
 
 	//Private global variable
 	double[] musicalBumps;
@@ -76,7 +78,9 @@ public class ChartManager : MonoBehaviour {
 	float cameraForward;
 	int numberOfLanes;
 
-	bool gameOver;
+	bool chartStart = false;
+	bool gameOver = false;
+	bool songHasntStarted = true;
 
 	double actualBPM = 0;
 	TimeBuffer actualSTOPBuffer;
@@ -129,11 +133,23 @@ public class ChartManager : MonoBehaviour {
 		mineLane.lockLane ();
 		initComputeTime ();
 		TimeController.instance.init (rangeArrow);
+		moveChart ();
+		AudioController.instance.loadSong (SongOptionManager.instance.currentSongPlayed);
+		Invoke ("callChartStart", 1f);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (!gameOver) {
+		if (chartStart && !gameOver) {
+
+			if(songHasntStarted && currentTime >= 0)
+			{
+				songHasntStarted = false;
+				currentTime = 0;
+				currentSyncTime = 0;
+				AudioController.instance.startSong();
+			}
+
 			checkLanesStatus ();
 			computeTime ();
 			moveChart ();
@@ -226,6 +242,12 @@ public class ChartManager : MonoBehaviour {
 		scrollingObject.position = -(Vector3.up * (float)getScrollingObjectPosition ()) + Vector3.forward*cameraForward;
 	}
 
+	//For ending only
+	public void manualMoveChart(float distance)
+	{
+		scrollingObject.position -= Vector3.up*distance;
+	}
+
 	//Check for misses or freeze validation
 	public void checkLanesStatus()
 	{
@@ -238,40 +260,40 @@ public class ChartManager : MonoBehaviour {
 				//Validated arrow for previous inputs : Confirmation
 				if(currentCheckedArrow.state == ArrowState.VALIDATED)
 				{
-					//Normal is validated, freeze are staying until end of freeze
-					if(currentCheckedArrow.type == ArrowType.NORMAL) {
-						chartLane.validArrow((Lanes)i, currentCheckedArrow);
-					}else if(!currentCheckedArrow.attached && (currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)){
-						chartLane.attachToModelLane(modelLane, currentCheckedArrow, (Lanes)i);
-						currentCheckedArrow.computeFreezePosition(currentTime);
-
-						//Valid the arrow (copy from valid arrow method in Lane Manager)
-						modelLane.getParticleEffect((Lanes)i).play(currentCheckedArrow.precisionValid);
-						LifeController.instance.addHPbyPrecision(currentCheckedArrow.precisionValid);
-						ScoreController.instance.addScoreByPrecision(currentCheckedArrow.precisionValid);
-						ComboController.instance.addCombo(currentCheckedArrow.precisionValid);
-						NoteController.instance.showNote(currentCheckedArrow.precisionValid);
-
-						//Enable freeze
-						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
-						if(currentCheckedArrow.type == ArrowType.ROLL)
-						{
-							modelLane.getParticleEffect((Lanes)i).playRoll();
-							currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(true);
-						}else{
-							modelLane.getParticleEffect((Lanes)i).playFreeze();
-						}
-	
-					}else if (currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
+					//The arrow is validated
+					if(currentCheckedArrow.type == ArrowType.NORMAL)
 					{
-						currentCheckedArrow.computeFreezePosition(currentTime);
-						
-						if(currentCheckedArrow.checkTimeEndFreeze(currentTime))
-						{
+						chartLane.validArrow((Lanes)i, currentCheckedArrow);
+					}else //For freeze and roll
+					if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
+					{
+						//If not attached
+						if(!currentCheckedArrow.attached){
+
 							chartLane.validArrow((Lanes)i, currentCheckedArrow);
-						}else if(currentCheckedArrow.checkMissFreeze(currentTime))
-						{
-							chartLane.missArrow((Lanes)i, true);
+							chartLane.attachToModelLane(modelLane, currentCheckedArrow, (Lanes)i);
+							currentCheckedArrow.computeFreezePosition(currentTime);
+
+							//Enable freeze
+							currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
+							if(currentCheckedArrow.type == ArrowType.ROLL)
+							{
+								modelLane.getParticleEffect((Lanes)i).playRoll();
+								currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(true);
+							}else{
+								modelLane.getParticleEffect((Lanes)i).playFreeze();
+							}
+		
+						}else{
+							currentCheckedArrow.computeFreezePosition(currentTime);
+							
+							if(currentCheckedArrow.checkTimeEndFreeze(currentTime))
+							{
+								chartLane.validArrow((Lanes)i, currentCheckedArrow, false, true);
+							}else if(currentCheckedArrow.checkMissFreeze(currentTime))
+							{
+								chartLane.missArrow((Lanes)i, true);
+							}
 						}
 					}
 				}
@@ -296,6 +318,11 @@ public class ChartManager : MonoBehaviour {
 
 		//Go to trash old tag as missed but not officialy missed yet
 		chartLane.autoMissArrowFromTrash ();
+
+		//Check for game over
+		if (chartLane.isNoMoreArrow () && mineLane.isNoMoreArrow ()) {
+			callGameOver(true);
+		}
 	}
 
 	public int indexBump = 0;
@@ -409,11 +436,16 @@ public class ChartManager : MonoBehaviour {
 
 	#region management
 
+	public void callChartStart()
+	{
+		chartStart = true;
+
+	}
+
 	public void callGameOver(bool clear = false)
 	{
 		if (!gameOver) {
 			gameOver = true;
-
 			if(clear)
 			{
 				EndingController.instance.showCleared(ComboController.instance.getCurrentComboType());
@@ -463,7 +495,7 @@ public class ChartManager : MonoBehaviour {
 		double bufferBPMTime = 0;
 		double savedBPMTime = 0;
 		double currentSTOPTime = 0;
-		double currentTime = 0;
+		double currentBufferTime = 0;
 
 		List<double> tempMusicalBumps = new List<double>();
 		List<double> tempMusicalJumps = new List<double>();
@@ -503,9 +535,9 @@ public class ChartManager : MonoBehaviour {
 
 				//Time of the mesure
 				bufferBPMTime += (mesureIndex - prevMesureIndex)/currentBPS;
-				currentTime = bufferBPMTime + savedBPMTime + currentSTOPTime;
+				currentBufferTime = bufferBPMTime + savedBPMTime + currentSTOPTime;
 
-				if((beatLine)%(mesure.Count/4) == 0) tempMusicalBumps.Add(currentTime);
+				if((beatLine)%(mesure.Count/4) == 0) tempMusicalBumps.Add(currentBufferTime);
 
 
 				//Unmanaged beat line, parsing to options
@@ -585,7 +617,7 @@ public class ChartManager : MonoBehaviour {
 
 						currentArrow = arrowObj.GetComponent<Arrow>();
 						if(finalBeatLine[i] != 'M') currentArrow.coloredObject.material.color = painter.getMesureColor(mesure.Count, beatLine+1);
-						currentArrow.scheduledTime = currentTime;
+						currentArrow.scheduledTime = currentBufferTime;
 						currentArrow.currentLane = (Lanes)i;
 
 						Arrow savedArrow = currentArrow;
@@ -607,7 +639,7 @@ public class ChartManager : MonoBehaviour {
 						currentArrow = chartLane.getLaneArrows((Lanes)i).Last();
 						FreezeController controller = currentArrow.getFreezeController(currentArrow.type);
 						controller.gameObject.SetActive(true);
-						controller.init(currentArrow, currentYPosition + currentArrow.transform.position.y, currentTime, currentArrow.coloredObject.material.color);
+						controller.init(currentArrow, currentYPosition + currentArrow.transform.position.y, currentBufferTime, currentArrow.coloredObject.material.color);
 						break;
 					case 'M':
 						currentArrow.type = ArrowType.MINE;
@@ -618,7 +650,7 @@ public class ChartManager : MonoBehaviour {
 
 				if(beatLineArrows.Count > 1)
 				{
-					tempMusicalJumps.Add(currentTime);
+					tempMusicalJumps.Add(currentBufferTime);
 					foreach(Arrow arrow in beatLineArrows)
 					{
 						arrow.linkedArrows.AddRange(beatLineArrows);

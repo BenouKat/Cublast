@@ -145,9 +145,11 @@ public class SoundWaveManager : MonoBehaviour {
 
 	#region Analyse
 	void AnalyzeSound(){
-		source.GetOutputData(samples, 0); // fill array with samples
+
 
 		if (calculateVolume) {
+			source.GetOutputData(samples, 0); // fill array with samples
+
 			float sum = 0;
 			for (int i=0; i < samplesLength; i++){
 				sum += samples[i]*samples[i]; // sum squared samples

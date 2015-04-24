@@ -1,15 +1,15 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\TimeController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ProjectResources\Localisation\localisation.txt">
     <Files>
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\PlateGame\PlateGameManager.cs" Line="104" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\PlateGame\Plate.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\PlateGame\PlateGameUI.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\Transformers\Plate2D.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\TokenTrapGame\TokenTrapGameManager.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\TokenTrapGame\TokenSpawner.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\TokenTrapGame\TokenTrap.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Chart\TimeController.cs" Line="29" Column="31" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="448" Column="20" />
+      <File FileName="Assets\Script\Chart\LaneManager.cs" Line="170" Column="2" />
+      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="13" Column="49" />
+      <File FileName="Assets\Script\Chart\AudioController.cs" Line="18" Column="37" />
+      <File FileName="Assets\Script\System\Song.cs" Line="113" Column="26" />
+      <File FileName="Assets\Script\Chart\VisualizerController.cs" Line="20" Column="48" />
+      <File FileName="Assets\Script\Managers\SoundWaveManager.cs" Line="74" Column="29" />
+      <File FileName="Assets\Script\Chart\EndingController.cs" Line="34" Column="34" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

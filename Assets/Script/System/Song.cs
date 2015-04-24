@@ -107,14 +107,12 @@ public class Song {
 		
 		return ratedSong;
 	}
-	
-	/*
-	public AudioClip SetAudioClip(AudioClip ac){
-		var thewww = new WWW(song);
-		while(!thewww.isDone){ }
-		return thewww.GetAudioClip(false, true);
+
+	public AudioClip SetAudioClip(){
+		WWW thewww = new WWW(song);
+		while(!thewww.isDone){  }
+		return thewww.GetAudioClip(false);
 	}
-	*/
 	
 	public Texture2D GetBanner(Texture2D tex){
 		if(banner != "noBanner"){
