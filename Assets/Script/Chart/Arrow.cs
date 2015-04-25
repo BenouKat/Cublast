@@ -17,8 +17,10 @@ public class Arrow : MonoBehaviour {
 	//Time related
 	public double scheduledTime;
 	public Precision precisionValid = Precision.NONE;
+	public NoteTiming timingValid = NoteTiming.NONE;
 
 	//Object related
+	public Transform rotationRoot;
 	public MeshRenderer coloredObject;
 
 	public FreezeController freezeController;
@@ -36,10 +38,12 @@ public class Arrow : MonoBehaviour {
 		}
 
 		precisionValid = Utils.getPrec ((double)Mathf.Abs ((float)(scheduledTime - dateValidation)));
+		timingValid = scheduledTime > dateValidation ? NoteTiming.EARLY : NoteTiming.LATE;
 		state = precisionValid <= Precision.GREAT ? ArrowState.VALIDATED : ArrowState.MISSED;
 		foreach (Arrow linkArrow in linkedArrows) { 
 			linkArrow.state = state; 
 			linkArrow.precisionValid = precisionValid;
+			linkArrow.timingValid = timingValid;
 		}
 		//Debug.Log (precisionValid.ToString() + " // " + Mathf.Abs ((float)(scheduledTime - dateValidation)).ToString("0.0000"));
 		return precisionValid;

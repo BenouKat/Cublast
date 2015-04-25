@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AudioController : MonoBehaviour {
 
@@ -8,9 +9,16 @@ public class AudioController : MonoBehaviour {
 	{
 		if (instance == null)
 			instance = this;
+
+		for(int i=0; i<transform.childCount; i++)
+		{
+			sounds.Add(transform.GetChild(i).gameObject);
+		}
 	}
 
 	public AudioSource audioSource;
+
+	List<GameObject> sounds = new List<GameObject>();
 
 	public void loadSong(Song s)
 	{
@@ -29,5 +37,10 @@ public class AudioController : MonoBehaviour {
 	public void stopSongFailed()
 	{
 		audioSource.Stop ();
+	}
+
+	public void playSoundOnShot(string sound)
+	{
+		sounds.Find(c => c.name == sound).SetActive(true);
 	}
 }

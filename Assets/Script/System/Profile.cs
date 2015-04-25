@@ -69,10 +69,10 @@ public class Profile{
 		KeyCodeDown = KeyCode.DownArrow;
 		KeyCodeLeft = KeyCode.LeftArrow;
 		KeyCodeRight = KeyCode.RightArrow;
-		SecondaryKeyCodeUp = KeyCode.Z;
-		SecondaryKeyCodeDown = KeyCode.S;
-		SecondaryKeyCodeLeft = KeyCode.Q;
-		SecondaryKeyCodeRight = KeyCode.D;
+		SecondaryKeyCodeUp = KeyCode.U;
+		SecondaryKeyCodeDown = KeyCode.T;
+		SecondaryKeyCodeLeft = KeyCode.E;
+		SecondaryKeyCodeRight = KeyCode.O;
 	}
 	
 	public void saveASong(SongInfoProfil sip, float scoreEarned, double speedmodPref, bool fail){

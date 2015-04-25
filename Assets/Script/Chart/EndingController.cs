@@ -24,6 +24,7 @@ public class EndingController : MonoBehaviour {
 		ClearedObject.SetActive (true);
 		if (comboType != ComboType.NONE) {
 			ComboObjects[(int)comboType].SetActive(true);
+			AudioController.instance.playSoundOnShot("Combo");
 		}
 	}
 
@@ -32,6 +33,7 @@ public class EndingController : MonoBehaviour {
 		LifeController.instance.playDeath ();
 		TimeController.instance.stopUpdate ();
 		AudioController.instance.stopSongFailed();
+		AudioController.instance.playSoundOnShot("Failed");
 		StartCoroutine (endingAnimation ());
 	}
 

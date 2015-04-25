@@ -33,6 +33,6 @@ public class GameLocalization : MonoBehaviour {
 
 	public string Translate(string key)
 	{
-		return (string)dictionary[key];
+		return ((string)dictionary[key]).Replace("\\n", "\n");
 	}
 }

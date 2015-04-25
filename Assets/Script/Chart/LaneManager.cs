@@ -201,10 +201,14 @@ public class LaneManager : MonoBehaviour {
 				if(arrowValid.type == ArrowType.NORMAL || !endFreezeValidation)
 				{
 					ChartManager.instance.modelLane.getParticleEffect (lane).play (arrowValid.precisionValid);
-					LifeController.instance.addHPbyPrecision(arrowValid.precisionValid);
-					ScoreController.instance.addScoreByPrecision(arrowValid.precisionValid);
-					ComboController.instance.addCombo(arrowValid.precisionValid);
-					NoteController.instance.showNote(arrowValid.precisionValid);
+
+					if(checkLinked)
+					{
+						ComboController.instance.addCombo(arrowValid.precisionValid);
+						LifeController.instance.addHPbyPrecision(arrowValid.precisionValid);
+						ScoreController.instance.addScoreByPrecision(arrowValid.precisionValid);
+						NoteController.instance.showNote(arrowValid.precisionValid, arrowValid.timingValid);
+					}
 				}else{
 					ChartManager.instance.modelLane.getParticleEffect (lane).playEndFreeze();
 					ChartManager.instance.modelLane.getParticleEffect(lane).stopFreezeOrRoll();

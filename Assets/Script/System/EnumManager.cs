@@ -106,6 +106,12 @@ public enum ArrowPosition{
 	DOWN
 }
 
+public enum NoteTiming {
+	NONE,
+	EARLY,
+	LATE
+}
+
 public enum PrecParticle{
 		FANTASTIC,
 		FANTASTICC,

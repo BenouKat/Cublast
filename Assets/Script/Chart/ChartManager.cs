@@ -47,7 +47,7 @@ public class ChartManager : MonoBehaviour {
 
 		//DEBUG
 		//###################
-		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Etude for a Dragon").songs [Difficulty.HARD];
+		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Level Skip").songs [Difficulty.EXPERT];
 		//###################
 
 		currentTime = -1;
@@ -69,6 +69,7 @@ public class ChartManager : MonoBehaviour {
 	//Manager global variable
 	public Transform scrollingObject;
 	public float systemSpeedmod = 1f; //Resize the chart to ITG Like base spacement
+	public double systemOffset = -0.150; //Engine Offset
 	public float timeBeforeStart;
 
 	//Private global variable
@@ -142,11 +143,11 @@ public class ChartManager : MonoBehaviour {
 	void Update () {
 		if (chartStart && !gameOver) {
 
-			if(songHasntStarted && currentTime >= 0)
+			if(songHasntStarted && currentTime >= systemOffset)
 			{
 				songHasntStarted = false;
-				currentTime = 0;
-				currentSyncTime = 0;
+				currentTime = systemOffset;
+				currentSyncTime = systemOffset;
 				AudioController.instance.startSong();
 			}
 
@@ -613,9 +614,15 @@ public class ChartManager : MonoBehaviour {
 						}
 						arrowObj.transform.SetParent(currentLaneManager.getLane((Lanes)i));
 						arrowObj.transform.localPosition = -Vector3.up*currentYPosition;
-						if(modelSkinSelected.canBeTurned) Utils.turnOnLane(arrowObj.transform, (Lanes)i);
 
 						currentArrow = arrowObj.GetComponent<Arrow>();
+
+						if(modelSkinSelected.canBeTurned && currentArrow.rotationRoot != null)
+						{
+							Utils.turnOnLane(currentArrow.rotationRoot, (Lanes)i);
+						}
+
+
 						if(finalBeatLine[i] != 'M') currentArrow.coloredObject.material.color = painter.getMesureColor(mesure.Count, beatLine+1);
 						currentArrow.scheduledTime = currentBufferTime;
 						currentArrow.currentLane = (Lanes)i;
