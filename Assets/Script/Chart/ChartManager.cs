@@ -98,6 +98,7 @@ public class ChartManager : MonoBehaviour {
 
 	//Variable Pool
 	private Arrow currentCheckedArrow;
+	private Arrow currentFrozenArrow;
 
 	// Use this for initialization
 	void Start () {
@@ -254,10 +255,25 @@ public class ChartManager : MonoBehaviour {
 	{
 		for (int i=0; i<numberOfLanes; i++) {
 			currentCheckedArrow = chartLane.getNextLaneArrows((Lanes)i);
-			//Debug.Log("current Checked Arrow on lane " + ((Lanes)i).ToString() + " : " + currentCheckedArrow.scheduledTime + " // " + currentTime);
+			currentFrozenArrow = chartLane.getFrozenLaneArrows((Lanes)i);
+
+			//Freezes
+			if(currentFrozenArrow != null)
+			{
+				currentFrozenArrow.computeFreezePosition(currentTime);
+				
+				if(currentFrozenArrow.checkTimeEndFreeze(currentTime))
+				{
+					chartLane.validArrow((Lanes)i, currentFrozenArrow, false, true);
+				}else if(currentFrozenArrow.checkMissFreeze(currentTime))
+				{
+					chartLane.missArrow((Lanes)i, true);
+				}
+			}
+
+			//Normal and freezes begin
 			if(currentCheckedArrow != null)
 			{
-				//Debug.Log("check : " + currentCheckedArrow.currentLane + " // " + currentCheckedArrow.type + " // " + currentCheckedArrow.state); 
 				//Validated arrow for previous inputs : Confirmation
 				if(currentCheckedArrow.state == ArrowState.VALIDATED)
 				{
@@ -285,16 +301,6 @@ public class ChartManager : MonoBehaviour {
 								modelLane.getParticleEffect((Lanes)i).playFreeze();
 							}
 		
-						}else{
-							currentCheckedArrow.computeFreezePosition(currentTime);
-							
-							if(currentCheckedArrow.checkTimeEndFreeze(currentTime))
-							{
-								chartLane.validArrow((Lanes)i, currentCheckedArrow, false, true);
-							}else if(currentCheckedArrow.checkMissFreeze(currentTime))
-							{
-								chartLane.missArrow((Lanes)i, true);
-							}
 						}
 					}
 				}
@@ -357,7 +363,23 @@ public class ChartManager : MonoBehaviour {
 	{
 		//Check the next arrow
 		currentCheckedArrow = chartLane.getNextLaneArrows(lane);
-		if (currentCheckedArrow != null) {
+		currentFrozenArrow = chartLane.getFrozenLaneArrows(lane);
+
+		//First we check the freeze
+		if(currentFrozenArrow != null)
+		{
+			//If the freeze is already valid, and the next arrow is ready for a great, take it
+			if(currentFrozenArrow.getFreezeController(currentFrozenArrow.type).isAlreadyValid() 
+			   && currentCheckedArrow != null && currentCheckedArrow.getArrowPrec(currentTime) <= Precision.GREAT)
+			{
+				chartLane.validArrow(lane, currentFrozenArrow, false, true);
+				currentFrozenArrow = null;
+			}else{
+				validFreezeCurrentArrow(currentFrozenArrow);
+			}
+		}
+
+		if (currentCheckedArrow != null && currentFrozenArrow == null) {
 
 			//Tag the next arrow as missed : If the precision is more than decent
 			currentCheckedArrow.tryTagAsMissed(currentTime);
@@ -383,11 +405,7 @@ public class ChartManager : MonoBehaviour {
 			if(currentCheckedArrow.state == ArrowState.VALIDATED) {
 				if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
 				{
-					currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
-					if(currentCheckedArrow.type == ArrowType.FREEZE)
-					{
-						currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(false);
-					}
+					validFreezeCurrentArrow(currentCheckedArrow);
 				}
 			}
 		}
@@ -399,14 +417,12 @@ public class ChartManager : MonoBehaviour {
 	//Maintien des frrezes, explosion des mines
 	public void holdLane(Lanes lane)
 	{
-		currentCheckedArrow = chartLane.getNextLaneArrows(lane);
-		if (currentCheckedArrow != null)
+		currentFrozenArrow = chartLane.getFrozenLaneArrows(lane);
+		if (currentFrozenArrow != null)
 		{
-			if(currentCheckedArrow.state == ArrowState.VALIDATED) {
-				if(currentCheckedArrow.type == ArrowType.FREEZE)
-				{
-					currentCheckedArrow.getFreezeController(currentCheckedArrow.type).hit(currentTime);
-				}
+			if(currentFrozenArrow.type == ArrowType.FREEZE)
+			{
+				currentFrozenArrow.getFreezeController(currentFrozenArrow.type).hit(currentTime);
 			}
 		}
 
@@ -421,14 +437,12 @@ public class ChartManager : MonoBehaviour {
 	//Desactivation des freezes
 	public void releaseLane(Lanes lane)
 	{
-		currentCheckedArrow = chartLane.getNextLaneArrows(lane);
-		if (currentCheckedArrow != null)
+		currentFrozenArrow = chartLane.getFrozenLaneArrows(lane);
+		if (currentFrozenArrow != null)
 		{
-			if(currentCheckedArrow.state == ArrowState.VALIDATED) {
-				if(currentCheckedArrow.type == ArrowType.FREEZE)
-				{
-					currentCheckedArrow.getFreezeController(currentCheckedArrow.type).enableLetInUpdate(true);
-				}
+			if(currentFrozenArrow.type == ArrowType.FREEZE)
+			{
+				currentFrozenArrow.getFreezeController(currentFrozenArrow.type).enableLetInUpdate(true);
 			}
 		}
 	}
@@ -460,6 +474,15 @@ public class ChartManager : MonoBehaviour {
 	#endregion
 
 	#region Utils
+
+	public void validFreezeCurrentArrow(Arrow arrow)
+	{
+		arrow.getFreezeController(arrow.type).hit(currentTime);
+		if(arrow.type == ArrowType.FREEZE)
+		{
+			arrow.getFreezeController(arrow.type).enableLetInUpdate(false);
+		}
+	}
 
 	public double getScrollingObjectPosition()
 	{

@@ -108,4 +108,9 @@ public class FreezeController : MonoBehaviour {
 		emissionTweener.enableLetInUpdate (active);
 	}
 
+	public bool isAlreadyValid()
+	{
+		return timeEndScheduled - timeLastHit <= GameManager.instance.timeBeforeFreezeMiss;
+	}
+
 }

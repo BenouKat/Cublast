@@ -1,10 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\ChartManager.cs">
     <Files>
-      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="615" Column="35" />
-      <File FileName="Assets\Script\Utils\Utils.cs" Line="42" Column="1" />
-      <File FileName="Assets\Script\Chart\Arrow.cs" Line="23" Column="32" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="378" Column="47" />
+      <File FileName="Assets\Script\Utils\Utils.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\Arrow.cs" Line="29" Column="2" />
+      <File FileName="Assets\Script\Chart\LaneManager.cs" Line="308" Column="36" />
+      <File FileName="Assets\Script\Chart\FreezeController.cs" Line="37" Column="92" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

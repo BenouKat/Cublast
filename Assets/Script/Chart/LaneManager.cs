@@ -43,6 +43,11 @@ public class LaneManager : MonoBehaviour {
 	Arrow nextUp;
 	Arrow nextDown;
 
+	Arrow frozenLeft;
+	Arrow frozenRight;
+	Arrow frozenUp;
+	Arrow frozenDown;
+
 	int[] indexes;
 
 	//Set the particles controller
@@ -169,7 +174,8 @@ public class LaneManager : MonoBehaviour {
 
 	public bool isNoMoreArrow()
 	{
-		return nextLeft == null && nextDown == null && nextUp == null && nextRight == null;
+		return nextLeft == null && nextDown == null && nextUp == null && nextRight == null
+			&& frozenUp == null && frozenRight == null && frozenLeft == null && frozenDown == null;
 	}
 
 	public void lockLane()
@@ -226,7 +232,16 @@ public class LaneManager : MonoBehaviour {
 		}
 
 		//If its not a freeze waiting to be completed
-		if (!((arrowValid.type == ArrowType.FREEZE || arrowValid.type == ArrowType.ROLL) && !endFreezeValidation)) {
+		if ((arrowValid.type == ArrowType.FREEZE || arrowValid.type == ArrowType.ROLL)) {
+			if(!endFreezeValidation)
+			{
+				setFrozenLaneArrows(lane, arrowValid);
+				pushNextArrow (lane);
+			}else{
+				getFrozenLaneArrows(lane).gameObject.SetActive(false);
+				setFrozenLaneArrows(lane, null);
+			}
+		}else{
 			getNextLaneArrows (lane).gameObject.SetActive (false);
 			pushNextArrow (lane);
 		}
@@ -288,7 +303,11 @@ public class LaneManager : MonoBehaviour {
 		}
 
 		if (getNextLaneArrows (lane).attached)
+		{
 			distachFromModelLane (ChartManager.instance.modelLane, lane);
+			setFrozenLaneArrows(lane, null);
+		}
+			
 
 		if (firstCall && getNextLaneArrows (lane).linkedArrows.Count != 0) {
 			foreach(Arrow arrow in getNextLaneArrows (lane).linkedArrows)
@@ -419,6 +438,38 @@ public class LaneManager : MonoBehaviour {
 			return nextUp = arrow;
 		case Lanes.RIGHT:
 			return nextRight = arrow;				
+		}
+		return null;
+	}
+
+	public Arrow getFrozenLaneArrows(Lanes lane)
+	{
+		switch(lane)
+		{
+		case Lanes.LEFT:
+			return frozenLeft;
+		case Lanes.DOWN:
+			return frozenRight;
+		case Lanes.UP:
+			return frozenUp;
+		case Lanes.RIGHT:
+			return frozenDown;				
+		}
+		return null;
+	}
+
+	public Arrow setFrozenLaneArrows(Lanes lane, Arrow arrow)
+	{
+		switch(lane)
+		{
+		case Lanes.LEFT:
+			return frozenLeft = arrow;
+		case Lanes.DOWN:
+			return frozenRight = arrow;
+		case Lanes.UP:
+			return frozenUp = arrow;
+		case Lanes.RIGHT:
+			return frozenDown = arrow;				
 		}
 		return null;
 	}
