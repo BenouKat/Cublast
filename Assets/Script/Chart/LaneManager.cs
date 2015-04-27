@@ -172,6 +172,14 @@ public class LaneManager : MonoBehaviour {
 		}
 	}
 
+	public void activeAllComboParticles(bool active)
+	{
+		for(int i=0; i<numberOfLanes; i++)
+		{
+			getParticleEffect((Lanes)i).activeComboParticle(active);
+		}
+	}
+
 	public bool isNoMoreArrow()
 	{
 		return nextLeft == null && nextDown == null && nextUp == null && nextRight == null
@@ -215,6 +223,14 @@ public class LaneManager : MonoBehaviour {
 						ScoreController.instance.addScoreByPrecision(arrowValid.precisionValid);
 						NoteController.instance.showNote(arrowValid.precisionValid, arrowValid.timingValid);
 					}
+
+					if(arrowValid.type == ArrowType.FREEZE || arrowValid.type == ArrowType.ROLL)
+					{
+						attachToModelLane(ChartManager.instance.modelLane, arrowValid, lane);
+						ChartManager.instance.validFreezeCurrentArrow(arrowValid);
+					}
+
+
 				}else{
 					ChartManager.instance.modelLane.getParticleEffect (lane).playEndFreeze();
 					ChartManager.instance.modelLane.getParticleEffect(lane).stopFreezeOrRoll();
@@ -224,8 +240,8 @@ public class LaneManager : MonoBehaviour {
 			}
 		}
 
-		if (!endFreezeValidation && checkLinked && getNextLaneArrows (lane).linkedArrows.Count != 0) {
-			foreach(Arrow arrow in getNextLaneArrows (lane).linkedArrows)
+		if (!endFreezeValidation && checkLinked && arrowValid.linkedArrows.Count != 0) {
+			foreach(Arrow arrow in arrowValid.linkedArrows)
 			{
 				validArrow(arrow.currentLane, arrow, false);
 			}
@@ -238,11 +254,11 @@ public class LaneManager : MonoBehaviour {
 				setFrozenLaneArrows(lane, arrowValid);
 				pushNextArrow (lane);
 			}else{
-				getFrozenLaneArrows(lane).gameObject.SetActive(false);
+				arrowValid.gameObject.SetActive(false);
 				setFrozenLaneArrows(lane, null);
 			}
 		}else{
-			getNextLaneArrows (lane).gameObject.SetActive (false);
+			arrowValid.gameObject.SetActive (false);
 			pushNextArrow (lane);
 		}
 
@@ -268,11 +284,11 @@ public class LaneManager : MonoBehaviour {
 		modelLane.getLaneArrows(lane).Clear();
 	}
 
-	public void missArrow(Lanes lane, bool missIsBad = false, bool firstCall = true)
+	public void missArrow(Lanes lane, Arrow arrowMissed, bool missIsBad = false, bool firstCall = true)
 	{
 		if (missIsBad) {
-			if(getNextLaneArrows (lane).type == ArrowType.NORMAL) {
-				ChartManager.instance.modelLane.getParticleEffect (lane).play (getNextLaneArrows (lane).precisionValid);
+			if(arrowMissed.type == ArrowType.NORMAL) {
+				ChartManager.instance.modelLane.getParticleEffect (lane).play (arrowMissed.precisionValid);
 				if(firstCall)
 				{
 					LifeController.instance.addHPbyPrecision(Precision.MISS);
@@ -280,16 +296,13 @@ public class LaneManager : MonoBehaviour {
 					ComboController.instance.breakCombo();
 					NoteController.instance.showNote(Precision.MISS);
 				}
-			}else if(getNextLaneArrows (lane).type != ArrowType.MINE)
+			}else if(arrowMissed.type != ArrowType.MINE)
 			{
-				if(getNextLaneArrows (lane).attached)
+				if(arrowMissed.attached)
 				{
 					ChartManager.instance.modelLane.getParticleEffect (lane).stopFreezeOrRoll();
-					if(firstCall)
-					{
-						LifeController.instance.addHPbyPrecision(Precision.UNFREEZE);
-						ScoreController.instance.addScoreByPrecision(Precision.UNFREEZE);
-					}
+					LifeController.instance.addHPbyPrecision(Precision.UNFREEZE);
+					ScoreController.instance.addScoreByPrecision(Precision.UNFREEZE);
 				}else{
 					if(firstCall)
 					{
@@ -302,21 +315,23 @@ public class LaneManager : MonoBehaviour {
 			}
 		}
 
-		if (getNextLaneArrows (lane).attached)
+		if (arrowMissed.attached)
 		{
 			distachFromModelLane (ChartManager.instance.modelLane, lane);
 			setFrozenLaneArrows(lane, null);
+		}else{
+			pushNextArrow (lane);
 		}
 			
 
-		if (firstCall && getNextLaneArrows (lane).linkedArrows.Count != 0) {
-			foreach(Arrow arrow in getNextLaneArrows (lane).linkedArrows)
+		if (firstCall && arrowMissed.linkedArrows.Count != 0) {
+			foreach(Arrow arrow in arrowMissed.linkedArrows)
 			{
-				missArrow(arrow.currentLane, missIsBad, false);
+				missArrow(arrow.currentLane, arrow, missIsBad, false);
 			}
 		}
 
-		pushNextArrow (lane);
+
 	}
 
 	private List<Arrow> removeFromTrash = new List<Arrow>();
@@ -348,7 +363,11 @@ public class LaneManager : MonoBehaviour {
 	public void missTrashedArrow(Arrow arrow, bool checkLinked = true)
 	{
 		if (arrow.attached)
+		{
+			setFrozenLaneArrows(arrow.currentLane, null);
 			distachFromModelLane (ChartManager.instance.modelLane, arrow.currentLane);
+		}
+			
 
 		removeFromTrash.Add (arrow);
 	}

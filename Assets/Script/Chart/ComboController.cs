@@ -125,6 +125,7 @@ public class ComboController : MonoBehaviour {
 			playParticle (particlesNoneCombo [(int)NoneComboType.MISSED]);
 			comboOutline.effectColor = textColorNoneCombo[(int)NoneComboType.MISSED];
 			changeComboMaterialColor(materialColorNoneCombo[(int)NoneComboType.MISSED]);
+			ChartManager.instance.modelLane.activeAllComboParticles(false);
 			return;
 		}
 
@@ -144,6 +145,7 @@ public class ComboController : MonoBehaviour {
 				comboOutline.effectColor = textColorCombo[(int)currentComboType];
 				changeComboMaterialColor(materialColorCombo[(int)currentComboType]);
 			}
+			ChartManager.instance.modelLane.activeAllComboParticles(true);
 		}
 	}
 

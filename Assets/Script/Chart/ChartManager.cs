@@ -267,7 +267,7 @@ public class ChartManager : MonoBehaviour {
 					chartLane.validArrow((Lanes)i, currentFrozenArrow, false, true);
 				}else if(currentFrozenArrow.checkMissFreeze(currentTime))
 				{
-					chartLane.missArrow((Lanes)i, true);
+					chartLane.missArrow((Lanes)i, currentFrozenArrow, true, false);
 				}
 			}
 
@@ -288,7 +288,6 @@ public class ChartManager : MonoBehaviour {
 						if(!currentCheckedArrow.attached){
 
 							chartLane.validArrow((Lanes)i, currentCheckedArrow);
-							chartLane.attachToModelLane(modelLane, currentCheckedArrow, (Lanes)i);
 							currentCheckedArrow.computeFreezePosition(currentTime);
 
 							//Enable freeze
@@ -300,6 +299,8 @@ public class ChartManager : MonoBehaviour {
 							}else{
 								modelLane.getParticleEffect((Lanes)i).playFreeze();
 							}
+
+
 		
 						}
 					}
@@ -309,7 +310,7 @@ public class ChartManager : MonoBehaviour {
 				if(currentCheckedArrow.state == ArrowState.MISSED || (currentCheckedArrow.state == ArrowState.NONE || currentCheckedArrow.state == ArrowState.WAITINGLINKED) 
 				   && currentCheckedArrow.checkAndProcessMissArrow(currentTime))
 				{
-					chartLane.missArrow((Lanes)i, true);
+					chartLane.missArrow((Lanes)i, currentCheckedArrow, true);
 				}
 				  
 			}
@@ -319,7 +320,7 @@ public class ChartManager : MonoBehaviour {
 			if(currentCheckedArrow != null && currentCheckedArrow.state == ArrowState.NONE 
 			   && currentCheckedArrow.checkAndProcessMissMine(currentTime))
 			{
-				mineLane.missArrow((Lanes)i);
+				mineLane.missArrow((Lanes)i, currentCheckedArrow);
 			}
 		}
 
@@ -400,14 +401,6 @@ public class ChartManager : MonoBehaviour {
 
 			//Validation process of an arrow
 			currentCheckedArrow.checkAndProcessValidateArrow (currentTime);
-
-			//Start the freeze computing
-			if(currentCheckedArrow.state == ArrowState.VALIDATED) {
-				if(currentCheckedArrow.type == ArrowType.FREEZE || currentCheckedArrow.type == ArrowType.ROLL)
-				{
-					validFreezeCurrentArrow(currentCheckedArrow);
-				}
-			}
 		}
 
 		scaleTweeners [(int)lane].activeTween ();

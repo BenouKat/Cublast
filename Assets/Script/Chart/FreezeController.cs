@@ -24,8 +24,8 @@ public class FreezeController : MonoBehaviour {
 	Transform[] warningObjectsPositionArray;
 	int indexWarningObject;
 
-	[HideInInspector] public double timeLastHit;
-	[HideInInspector] public double timeEndScheduled;
+	public double timeLastHit;
+	public double timeEndScheduled;
 
 	EmissionTweener emissionTweener;
 
@@ -34,7 +34,7 @@ public class FreezeController : MonoBehaviour {
 		emissionTweener = GetComponent<EmissionTweener> ();
 		baseFreezeMaterial = baseFreeze.GetComponent<Renderer>().material;
 		emissionTweener.concernedMaterial = baseFreezeMaterial;
-		emissionTweener.speedEmissionDecrease = (float)GameManager.instance.timeBeforeFreezeMiss;
+		emissionTweener.speedEmissionDecrease = (float)GameManager.instance.timeBeforeFreezeMiss/2f;
 		clearZoneRenderer.enabled = false;
 		clearZoneBaseX = clearZone.localScale.x;
 		clearZoneMaterial = clearZoneRenderer.material;
