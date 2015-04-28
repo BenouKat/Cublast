@@ -22,6 +22,11 @@ public class ServerManager : MonoBehaviour {
 
 	public bool debug;
 
+	void Start()
+	{
+		connect ("BenouKat", "test");
+	}
+
 	void onConnectionSuccess(string user, Client client){
 		Debug.Log("Connected !");
 		connected = true;
