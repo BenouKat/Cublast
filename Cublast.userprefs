@@ -1,15 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\ComboController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Managers\ServerManager.cs">
     <Files>
-      <File FileName="Assets\Script\Chart\LifeController.cs" Line="131" Column="3" />
-      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="368" Column="3" />
+      <File FileName="Assets\Script\Chart\LifeController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Utils\Utils.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Chart\Arrow.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Chart\LaneManager.cs" Line="70" Column="4" />
+      <File FileName="Assets\Script\Chart\LaneManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Chart\FreezeController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Chart\ComboController.cs" Line="128" Column="35" />
-      <File FileName="Assets\Script\Chart\ParticleEffectController.cs" Line="27" Column="33" />
+      <File FileName="Assets\Script\Chart\ComboController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\ParticleEffectController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Managers\ServerManager.cs" Line="95" Column="13" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
