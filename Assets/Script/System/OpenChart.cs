@@ -435,12 +435,20 @@ public class OpenChart{
 					theNewsong.numberOfStepsWithoutJumps = numberOfStepsWJ;
 					theNewsong.numberOfStepsAbsolute = numberOfStepsAbs;
 
-					if(!exitTrigger) fakeCreation(theNewsong);
-						//A mettre
-					//if(outputSongs.ContainsKey(theNewsong.difficulty))
-					theNewsong.sip = new SongInfoProfil(theNewsong.title, theNewsong.subtitle, 
-						theNewsong.numberOfSteps, theNewsong.difficulty, theNewsong.level);
-					outputSongs.Add(theNewsong.difficulty, theNewsong);
+					if(!exitTrigger) fakeCreation(ref theNewsong);
+
+					
+					double keyIdentifier = (numberOfSteps + (1 + numberOfFreezes)*(1 + numberOfRoll + numberOfMines)) 
+						+ (37*theNewsong.stepPerSecondStream) / (1 + ((theNewsong.duration * theNewsong.stepPerSecondAverage) + theNewsong.longestStream));
+
+
+					if(!outputSongs.ContainsKey(theNewsong.difficulty))
+					{
+						theNewsong.sip = new SongInfoProfil(theNewsong.title, theNewsong.subtitle, 
+						                                    theNewsong.numberOfSteps, theNewsong.difficulty, theNewsong.level, keyIdentifier);
+						outputSongs.Add(theNewsong.difficulty, theNewsong);
+					}
+
 				}
 			}
 		}
@@ -450,7 +458,7 @@ public class OpenChart{
 	}
 	
 	
-	void fakeCreation(Song s){
+	void fakeCreation(ref Song s){
 				
 		float cursorPrecision = 0.001f;
 		

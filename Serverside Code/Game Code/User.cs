@@ -14,6 +14,7 @@ namespace Cublast
         public int playTime;
 
         public int songCleared;
+        public int worldRecords;
 
         public string currentSongPlayed;
 
@@ -26,6 +27,7 @@ namespace Cublast
             lastConnection = DateTime.UtcNow;
             lastDisconnection = DateTime.UtcNow.AddHours(-1);
             songCleared = 0;
+            worldRecords = 0;
             currentSongPlayed = "";
             lastSongPlayed = "";
             lastScore = 0f;
@@ -39,6 +41,7 @@ namespace Cublast
             playTime = userDbo.GetInt("PlayTime");
 
             songCleared = userDbo.GetInt("SongCleared");
+            worldRecords = userDbo.GetInt("WorldRecords");
             currentSongPlayed = userDbo.GetString("CurrentSongPlayed");
             lastSongPlayed = userDbo.GetString("LastSongPlayed");
             lastScore = userDbo.GetFloat("LastScore");
@@ -52,6 +55,7 @@ namespace Cublast
             dbo.Set("LastDisconnection", lastDisconnection);
             dbo.Set("PlayTime", playTime);
             dbo.Set("SongCleared", songCleared);
+            dbo.Set("WorldRecords", worldRecords);
             dbo.Set("CurrentSongPlayed", currentSongPlayed);
             dbo.Set("LastSongPlayed", lastSongPlayed);
             dbo.Set("LastScore", lastScore);
@@ -72,14 +76,25 @@ namespace Cublast
             userDbo.Set("PlayTime", playTime);
         }
 
-        public void updateSongPlayed(string songPlayed, int level)
+        public void updateSongPlayed(ref DatabaseObject userDbo, string songPlayed, int level)
         {
-
+            currentSongPlayed = string.IsNullOrEmpty(songPlayed) ? "" : songPlayed + "|" + level.ToString();
+            userDbo.Set("CurrentSongPlayed", currentSongPlayed);
         }
 
-        public void updateLastSongPlayed()
+        public void updateLastSongPlayed(ref DatabaseObject userDbo, string songPlayed, int level, float score)
         {
+            lastSongPlayed = songPlayed + "|" + level.ToString();
+            lastScore = score;
+            userDbo.Set("LastSongPlayed", lastSongPlayed);
+            userDbo.Set("LastScore", lastScore);
+        }
 
+        public void updateWorldRecord(ref DatabaseObject userDbo, int count)
+        {
+            worldRecords += count;
+            if (worldRecords < 0) worldRecords = 0;
+            userDbo.Set("WorldRecords", worldRecords);
         }
     }
 }

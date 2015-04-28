@@ -62,20 +62,16 @@ namespace Cublast {
 		public override void GotMessage(Player player, Message message) {
 			switch(message.Type) {
 
-                
-
-				case "Chat":
-					foreach(Player pl in Players) {
-						if(pl.ConnectUserId != player.ConnectUserId) {
-							pl.Send("Chat", player.ConnectUserId, message.GetString(0));
-						}
-					}
-					break;
+                case "SongCleared":
+                    processSongCleared(player, message.GetString(0), message.GetString(1), message.GetInt(2), message.GetDouble(3));
+                    break;
+                case "UpdateCurrentSong"
+                    break;
 			}
 		}
 
 
-
+        //Generic methods
         public void loadUserObject(string userId, Callback<DatabaseObject> success = null, Callback<PlayerIOError> failure = null)
         {
             PlayerIO.BigDB.Load("Users", userId, delegate(DatabaseObject userDbo)
@@ -97,6 +93,75 @@ namespace Cublast {
             delegate(PlayerIOError error)
             {
                 if (failure != null) failure();
+            });
+        }
+
+        public void loadSongObject(string songId, Callback<DatabaseObject> success = null, Callback<PlayerIOError> failure = null)
+        {
+            PlayerIO.BigDB.Load("Songs", songId, delegate(DatabaseObject userDbo)
+            {
+                if (success != null) success(userDbo);
+            }, delegate(PlayerIOError error)
+            {
+                if (failure != null) failure(error);
+            });
+        }
+
+
+
+
+        //Game method
+        public void processSongCleared(Player player, string songIdentifier, string songName, int level, double score)
+        {
+            loadUserObject(player.userId, delegate(DatabaseObject userDbo)
+            {
+                player.user.updateSongPlayed(ref userDbo, songName, level);
+                player.user.updateLastSongPlayed(ref userDbo, songName, level, (float)score);
+                userDbo.Save();
+            });
+
+            int scoreTransformed = (int)(score * 100);
+            loadSongObject(songIdentifier, delegate(DatabaseObject songDbo)
+            {
+                Song s = new Song(songDbo);
+                
+                if (s.worldRecordScore <= scoreTransformed)
+                {
+                    loadUserObject(player.userId, delegate(DatabaseObject userDbo)
+                    {
+                        player.user.updateWorldRecord(ref userDbo, 1);
+                    });
+                    s.updateWorldRecord(ref songDbo, player.userId, scoreTransformed);
+                    songDbo.Save();
+                }
+            },
+            delegate(PlayerIOError error)
+            {
+                createSongRecord(player, songIdentifier, scoreTransformed);
+                loadUserObject(player.userId, delegate(DatabaseObject userDbo)
+                {
+                    player.user.updateWorldRecord(ref userDbo, 1);
+                });
+            });
+        }
+
+        public void createSongRecord(Player player, string songIdentifier, int scoreTransformed)
+        {
+            Song s = new Song();
+            s.worldRecord = player.userId;
+            s.worldRecordScore = scoreTransformed;
+            PlayerIO.BigDB.CreateObject("Songs", songIdentifier, s.toDbo(), delegate(DatabaseObject songDbo)
+            {
+                //Ok !
+            });
+        }
+
+        public void updateCurrentSong(Player player, string songName, int level)
+        {
+            loadUserObject(player.userId, delegate(DatabaseObject userDbo)
+            {
+                player.user.updateSongPlayed(ref userDbo, songName, level);
+                userDbo.Save();
             });
         }
 	}
