@@ -17,7 +17,6 @@ namespace Cublast
         public int worldRecords;
 
         public string currentSongPlayed;
-
         public string lastSongPlayed;
         public float lastScore;
 
@@ -92,6 +91,7 @@ namespace Cublast
 
         public void updateWorldRecord(ref DatabaseObject userDbo, int count)
         {
+            worldRecords = userDbo.GetInt("WorldRecords");
             worldRecords += count;
             if (worldRecords < 0) worldRecords = 0;
             userDbo.Set("WorldRecords", worldRecords);

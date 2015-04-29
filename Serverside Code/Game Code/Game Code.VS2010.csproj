@@ -48,9 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MultiGame.cs" />
+    <Compile Include="News.cs" />
+    <Compile Include="Pack.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="SoloGame.cs" />
     <Compile Include="Song.cs" />
+    <Compile Include="SongTop.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

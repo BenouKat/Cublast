@@ -40,9 +40,9 @@ public class SongInfoProfil{
 
 	public string getSongNetId()
 	{
-		return this.songName.Substring(0, Mathf.Clamp(this.songName.Length, 0, 15))
-								  + this.songName.Length <= 15 ? "" : this.songName.Substring(this.songName.Length-15, 15)
-		                          + string.IsNullOrEmpty(this.subtitle) ? "" : this.subtitle.Substring(0, Mathf.Clamp(this.songName.Length, 0, 15))
+		return (this.songName.Substring(0, Mathf.Clamp(this.songName.Length, 0, 15)))
+								  + ((this.songName.Length <= 15) ? "" : this.songName.Substring(this.songName.Length-15, 15))
+		                          + (string.IsNullOrEmpty(this.subtitle) ? "" : this.subtitle.Substring(0, Mathf.Clamp(this.songName.Length, 0, 15)))
 		                          + this.numberOfSteps.ToString() 
 		                          + this.difficulty.ToString() 
 		                          + this.level.ToString()

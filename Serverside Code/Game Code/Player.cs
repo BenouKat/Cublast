@@ -23,5 +23,6 @@ namespace Cublast
         }
 
         public User user;
+        public Pack packs;
     }
 }
