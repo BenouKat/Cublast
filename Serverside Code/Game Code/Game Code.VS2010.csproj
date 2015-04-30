@@ -47,10 +47,12 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Friendship.cs" />
     <Compile Include="MultiGame.cs" />
     <Compile Include="News.cs" />
     <Compile Include="Pack.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Request.cs" />
     <Compile Include="SoloGame.cs" />
     <Compile Include="Song.cs" />
     <Compile Include="SongTop.cs" />

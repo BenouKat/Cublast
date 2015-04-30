@@ -144,6 +144,47 @@ public class ServerManager : MonoBehaviour {
 			PIOconnection.Disconnect();
 		}
 	}
+
+
+
+	//Requests
+	public void sendSongCleared(Song s, double score, int level)
+	{
+		PIOconnection.Send ("SongCleared", s.sip.getSongNetId (), s.title, level, score);
+	}
+
+	public void sendCurrentSong(Song s, int level)
+	{
+		if (s == null) {
+			PIOconnection.Send ("UpdateCurrentSong", "", 0);
+		} else {
+			PIOconnection.Send ("UpdateCurrentSong", s.sip.getSongNetId (), level);
+		}
+	}
+
+	public void sendPacks()
+	{
+		string packChain = "";
+		foreach (SongPack sp in LoadManager.instance.songPacks) {
+			packChain += sp.name.ToString().Replace("|", "") + "|";
+		}
+		PIOconnection.Send ("UpdatePacks", packChain);
+	}
+
+	public void sendChat(string toUser, string content)
+	{
+		PIOconnection.Send ("SendRequest", "Chat", toUser, content);
+	}
+
+	public void sendInviteFriend(string toUser)
+	{
+		PIOconnection.Send ("SendRequest", "FriendInvite", toUser);
+	}
+
+	public void sendInviteToRoom(string toUser)
+	{
+		PIOconnection.Send ("SendRequest", "RoomInvite", toUser);
+	}
 	
 
 }

@@ -32,12 +32,18 @@ namespace Cublast {
                     //Creation
                     User u = new User();
                     Pack p = new Pack();
+                    Friendship f = new Friendship();
+
                     PlayerIO.BigDB.CreateObject("Users", player.userId, u.toDbo(), delegate(DatabaseObject createdUserDbo)
                     {
                         player.user = new User(createdUserDbo);
                         PlayerIO.BigDB.CreateObject("Packs", player.userId, p.toDbo(), delegate(DatabaseObject createdPackDbo)
                         {
                             player.packs = new Pack(createdPackDbo);
+                            PlayerIO.BigDB.CreateObject("Friendships", player.userId, p.toDbo(), delegate(DatabaseObject createdFriendshipDbo)
+                            {
+                                player.friends = new Friendship(createdFriendshipDbo);
+                            });
                         });
                     });
                 }
@@ -55,6 +61,12 @@ namespace Cublast {
                         Pack p = new Pack(packDbo);
                         player.packs = p;
 
+                    });
+
+                    loadFriendshipObject(player.userId, delegate(DatabaseObject friendshipDbo)
+                    {
+                        Friendship f = new Friendship(friendshipDbo);
+                        player.friends = f;
                     });
                 }
                 
@@ -90,6 +102,11 @@ namespace Cublast {
                 case "UpdatePacks":
                     updatePacks(player, message.GetString(0));
                     break;
+                case "SendRequest":
+                    sendRequest(player, message.GetString(0), message.GetString(1), message.GetString(2));
+                    break;
+                case "AcceptFriend":
+                    break;
 			}
 		}
 
@@ -117,11 +134,54 @@ namespace Cublast {
             });
         }
 
+        public void loadSongTopObject(string songId, Callback<DatabaseObject> success = null, Callback<PlayerIOError> failure = null)
+        {
+            PlayerIO.BigDB.Load("SongsTop", songId, delegate(DatabaseObject songTopDbo)
+            {
+                if (success != null) success(songTopDbo);
+            }, delegate(PlayerIOError error)
+            {
+                if (failure != null) failure(error);
+            });
+        }
+
         public void loadPacksObject(string userId, Callback<DatabaseObject> success = null, Callback<PlayerIOError> failure = null)
         {
             PlayerIO.BigDB.Load("Packs", userId, delegate(DatabaseObject packDbo)
             {
                 if (success != null) success(packDbo);
+            }, delegate(PlayerIOError error)
+            {
+                if (failure != null) failure(error);
+            });
+        }
+
+        public void loadFriendshipObject(string userId, Callback<DatabaseObject> success = null, Callback<PlayerIOError> failure = null)
+        {
+            PlayerIO.BigDB.Load("Friendships", userId, delegate(DatabaseObject friendshipDbo)
+            {
+                if (success != null) success(friendshipDbo);
+            }, delegate(PlayerIOError error)
+            {
+                if (failure != null) failure(error);
+            });
+        }
+
+        public void findRequestObject(string userId, Callback<DatabaseObject> success = null, Callback<PlayerIOError> failure = null)
+        {
+            PlayerIO.BigDB.LoadRange("Requests", "byFromUser", null, userId, userId, 1, delegate(DatabaseObject[] requestDbo)
+            {
+                if (success != null)
+                {
+                    if (requestDbo != null && requestDbo.Length > 0)
+                    {
+                        success(requestDbo[0]);
+                    }
+                    else
+                    {
+                        success(null);
+                    }
+                } 
             }, delegate(PlayerIOError error)
             {
                 if (failure != null) failure(error);
@@ -141,8 +201,14 @@ namespace Cublast {
                 userDbo.Save();
             });
 
-            //Check for world record
             int scoreTransformed = (int)(score * 100);
+            checkForWorldRecord(player, songIdentifier, scoreTransformed);
+            checkForSongTop(player, songIdentifier, scoreTransformed);
+        }
+
+        public void checkForWorldRecord(Player player, string songIdentifier, int scoreTransformed)
+        {
+            //Check for world record
             loadSongObject(songIdentifier, delegate(DatabaseObject songDbo)
             {
                 //Song is not recorded
@@ -153,41 +219,59 @@ namespace Cublast {
                 }
 
                 Song s = new Song(songDbo);
-                
+
                 //If the score is equal or better
                 if (s.worldRecordScore <= scoreTransformed)
                 {
                     //If he doesn't have the 
                     if (!s.worldRecord.Equals(player.userId))
                     {
-                        loadUserObject(player.userId, delegate(DatabaseObject newRecordmanDbo)
-                        {
-                            player.user.updateWorldRecord(ref newRecordmanDbo, 1);
-                        });
+                        updateUserWorldRecord(player, player.userId, 1);
 
                         if (!string.IsNullOrEmpty(s.worldRecord))
                         {
-                            loadUserObject(s.worldRecord, delegate(DatabaseObject oldRecordmanDbo)
-                            {
-                                User oldRecord = new User(oldRecordmanDbo);
-                                oldRecord.updateWorldRecord(ref oldRecordmanDbo, -1);
-                            });
+                            updateUserWorldRecord(player, s.worldRecord, -1);
                         }
 
                         displayANews(player, "WorldRecord", player.userId, scoreTransformed);
 
                     }
 
-                    s.updateWorldRecord(ref songDbo, player.userId, scoreTransformed);
-                    songDbo.Save();
+                    updateSongWorldRecord(songIdentifier, player.userId, scoreTransformed);
                 }
 
+            },
 
-                //Vérifier s'il est éligible pour le top 100
-                //Si oui 
+            delegate(PlayerIOError error)
+            {
+                Console.WriteLine(error.Message);
+            });
+        }
+
+        public void checkForSongTop(Player player, string songIdentifier, int scoreTransformed)
+        {
+            loadSongTopObject(songIdentifier, delegate(DatabaseObject songTopDbo)
+            {
+                SongTop top = new SongTop(songTopDbo);
+
+                if (top.isEligibleForTop(player.userId, scoreTransformed))
+                {
+                    top.insertToSongTop(player.userId, scoreTransformed);
+                    top.updateRanking(ref songTopDbo);
+                    songTopDbo.Save(true, delegate()
+                    {
+                        //Ok !
+                    }, delegate(PlayerIOError error)
+                    {
+                        if (error.ErrorCode == ErrorCode.StaleVersion)
+                        {
+                            checkForSongTop(player, songIdentifier, scoreTransformed);
+                        }
+                    });
+                }
 
             },
-            
+
             delegate(PlayerIOError error)
             {
                 Console.WriteLine(error.Message);
@@ -199,14 +283,57 @@ namespace Cublast {
             Song s = new Song();
             s.worldRecord = player.userId;
             s.worldRecordScore = scoreTransformed;
+           
             PlayerIO.BigDB.CreateObject("Songs", songIdentifier, s.toDbo(), delegate(DatabaseObject songDbo)
             {
-                loadUserObject(player.userId, delegate(DatabaseObject userDbo)
-                {
-                    player.user.updateWorldRecord(ref userDbo, 1);
-                });
-
+                updateUserWorldRecord(player, player.userId, 1);
                 displayANews(player, "WorldRecord", player.userId, scoreTransformed);
+            });
+
+            SongTop stop = new SongTop();
+            stop.users.Add(player.userId);
+            stop.score.Add(scoreTransformed);
+
+            PlayerIO.BigDB.CreateObject("SongsTop", songIdentifier, stop.toDbo(), delegate(DatabaseObject songTopDbo)
+            {
+                //Ok !
+            });
+        }
+
+        public void updateUserWorldRecord(Player player, string userId, int count)
+        {
+            loadUserObject(userId, delegate(DatabaseObject userDbo)
+            {
+                (userId.Equals(player.userId) ? player.user : new User(userDbo)).updateWorldRecord(ref userDbo, count);
+                userDbo.Save(true, delegate()
+                {
+                    //Ok !
+                }, delegate(PlayerIOError error)
+                {
+                    if (error.ErrorCode == ErrorCode.StaleVersion)
+                    {
+                        updateUserWorldRecord(player, userId, count);
+                    }
+                });
+            });
+        }
+
+        public void updateSongWorldRecord(string songIdentifier, string name, int score)
+        {
+            loadSongObject(songIdentifier, delegate(DatabaseObject songDbo)
+            {
+                Song s = new Song(songDbo);
+                s.updateWorldRecord(ref songDbo, name, score);
+                songDbo.Save(true, delegate()
+                {
+                    //Ok !   
+                }, delegate(PlayerIOError error)
+                {
+                    if (error.ErrorCode == ErrorCode.StaleVersion)
+                    {
+                        updateSongWorldRecord(songIdentifier, name, score);
+                    }
+                });
             });
         }
 
@@ -226,7 +353,7 @@ namespace Cublast {
         {
             loadPacksObject(player.userId, delegate(DatabaseObject packDbo)
             {
-                string[] packsSplit = packs.Split('|');
+                string[] packsSplit = packs.Split(new char[]{'|'}, StringSplitOptions.RemoveEmptyEntries);
                 player.packs.updatePackArray(ref packDbo, packsSplit);
                 packDbo.Save();
             });
@@ -260,14 +387,86 @@ namespace Cublast {
                             }
                             PlayerIO.BigDB.DeleteKeys("News", keys.ToArray());
                         }
-
-
                     }
-
-
                 });
             });
             
+        }
+
+        public void sendRequest(Player player, string requestType, string toUser, string content)
+        {
+            Request request = new Request(requestType, player.userId, toUser, content);
+            PlayerIO.BigDB.CreateObject("Requests", null, request.toDbo(), delegate(DatabaseObject requestSuccess)
+            {
+                //Ok !
+            });
+        }
+
+        
+        //Friends ships
+        public void acceptFriend(Player player, string userAsking)
+        {
+            findRequestObject(userAsking, delegate(DatabaseObject requestDbo)
+            {
+                addFriend(player, player.userId, userAsking);
+                addFriend(player, userAsking, player.userId);
+
+                PlayerIO.BigDB.DeleteKeys("Requests", requestDbo.Key);
+            });
+        }
+
+        public void removeFriend(Player player, string userAsking)
+        {
+            deleteFriend(player, player.userId, userAsking);
+            deleteFriend(player, userAsking, player.userId);
+        }
+
+        public void addFriend(Player player, string userId, string friend)
+        {
+            loadFriendshipObject(userId, delegate(DatabaseObject friendships)
+            {
+                Friendship f = player.userId.Equals(userId) ? player.friends : new Friendship(friendships);
+                if (!f.friends.Contains(friend))
+                {
+                    f.friends.Add(friend);
+                }
+
+                f.updateFriend(ref friendships);
+                friendships.Save(true, delegate()
+                {
+                    //Ok !
+                }, delegate(PlayerIOError error)
+                {
+                    if (error.ErrorCode == ErrorCode.StaleVersion)
+                    {
+                        addFriend(player, userId, friend);
+                    }
+                });
+            });
+        }
+
+        public void deleteFriend(Player player, string userId, string friend)
+        {
+            loadFriendshipObject(userId, delegate(DatabaseObject friendships)
+            {
+                Friendship f = player.userId.Equals(userId) ? player.friends : new Friendship(friendships);
+                if (f.friends.Contains(friend))
+                {
+                    f.friends.Remove(friend);
+                }
+
+                f.updateFriend(ref friendships);
+                friendships.Save(true, delegate()
+                {
+                    //Ok !
+                }, delegate(PlayerIOError error)
+                {
+                    if (error.ErrorCode == ErrorCode.StaleVersion)
+                    {
+                        deleteFriend(player, userId, friend);
+                    }
+                });
+            });
         }
 	}
 }

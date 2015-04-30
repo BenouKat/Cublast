@@ -13,7 +13,8 @@ namespace Cublast
 
         public SongTop()
         {
-
+            users = new List<string>();
+            score = new List<int>();
         }
 
         public SongTop(DatabaseObject songTopDbo)
@@ -28,6 +29,13 @@ namespace Cublast
                 users.Add(rankDbo.GetString("User"));
                 score.Add(rankDbo.GetInt("Score"));
             }
+        }
+
+        public DatabaseObject toDbo()
+        {
+            DatabaseObject dbo = new DatabaseObject();
+            updateRanking(ref dbo);
+            return dbo;
         }
 
         public void updateRanking(ref DatabaseObject songTopDbo)
