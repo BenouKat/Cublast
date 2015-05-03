@@ -11,31 +11,31 @@ public class SongInfoProfil{
 	public string songName;
 	public string subtitle;
 	public int numberOfSteps;
-	public double keyIdentifier;
+	public string keyIdentifier;
 	public int difficulty;
 	public int level;
 	
 	public double score;
 	public double speedmodpref;
 	public bool fail;
-	
-	public SongInfoProfil (string name, string sub, int steps, Difficulty dif, int lvl, double keyId)
+
+	public SongInfoProfil (string name, string sub, int steps, Difficulty dif, int lvl, string keyIdAlreadyParsed)
 	{
 		songName = name;
 		subtitle = sub;
 		numberOfSteps = steps;
 		difficulty = (int)dif;
 		level = lvl;
-		keyIdentifier = keyId;
+		keyIdentifier = keyIdAlreadyParsed;
 		
 		score = -1;
 		speedmodpref = -1;
 	}
 
 	public bool CompareId(SongInfoProfil sid){
-		return sid.songName == this.songName && sid.subtitle == this.subtitle && 
+		return sid.songName.Equals(this.songName) && sid.subtitle.Equals(this.subtitle) && 
 			sid.numberOfSteps == this.numberOfSteps && sid.difficulty == this.difficulty && 
-				sid.level == this.level && keyIdentifier == sid.keyIdentifier;	
+				sid.level == this.level && keyIdentifier.Equals(sid.keyIdentifier);	
 	}
 
 	public string getSongNetId()
@@ -46,7 +46,7 @@ public class SongInfoProfil{
 		                          + this.numberOfSteps.ToString() 
 		                          + this.difficulty.ToString() 
 		                          + this.level.ToString()
-								  + (this.keyIdentifier.ToString().Replace(".", "").Replace(",", ""));
+								  + this.keyIdentifier;
 	}
 	
 	public SongInfoProfil Copy(){

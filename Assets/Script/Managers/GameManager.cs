@@ -67,11 +67,11 @@ public class GameManager : MonoBehaviour{
 #else
 	public string DEBUGPATH = "/";
 #endif
-
+	
 	public Profile prefs;
 
 	//MAIN MENU
-	[HideInInspector] public bool alreadyPressStart;
+	[HideInInspector] public bool gameInitialized;
 
 	
 	public static GameManager instance;
@@ -99,8 +99,6 @@ public class GameManager : MonoBehaviour{
 
 		ProfileManager.instance.LoadProfiles ();
 		prefs = ProfileManager.instance.prefs;
-		
-		alreadyPressStart = false;
 	}
 	
 	public void LoadScoreJudge(Judge j){

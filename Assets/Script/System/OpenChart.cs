@@ -38,6 +38,7 @@ public class OpenChart{
 	public string[] chartFileRestricted = new string[2] { ".old", "._" };
 	public string[] bannerFileAllowed = new string[4] { ".png", ".jpg", ".bmp", ".jpeg" };
 	public string[] audioFileAllowed = new string[4] { ".ogg", ".OGG", ".mp3", ".MP3" };
+	//public string[] audioFileRestricted = new string[2] {  };
 	public string[] noteFileAllowed = new string[1] { "single" };
 	public string[] noteFileRestricted = new string[9] { "double", "pump", "ez2", "para", "ds3ddx", "pnm", "bm", "maniax", "techno" };
 
@@ -367,7 +368,7 @@ public class OpenChart{
 			bool exitTrigger = false;
 			string chartmode = listLine.ElementAt(indexBeginInformation + 1).Replace(":","").Trim();
 
-			if(isAllowedFile(chartmode, noteFileAllowed, noteFileRestricted))
+			if(isAllowedFile(chartmode, noteFileAllowed, noteFileRestricted) && theNewsong.song != null)
 			{
 				theNewsong.stepartist = listLine.ElementAt(indexBeginInformation + 2).Replace(":","").Trim();
 				theNewsong.setDifficulty(listLine.ElementAt(indexBeginInformation + 3).Replace(":","").Trim());
@@ -440,12 +441,12 @@ public class OpenChart{
 					
 					double keyIdentifier = (numberOfSteps + (1 + numberOfFreezes)*(1 + numberOfRoll + numberOfMines)) 
 						+ (37*theNewsong.stepPerSecondStream) / (1 + ((theNewsong.duration * theNewsong.stepPerSecondAverage) + theNewsong.longestStream));
-
+					string stringKeyIdentifier = keyIdentifier.ToString().Substring(0, Mathf.Clamp(keyIdentifier.ToString().Length, 0, 10)).Replace(".", "").Replace(",", "");
 
 					if(!outputSongs.ContainsKey(theNewsong.difficulty))
 					{
 						theNewsong.sip = new SongInfoProfil(theNewsong.title, theNewsong.subtitle, 
-						                                    theNewsong.numberOfSteps, theNewsong.difficulty, theNewsong.level, keyIdentifier);
+						                                    theNewsong.numberOfSteps, theNewsong.difficulty, theNewsong.level, stringKeyIdentifier);
 						outputSongs.Add(theNewsong.difficulty, theNewsong);
 					}
 

@@ -20,16 +20,16 @@ public class ServerManager : MonoBehaviour {
 	public bool connected;
 	public bool connectedToRoom;
 
-	public bool debug;
+	//Online user
+	public string username;
+	public User user;
 
-	void Start()
-	{
-		connect ("BenouKat", "test");
-	}
+	public bool debug;
 
 	void onConnectionSuccess(string user, Client client){
 		Debug.Log("Connected !");
 		connected = true;
+		username = user;
 		PIOclient = client;
 
 		joinSoloRoom (user);
@@ -52,10 +52,18 @@ public class ServerManager : MonoBehaviour {
 	}
 	
 	void onMessage(object sender, PlayerIOClient.Message m) {
-		Debug.Log (m.ToString ());
+		switch(m.Type)
+		{
+		case "initializeDataSuccess":
+			retrieveDatas(username);
+			break;
+		}
 	}
 
-	public void connect(string user, string password){
+
+
+	#region connectionMethods
+	public void connect(string user, string password, Callback<PlayerIOError> errorCallback = null){
 		
 		Debug.Log("Connection...");
 		connected = false;
@@ -72,13 +80,14 @@ public class ServerManager : MonoBehaviour {
 		},
 		//Error !
 		delegate(PlayerIOError error) {
+			if(errorCallback != null) errorCallback(error);
 			Debug.LogError(error.Message);
 		}
 		);
 		
 	}
 	
-	public void register(string user, string password){
+	public void register(string user, string password, Callback<PlayerIOError> errorCallback = null){
 		
 		PlayerIOClient.PlayerIO.Authenticate("cublast-2gjvwklc0aitw2udmikgq", "public",
 		                                     new Dictionary<string, string> {
@@ -92,12 +101,13 @@ public class ServerManager : MonoBehaviour {
 		},
 		//Error !
 		delegate(PlayerIOError error) {
+			if(errorCallback != null) errorCallback(error);
 			Debug.LogError(error.Message);
 		}
 		);
 	}
 
-	public void joinSoloRoom(string user)
+	public void joinSoloRoom(string user, Callback<PlayerIOError> errorCallback = null)
 	{
 		if(debug) {
 			PIOclient.Multiplayer.DevelopmentServer = new ServerEndpoint("127.0.0.1",8184);
@@ -111,12 +121,13 @@ public class ServerManager : MonoBehaviour {
 				onRoomConnectionSuccess("CublastSolo", connection);
 			},
 			delegate(PlayerIOError error) {
+				if(errorCallback != null) errorCallback(error);
 				Debug.LogError("Error : " + error.ToString());
 			}
 			);
 	}
 
-	public void joinOrCreateMultiplayerRoom(string user, string roomID, string roomName, bool publicRoom)
+	public void joinOrCreateMultiplayerRoom(string user, string roomID, string roomName, bool publicRoom, Callback<PlayerIOError> errorCallback = null)
 	{
 		if(debug) {
 			PIOclient.Multiplayer.DevelopmentServer = new ServerEndpoint("127.0.0.1",8184);
@@ -134,6 +145,7 @@ public class ServerManager : MonoBehaviour {
 		},
 		//Error
 		delegate(PlayerIOError error) {
+			if(errorCallback != null) errorCallback(error);
 			Debug.LogError("Error : " + error.ToString());
 		}
 		);
@@ -144,10 +156,23 @@ public class ServerManager : MonoBehaviour {
 			PIOconnection.Disconnect();
 		}
 	}
+	#endregion
 
+
+	#region loadings
+	//Loadings
+	public void retrieveDatas(string username)
+	{
+		PIOclient.BigDB.Load("Users", username, delegate(DatabaseObject userDbo) {
+			user = new User(userDbo);
+		});
+	}
+
+	#endregion
 
 
 	//Requests
+	#region requests
 	public void sendSongCleared(Song s, double score, int level)
 	{
 		PIOconnection.Send ("SongCleared", s.sip.getSongNetId (), s.title, level, score);
@@ -186,5 +211,5 @@ public class ServerManager : MonoBehaviour {
 		PIOconnection.Send ("SendRequest", "RoomInvite", toUser);
 	}
 	
-
+	#endregion
 }

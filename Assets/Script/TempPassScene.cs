@@ -5,15 +5,7 @@ public class TempPassScene : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		LoadManager.instance.Loading();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if(LoadManager.instance.loadingIsDone)
-		{
-			Application.LoadLevel("SoloChart");
-			this.enabled = false;
-		}
+		TransitionManager.instance.changeSceneWithTransition("LoadingSongs", 0f, 0.2f, false, true);
+		this.enabled = false;
 	}
 }

@@ -12,6 +12,7 @@ public class GameLocalization : MonoBehaviour {
 			instance = this;
 
 		reloadDictionary ();
+		DontDestroyOnLoad (this);
 	}
 
 	public TextAsset localisation;

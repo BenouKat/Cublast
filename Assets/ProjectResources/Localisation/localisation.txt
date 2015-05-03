@@ -11,3 +11,24 @@ Failed;FAILED;ECHEC
 FC;Full\ncombo;Série\nsaute faute
 FEC;Full Excellent\ncombo;Excellente série\nsans faute
 FFC;Full Perfect\ncombo;Parfaite série\nsans faute
+SongLoading;Please wait during songs loading...;Merci de patienter pendant le chargement des chansons...
+PackLoad;Loading "_PACK";Chargement de "_PACK";
+PackScan;Scanning directory...;Scan des fichiers...;
+EmptySongPack;Your song folder seems empty. You need to download some song packs to play CUBLAST.\n\nIf you download some packs, check if they are in the "Songs" folder of CUBLAST.\n\n\nPress any key to quit and open the pack download page.;Votre dossier de chanson semble vide. Vous devez télécharger des packs pour pouvoir jouer à CUBLAST.\n\nSi vous avez téléchargé des packs, vérifiez qu'ils sont bien installés dans le dossier "Songs" de CUBLAST.\n\n\nAppuyez sur une touche pour être redirigé vers la page de téléchargement.
+ErrorSongPack;Oops ! CUBLAST has detected some files but failed to load them...\n\nCheck if your packs are in the "Songs" folder of CUBLAST, if they aren't empty or unrelated.\n\n\nPress any key to quit.;Oops ! CUBLAST a bien detecté des fichiers mais rien n'a été chargé...\n\nVérifiez que vos packs sont bien dans le dossier Songs de CUBLAST, qu'ils ne sont pas vides ou non-appropriés.\n\n\nAppuyez sur une touche pour quitter.
+Connection;Connection;Connexion
+PlayOffline;Play offline;Jouer hors ligne
+Create;Create;Créer
+AccountName;Account name;Nom de compte
+Password;Password;Mot de passe
+PasswordAgain;Type password again;Retapez le mot de passe
+AutoConnect;Automatic connection;Connexion automatique
+RetrieveData;Retrieving datas;Récupération des données
+ErrorName;Failed : Incorrect account name or invalid password;Echec : Nom de compte introuvable ou mot de passe incorrect
+ErrorServer;Failed : The server is down.;Echec : Le serveur ne répond pas
+ErrorUnknown;Failed : Unknown error. Please retry.;Echec : Erreur inconnue. Merci de réessayer.
+ErrorAlreadyTaken;This name is already taken;Ce nom est déjà pris
+ErrorIncorrectPassword;The password is incorrect or contains invalid characters;Le mot de passe est incorrect ou contient des caractères invalides
+WarningOffline;If you play offline, you will only see you own score. The "Friends" and "Multiplayers" functions will be disabled.
+OK;OK;OK
+Back;Back;Retour

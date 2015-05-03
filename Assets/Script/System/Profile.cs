@@ -38,20 +38,13 @@ public class Profile{
 	public bool onlyOnGame;
 	public int antiAliasing;
 	
-	
 	//Songs
 	public List<SongInfoProfil> scoreOnSong;
-	
-	//Stat
-	public double gameTime;
-	public int victoryOnline;
 
 	
 	public Profile ()
 	{
 		scoreOnSong = new List<SongInfoProfil>();
-		gameTime = 0f;
-		victoryOnline = 0;
 		lastSpeedmodUsed = "";
 		lastBPM = "";
 		inBPMMode = false;
@@ -92,10 +85,6 @@ public class Profile{
 			scoreOnSong.Add(thesip);	
 		}
 		
-	}
-	
-	public void updateGameTime(double gt){
-		gameTime += gt;
 	}
 	
 	public void saveOptions(){

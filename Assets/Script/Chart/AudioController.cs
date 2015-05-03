@@ -24,6 +24,7 @@ public class AudioController : MonoBehaviour {
 	{
 		audioSource.clip = s.SetAudioClip ();
 		audioSource.clip.LoadAudioData ();
+		while(audioSource.clip.loadState == AudioDataLoadState.Loading || audioSource.clip.loadState == AudioDataLoadState.Unloaded){};
 	}
 
 	public void startSong()

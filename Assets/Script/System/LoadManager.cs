@@ -11,6 +11,7 @@ using System.Reflection;
 public class SongPack
 {
 	public string name;
+	public string path;
 	public Texture2D banner;
 	public List<SongData> songsData;
 
@@ -64,6 +65,12 @@ public class LoadManager : MonoBehaviour{
 	public int packBeforeReturn = 10;
 	public int songsBeforeReturn = 100;
 
+	public string currentPackLoaded = "";
+	public int totalSongFound;
+	public int totalSongLoaded;
+
+	string[] currentPackPaths;
+
 	[HideInInspector] public bool loadingIsDone;
 	
 	void init(){
@@ -72,20 +79,27 @@ public class LoadManager : MonoBehaviour{
 	
 	public void Loading()
 	{
-		StartCoroutine (LoadingFromDisc ());
-	}
+		currentPackPaths = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/");
+		currentPackPaths = processPackPathIntegrity(currentPackPaths);
 
-	public void Loading(SerializableSongStorage sss)
-	{
-		StartCoroutine (LoadingFromCacheFile (sss));
+		if(gotACache())
+		{
+			StartCoroutine(LoadingFromCache());
+		}else{
+			StartCoroutine (LoadingFromDisc ());
+		}
+
 	}
 
 	public IEnumerator LoadingFromDisc()
 	{
+		yield return 0;
+
 		songPacks = new List<SongPack>();
-		
-		
+
 		yield return StartCoroutine(LoadPacks ());
+
+		yield return 0;
 		
 		yield return StartCoroutine (LoadSongs ());
 		
@@ -93,32 +107,102 @@ public class LoadManager : MonoBehaviour{
 	}
 
 	public IEnumerator LoadingFromCacheFile(SerializableSongStorage sss){
-		
+
+		yield return 0;
+
 		songPacks = new List<SongPack>();
 		
 		yield return StartCoroutine (LoadPacks ());
+
+		yield return 0;
 		
 		yield return StartCoroutine (LoadSongsFromCache (sss));
 		
 		loadingIsDone = true;
-		
-		
+	}
+
+
+	public string[] processPackPathIntegrity(string[] directories)
+	{
+		List<string> foldersValid = new List<string>();
+		bool getAnError = false;
+		foreach(string path in directories)
+		{
+			string[] songFiles = (string[]) Directory.GetDirectories(path);
+			//No folders : no packs !
+			if(songFiles.Length > 0)
+			{
+				//Check the first folder
+				string firstFolder = songFiles[0];
+				List<string> filesInFolder = Directory.GetFiles(firstFolder).ToList();
+				//If nothing its okay : it means we reach the end of the directory path, means that the parent directory is a pack
+				if(filesInFolder.Count <= 0)
+				{
+					foldersValid.Add(path);
+				}else{
+					//If the directory contains songs files
+					if(filesInFolder.Exists(c => c.Contains(".ogg") || c.Contains(".OGG") || c.Contains(".mp3") || c.Contains(".MP3") || c.Contains(".sm")))
+					{
+						foldersValid.Add(path);
+					
+					//If not and if it contains folders : parent is a pack !
+					}else if(Directory.GetDirectories(firstFolder).Length > 0){
+						//Retrieves packs
+						foreach(string realPackFiles in songFiles)
+						{
+							foldersValid.Add(realPackFiles);
+							getAnError = true;
+						}
+					}
+				}
+			}
+		}
+
+		if(getAnError)
+		{
+			return processPackPathIntegrity(foldersValid.ToArray());
+		}else{
+			return foldersValid.ToArray();
+		}
+	}
+
+	public IEnumerator LoadingFromCache () {
+
+		if(gotACache()){
+			string[] cacheFiles = (string[]) Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache");
+			SerializableSongStorage sss = new SerializableSongStorage ();
+			for(int i=0; i<cacheFiles.Length; i++){
+				string file = cacheFiles.ToList().FirstOrDefault(c => c.Contains("dataSong"+ i +".cache"));
+				SerializableSongStorage minisss = new SerializableSongStorage ();
+				using(Stream stream = File.Open(file, FileMode.Open))
+				{
+					BinaryFormatter bformatter = new BinaryFormatter();
+					bformatter.Binder = new VersionDeserializationBinder(); 
+					minisss = (SerializableSongStorage)bformatter.Deserialize(stream);
+					sss.store.AddRange(minisss.store);
+					minisss = null;
+				}
+			}
+			yield return StartCoroutine(LoadingFromCacheFile(sss));
+			sss.destroy();
+			sss.getStore().Clear();
+			sss = null;
+		}
 	}
 
 	public IEnumerator LoadPacks()
 	{
 		//Récupération de tous les dossiers
-		string[] packpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/");
-		int length = lastDir((string) packpath[0]).Count();
+		int length = lastDir((string) currentPackPaths[0]).Count();
 		int packOK = 0;
 
-		foreach(string el in packpath){
-			var path = Directory.GetFiles(el).FirstOrDefault(c => c.Contains(".png") || c.Contains(".jpg") || c.Contains(".jpeg"));
+		foreach(string packPath in currentPackPaths){
+			string bannerPath = Directory.GetFiles(packPath).FirstOrDefault(c => c.Contains(".png") || c.Contains(".jpg") || c.Contains(".jpeg"));
 			Texture2D texTmp = new Texture2D(512,256);
 			
 			//Chargement de la texture bannière si trouvée
-			if(!String.IsNullOrEmpty(path)){
-				WWW www = new WWW("file://" + path);
+			if(!String.IsNullOrEmpty(bannerPath)){
+				WWW www = new WWW("file://" + bannerPath);
 				while(!www.isDone){}
 				www.LoadImageIntoTexture(texTmp);
 			}else{
@@ -126,9 +210,11 @@ public class LoadManager : MonoBehaviour{
 			}
 			
 			//Ajout au songPack
-			SongPack sp = new SongPack(lastDir(el)[length - 1], texTmp);
+			SongPack sp = new SongPack(lastDir(packPath)[length - 1], texTmp);
+			sp.path = packPath;
 			songPacks.Add(sp);
 
+			totalSongFound += Directory.GetDirectories(packPath).Length;
 			packOK++;
 			if(packOK >= packBeforeReturn)
 			{
@@ -146,14 +232,19 @@ public class LoadManager : MonoBehaviour{
 		foreach(SongPack spack in songPacks){
 			
 			//Récupération de toutes les chansons
-			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + spack.name);	
+			currentPackLoaded = spack.name;
+			string[] songpath = (string[]) Directory.GetDirectories(spack.path);	
 
 			foreach(string sp in songpath){
 
 				SongData songData = new SongData();
 				//Lecture de la chart
 				songData.songs = OpenChart.Instance.readChart(sp.Replace('\\', '/'));
-				if(songData.songs != null && songData.songs.Count > 0) songData.name = songData.songs.First().Value.title;
+				if(songData.songs != null && songData.songs.Count > 0)
+				{
+					songData.name = songData.songs.First().Value.title;
+					totalSongLoaded++;
+				}
 				spack.songsData.Add(songData);
 
 				songOK++;
@@ -177,7 +268,7 @@ public class LoadManager : MonoBehaviour{
 		int songOK = 0;
 		foreach(SongPack spack in songPacks){
 			//Récupération de toutes les chansons
-			string[] songpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/" + spack.name);		//DEBUG
+			string[] songpath = (string[]) Directory.GetDirectories(spack.path);		//DEBUG
 			var lengthsp = lastDir ((string) songpath[0]).Count();
 
 			//Récupérartion des chansons du store
@@ -204,7 +295,11 @@ public class LoadManager : MonoBehaviour{
 					songData.songs = OpenChart.Instance.readChart(sp.Replace('\\', '/'));
 				}
 
-				if(songData.songs != null && songData.songs.Count > 0) songData.name = songData.songs.First().Value.title;
+				if(songData.songs != null && songData.songs.Count > 0)
+				{
+					songData.name = songData.songs.First().Value.title;
+					totalSongLoaded++;
+				}
 				spack.songsData.Add(songData);
 
 				songOK++;
@@ -315,12 +410,11 @@ public class LoadManager : MonoBehaviour{
 	}
 	
 	private void renameSharpFolder(){
-		string[] packpath = (string[]) Directory.GetDirectories(Application.dataPath + GameManager.instance.DEBUGPATH + "Songs/");
-		for(int i=0; i< packpath.Length; i++){
-			if(packpath[i].Contains("#")){
-				Directory.Move(packpath[i], packpath[i].Replace("#", ""));
+		for(int i=0; i< currentPackPaths.Length; i++){
+			if(currentPackPaths[i].Contains("#")){
+				Directory.Move(currentPackPaths[i], currentPackPaths[i].Replace("#", ""));
 			}
-			string[] songpath = Directory.GetDirectories(packpath[i]);
+			string[] songpath = Directory.GetDirectories(currentPackPaths[i]);
 			for(int j=0; j< songpath.Length; j++){
 				if(songpath[i].Contains("#")){
 					Directory.Move(songpath[i], songpath[i].Replace("#", ""));
@@ -399,33 +493,10 @@ public class LoadManager : MonoBehaviour{
 		
 		
 	}
-	
-	public bool LoadFromCache () {
-	
-		if(Directory.Exists(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache/")){
-			string[] cacheFiles = (string[]) Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache");
-			SerializableSongStorage sss = new SerializableSongStorage ();
-			for(int i=0; i<cacheFiles.Length; i++){
-				string file = cacheFiles.ToList().FirstOrDefault(c => c.Contains("dataSong"+ i +".cache"));
-				SerializableSongStorage minisss = new SerializableSongStorage ();
-				using(Stream stream = File.Open(file, FileMode.Open))
-				{
-					BinaryFormatter bformatter = new BinaryFormatter();
-					bformatter.Binder = new VersionDeserializationBinder(); 
-					minisss = (SerializableSongStorage)bformatter.Deserialize(stream);
-					sss.store.AddRange(minisss.store);
-					minisss = null;
-				}
-			}
-			LoadingFromCacheFile(sss);
-			sss.destroy();
-			sss.getStore().Clear();
-			sss = null;
-			return true;
-			
-		}
-			
-		
-		return false;
+
+	public bool gotACache()
+	{
+		return Directory.Exists(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache/") 
+					&& (Directory.GetFiles(Application.dataPath + GameManager.instance.DEBUGPATH + "Cache").Length > 0);
 	}
 }
