@@ -170,6 +170,21 @@ public class ServerManager : MonoBehaviour {
 
 	#endregion
 
+	#region methods
+	public void checkNameAvailable(string username, Callback<bool> result)
+	{
+		PIOclient.BigDB.Load("Users", username, delegate(DatabaseObject userDbo) {
+			if(userDbo == null)
+			{
+				result(true);
+			}else{
+				result(false);
+			}
+		}, delegate(PlayerIOError value) {
+			result(true);
+		});
+	}
+	#endregion
 
 	//Requests
 	#region requests

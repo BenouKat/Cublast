@@ -27,8 +27,10 @@ RetrieveData;Retrieving datas;Récupération des données
 ErrorName;Failed : Incorrect account name or invalid password;Echec : Nom de compte introuvable ou mot de passe incorrect
 ErrorServer;Failed : The server is down.;Echec : Le serveur ne répond pas
 ErrorUnknown;Failed : Unknown error. Please retry.;Echec : Erreur inconnue. Merci de réessayer.
+ErrorBadUsername;Failed : Account name is empty or contains invalid characters;Echec : Le nom de compte est vide ou contient des caractères interdits
 ErrorAlreadyTaken;This name is already taken;Ce nom est déjà pris
-ErrorIncorrectPassword;The password is incorrect or contains invalid characters;Le mot de passe est incorrect ou contient des caractères invalides
+ErrorIncorrectPassword;The password is incorrect (You didn't retype the same) or contains invalid characters;Le mot de passe est incorrect (vous ne l'avez pas retapé correctement) ou contient des caractères invalides
 WarningOffline;If you play offline, you will only see you own score. The "Friends" and "Multiplayers" functions will be disabled.
 OK;OK;OK
 Back;Back;Retour
+PleaseWait;Please wait;Veuillez patientez
