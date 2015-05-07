@@ -64,6 +64,7 @@
      <Compile Include="Assets\Script\Chart\VisualizerController.cs" />
      <Compile Include="Assets\Script\LoadingScreen\LoadSongUI.cs" />
      <Compile Include="Assets\Script\MainMenu\ConnectionMenu.cs" />
+     <Compile Include="Assets\Script\MainMenu\MainMenuConnectedAnim.cs" />
      <Compile Include="Assets\Script\MainMenu\MainMenuCubeFollowForward.cs" />
      <Compile Include="Assets\Script\MainMenu\MainMenuCubeGeneration.cs" />
      <Compile Include="Assets\Script\Managers\Events.cs" />
