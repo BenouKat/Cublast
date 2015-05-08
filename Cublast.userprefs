@@ -1,11 +1,23 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\MainMenu\MainMenuConnectedAnim.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Utils\CameraOptionsController.cs">
     <Files>
-      <File FileName="Assets\Script\MainMenu\MainMenuConnectedAnim.cs" Line="81" Column="85" />
-      <File FileName="Assets\Script\MainMenu\ConnectionMenu.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\MainMenu\MainMenuConnectedAnim.cs" Line="99" Column="41" />
       <File FileName="Assets\Script\Managers\ServerManager.cs" Line="1" Column="1" />
       <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="1" Column="1" />
+      <File FileName="Assets\Script\Managers\SoundWaveManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Utils\Utils.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Utils\AutoLocalize.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\MainMenu\MainMenuConnection.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\System\User.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\TempPassScene.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\MainMenu\MainMenuMode.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\System\Profile.cs" Line="60" Column="19" />
+      <File FileName="Assets\Script\System\ProfileManager.cs" Line="104" Column="35" />
+      <File FileName="Assets\Script\System\SongInfoProfil.cs" Line="19" Column="29" />
+      <File FileName="Assets\Script\Utils\CameraOptionsController.cs" Line="27" Column="6" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="706" Column="101" />
+      <File FileName="Assets\Script\Managers\SongOptionManager.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

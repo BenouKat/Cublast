@@ -17,7 +17,6 @@ public class SongInfoProfil{
 	
 	public double score;
 	public double speedmodpref;
-	public bool fail;
 
 	public SongInfoProfil (string name, string sub, int steps, Difficulty dif, int lvl, string keyIdAlreadyParsed)
 	{

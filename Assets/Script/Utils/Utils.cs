@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security;
+using System.Security.Cryptography;
+using System.Text;
 
 public class Utils {
 
@@ -51,5 +54,27 @@ public class Utils {
 
 	public static double getBPS(double bpmValue){
 		return bpmValue/(double)60.0;
+	}
+
+	public static string EncryptScore(double score, string keyIdentifier)
+	{
+		int demarageSubstring = Mathf.Clamp((keyIdentifier.Length/2) - 10, 0, 1000);
+		string identifier = keyIdentifier.Substring(demarageSubstring, Mathf.Clamp(20, 1, keyIdentifier.Length - demarageSubstring));
+		string stringscore = score.ToString("000.0000");
+
+		MD5CryptoServiceProvider hashMd5 = new MD5CryptoServiceProvider();
+		byte[] passwordHash = hashMd5.ComputeHash(
+			UnicodeEncoding.Unicode.GetBytes(identifier));
+		
+		TripleDESCryptoServiceProvider des = new TripleDESCryptoServiceProvider();
+		des.Key = passwordHash;
+		
+		des.Mode = CipherMode.ECB;
+		
+		byte[] buffer = UnicodeEncoding.Unicode.GetBytes(stringscore);
+		
+		return UnicodeEncoding.Unicode.GetString(
+			des.CreateEncryptor().TransformFinalBlock(buffer, 0, buffer.Length));
+		
 	}
 }

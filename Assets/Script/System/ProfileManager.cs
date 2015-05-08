@@ -102,8 +102,7 @@ public class ProfileManager{
 	
 	public SongInfoProfil FindTheSongStat(SongInfoProfil sip){
 		if(prefs.scoreOnSong.Count > 0){
-			SongInfoProfil returnSip = prefs.scoreOnSong.FirstOrDefault(c => c.CompareId(sip));
-			return returnSip;
+			return prefs.scoreOnSong.FirstOrDefault(c => c.CompareId(sip));
 		}
 		return null;
 	}

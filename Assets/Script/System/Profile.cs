@@ -7,8 +7,7 @@ using System;
 [Serializable]
 public class Profile{
 	
-	//Parameters
-	public float globalOffsetSeconds;
+	//Inputs - Options
 	public KeyCode KeyCodeUp;
 	public KeyCode KeyCodeDown;
 	public KeyCode KeyCodeLeft;
@@ -17,26 +16,29 @@ public class Profile{
 	public KeyCode SecondaryKeyCodeDown;
 	public KeyCode SecondaryKeyCodeLeft;
 	public KeyCode SecondaryKeyCodeRight;
+
+	//Recording
 	public string lastSpeedmodUsed;
 	public string lastBPM;
 	public bool inBPMMode;
 	public int numberOfSkinSelected;
 	
-	//general
-	public float userGOS;
-	public int mouseMolSpeed;
-	public bool dancepadMode;
-	public bool quickMode;
+	//general - Options
+	public float globalOffsetSeconds;
 	public bool useTheCacheSystem;
+	//Option - Generate / Clear
+	public bool enableSoundEffects;
+	public bool enableVisualEffects;
+	//Options - Disconnect / Connect
 	
-	//Audio
+	//Audio/Video - Options
 	public float generalVolume;
-	
-	//Video
-	public bool enableBloom;
-	public bool enableDepthOfField;
-	public bool onlyOnGame;
+	public bool enableFXAA;
 	public int antiAliasing;
+	public bool enableBloom;
+	public bool enablePostProcessEffects;
+	public bool onlyOnGame;
+
 	
 	//Songs
 	public List<SongInfoProfil> scoreOnSong;
@@ -48,16 +50,15 @@ public class Profile{
 		lastSpeedmodUsed = "";
 		lastBPM = "";
 		inBPMMode = false;
-		userGOS = 0.0f;
-		mouseMolSpeed = 1;
-		dancepadMode = false;
-		quickMode = false;
 		generalVolume = 1f;
 		enableBloom = true;
-		enableDepthOfField = true;
+		enablePostProcessEffects = true;
+		enableSoundEffects = true;
+		enableVisualEffects = true;
 		onlyOnGame = true;
 		useTheCacheSystem = false;
 		antiAliasing = 0;
+		enableFXAA = true;
 		KeyCodeUp = KeyCode.UpArrow;
 		KeyCodeDown = KeyCode.DownArrow;
 		KeyCodeLeft = KeyCode.LeftArrow;
@@ -72,19 +73,18 @@ public class Profile{
 		SongInfoProfil thesip = sip.Copy();
 		thesip.score = scoreEarned;
 		thesip.speedmodpref = speedmodPref;
-		thesip.fail = fail;
-		if(scoreOnSong.Any(c => c.CompareId(thesip))){
-			var theold = scoreOnSong.FirstOrDefault(c => c.CompareId(thesip));
-			if(theold.score < scoreEarned){
-				scoreOnSong.Remove(theold);
+		SongInfoProfil oldSIP = scoreOnSong.FirstOrDefault(c => c.CompareId(thesip));
+		if(oldSIP != null){
+			if(oldSIP.score < scoreEarned){
+				scoreOnSong.Remove(oldSIP);
 				scoreOnSong.Add(thesip);	
 			}else{
-				theold.speedmodpref = speedmodPref;
+				oldSIP.speedmodpref = speedmodPref;
 			}
 		}else{
 			scoreOnSong.Add(thesip);	
 		}
-		
+		saveOptions();
 	}
 	
 	public void saveOptions(){

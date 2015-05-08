@@ -41,6 +41,10 @@ public class SoundWaveManager : MonoBehaviour {
 	public bool calculateSpectrum;
 
 	bool activeAnalyse;
+	public bool isAnalyseActive()
+	{
+		return activeAnalyse;
+	}
 
 	public void init(AudioSource source)
 	{

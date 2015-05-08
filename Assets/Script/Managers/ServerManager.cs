@@ -19,6 +19,8 @@ public class ServerManager : MonoBehaviour {
 
 	public bool connected;
 	public bool connectedToRoom;
+	public bool roomCrashed;
+	public string errorRoomMessage;
 
 	//Online user
 	public string username;
@@ -30,6 +32,12 @@ public class ServerManager : MonoBehaviour {
 		Debug.Log("Connected !");
 		connected = true;
 		username = user;
+
+		if(username.StartsWith("simple"))
+		{
+			username = username.Substring(6, username.Length - 6);
+		}
+
 		PIOclient = client;
 
 		joinSoloRoom (user);
@@ -45,6 +53,15 @@ public class ServerManager : MonoBehaviour {
 		PIOconnection.OnDisconnect += onDisconnect; 
 	}
 
+	void onConnectionFailed(string errorMessage)
+	{
+		Debug.Log("Failure !");
+		connected = false;
+		connectedToRoom = false;
+		roomCrashed = true;
+		this.errorRoomMessage = errorMessage;
+	}
+
 	void onDisconnect(object sender, string error){
 		connected = false;
 		connectedToRoom = false;
@@ -56,6 +73,7 @@ public class ServerManager : MonoBehaviour {
 		{
 		case "initializeDataSuccess":
 			retrieveDatas(username);
+			sendPacks();
 			break;
 		}
 	}
@@ -67,6 +85,7 @@ public class ServerManager : MonoBehaviour {
 		
 		Debug.Log("Connection...");
 		connected = false;
+		roomCrashed = false;
 		
 		PlayerIOClient.PlayerIO.Authenticate("cublast-2gjvwklc0aitw2udmikgq", "public",
 		                                     new Dictionary<string, string> {
@@ -76,7 +95,7 @@ public class ServerManager : MonoBehaviour {
 		//Success
 		delegate(Client client) {
 			PIOclient = client;
-			onConnectionSuccess(user, client);
+			onConnectionSuccess(client.ConnectUserId, client);
 		},
 		//Error !
 		delegate(PlayerIOError error) {
@@ -88,7 +107,10 @@ public class ServerManager : MonoBehaviour {
 	}
 	
 	public void register(string user, string password, Callback<PlayerIOError> errorCallback = null){
-		
+
+		connected = false;
+		roomCrashed = false;
+
 		PlayerIOClient.PlayerIO.Authenticate("cublast-2gjvwklc0aitw2udmikgq", "public",
 		                                     new Dictionary<string, string> {
 			{"register", "true" },
@@ -97,7 +119,7 @@ public class ServerManager : MonoBehaviour {
 		},null,
 		//Success
 		delegate(Client client) {
-			onConnectionSuccess(user, client);
+			onConnectionSuccess(client.ConnectUserId, client);
 		},
 		//Error !
 		delegate(PlayerIOError error) {
@@ -123,6 +145,7 @@ public class ServerManager : MonoBehaviour {
 			delegate(PlayerIOError error) {
 				if(errorCallback != null) errorCallback(error);
 				Debug.LogError("Error : " + error.ToString());
+				onConnectionFailed(error.Message);
 			}
 			);
 	}
@@ -147,12 +170,18 @@ public class ServerManager : MonoBehaviour {
 		delegate(PlayerIOError error) {
 			if(errorCallback != null) errorCallback(error);
 			Debug.LogError("Error : " + error.ToString());
+			onConnectionFailed(error.Message);
 		}
 		);
 	}
+
+	void OnApplicationQuit()
+	{
+		disconnect();
+	}
 	
 	public void disconnect(){
-		if (PIOconnection.Connected) {
+		if (PIOconnection != null && PIOconnection.Connected) {
 			PIOconnection.Disconnect();
 		}
 	}
@@ -163,6 +192,7 @@ public class ServerManager : MonoBehaviour {
 	//Loadings
 	public void retrieveDatas(string username)
 	{
+		Debug.Log("Retrieving from " + username);
 		PIOclient.BigDB.Load("Users", username, delegate(DatabaseObject userDbo) {
 			user = new User(userDbo);
 		});
@@ -171,26 +201,13 @@ public class ServerManager : MonoBehaviour {
 	#endregion
 
 	#region methods
-	public void checkNameAvailable(string username, Callback<bool> result)
-	{
-		PIOclient.BigDB.Load("Users", username, delegate(DatabaseObject userDbo) {
-			if(userDbo == null)
-			{
-				result(true);
-			}else{
-				result(false);
-			}
-		}, delegate(PlayerIOError value) {
-			result(true);
-		});
-	}
 	#endregion
 
 	//Requests
 	#region requests
 	public void sendSongCleared(Song s, double score, int level)
 	{
-		PIOconnection.Send ("SongCleared", s.sip.getSongNetId (), s.title, level, score);
+		PIOconnection.Send ("SongCleared", s.sip.getSongNetId (), s.title, level, Utils.EncryptScore(score, s.sip.getSongNetId()));
 	}
 
 	public void sendCurrentSong(Song s, int level)

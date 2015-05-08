@@ -24,11 +24,13 @@ Password;Password;Mot de passe
 PasswordAgain;Type password again;Retapez le mot de passe
 AutoConnect;Automatic connection;Connexion automatique
 RetrieveData;Retrieving datas;Récupération des données
-ErrorName;Failed : Incorrect account name or invalid password;Echec : Nom de compte introuvable ou mot de passe incorrect
+ErrorName;Failed : This account name doesn't exist;Echec : Ce nom de compte n'existe pas
+ErrorPassword;Failed : Your password is invalid;Echec : Votre mot de passe est incorrect
 ErrorServer;Failed : The server is down.;Echec : Le serveur ne répond pas
+ErrorServerButRegistred;You have been successfully registered but our servers are down. Try to authanticate later;Vous avez été correctement enregistrés mais nos serveurs ne répondent pas. Essayez de vous connecter plus tad.
 ErrorUnknown;Failed : Unknown error. Please retry.;Echec : Erreur inconnue. Merci de réessayer.
 ErrorBadUsername;Failed : Account name is empty or contains invalid characters;Echec : Le nom de compte est vide ou contient des caractères interdits
-ErrorAlreadyTaken;This name is already taken;Ce nom est déjà pris
+ErrorAlreadyTaken;Failed : This name is already taken;Echec : Ce nom est déjà pris
 ErrorIncorrectPassword;The password is incorrect (You didn't retype the same) or contains invalid characters;Le mot de passe est incorrect (vous ne l'avez pas retapé correctement) ou contient des caractères invalides
 WarningOffline;If you play offline, you will only see you own score. The "Friends" and "Multiplayers" functions will be disabled.
 OK;OK;OK

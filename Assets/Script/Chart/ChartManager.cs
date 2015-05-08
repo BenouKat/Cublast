@@ -45,10 +45,10 @@ public class ChartManager : MonoBehaviour {
 		painter = GetComponent<ArrowPainter>();
 		emissionTweener = GetComponent<EmissionTweener> ();
 
-		//DEBUG
-		//###################
-		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.FindSongData ("TestPack", "Level Skip").songs [Difficulty.EXPERT];
-		//###################
+		if(GameManager.instance != null)
+		{
+			systemOffset += GameManager.instance.prefs.globalOffsetSeconds;
+		}
 
 		currentTime = -1;
 		currentSyncTime = -1;

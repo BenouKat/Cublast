@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using System.Security;
+using System.Security.Cryptography;
 using PlayerIO.GameLibrary;
 
 namespace Cublast {
@@ -40,9 +42,10 @@ namespace Cublast {
                         PlayerIO.BigDB.CreateObject("Packs", player.userId, p.toDbo(), delegate(DatabaseObject createdPackDbo)
                         {
                             player.packs = new Pack(createdPackDbo);
-                            PlayerIO.BigDB.CreateObject("Friendships", player.userId, p.toDbo(), delegate(DatabaseObject createdFriendshipDbo)
+                            PlayerIO.BigDB.CreateObject("Friendships", player.userId, f.toDbo(), delegate(DatabaseObject createdFriendshipDbo)
                             {
                                 player.friends = new Friendship(createdFriendshipDbo);
+                                player.Send("initializeDataSuccess");
                             });
                         });
                     });
@@ -60,7 +63,7 @@ namespace Cublast {
                     {
                         Pack p = new Pack(packDbo);
                         player.packs = p;
-
+                        player.Send("initializeDataSuccess");
                     });
 
                     loadFriendshipObject(player.userId, delegate(DatabaseObject friendshipDbo)
@@ -94,7 +97,7 @@ namespace Cublast {
 			switch(message.Type) {
 
                 case "SongCleared":
-                    processSongCleared(player, message.GetString(0), message.GetString(1), message.GetInt(2), message.GetDouble(3));
+                    processSongCleared(player, message.GetString(0), message.GetString(1), message.GetInt(2), message.GetString(3));
                     break;
                 case "UpdateCurrentSong":
                     updateCurrentSong(player, message.GetString(0), message.GetInt(1));
@@ -191,8 +194,32 @@ namespace Cublast {
 
 
         //Game method
-        public void processSongCleared(Player player, string songIdentifier, string songName, int level, double score)
+        public void processSongCleared(Player player, string songIdentifier, string songName, int level, string scoreCrypted)
         {
+
+            //Decryption
+            int startSubstring = (songIdentifier.Length / 2) - 10;
+            if(startSubstring < 0) startSubstring = 0;
+            int endSubstring = 20;
+            if (endSubstring > songIdentifier.Length - startSubstring) endSubstring = songIdentifier.Length - startSubstring;
+            string identifier = songIdentifier.Substring(startSubstring, endSubstring);
+
+            String scoreDecrypted = "";
+            MD5CryptoServiceProvider hashMd5 = new MD5CryptoServiceProvider();
+            byte[] passwordHash = hashMd5.ComputeHash(
+            UnicodeEncoding.Unicode.GetBytes(identifier));
+
+            TripleDESCryptoServiceProvider des = new TripleDESCryptoServiceProvider();
+            des.Key = passwordHash;
+            des.Mode = CipherMode.ECB;
+
+            byte[] buffer = UnicodeEncoding.Unicode.GetBytes(scoreCrypted);
+            scoreDecrypted = UnicodeEncoding.Unicode.GetString(
+            des.CreateDecryptor().TransformFinalBlock(buffer, 0, buffer.Length));
+
+
+            double score = double.Parse(scoreDecrypted);
+
             //Update the last song played and null the song played
             loadUserObject(player.userId, delegate(DatabaseObject userDbo)
             {

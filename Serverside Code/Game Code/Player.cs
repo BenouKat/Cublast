@@ -10,7 +10,7 @@ namespace Cublast
     {
         public string userId { 
             get{
-                if (this.ConnectUserId.Contains("simple"))
+                if (this.ConnectUserId.StartsWith("simple"))
                 {
                     return this.ConnectUserId.Substring(6, this.ConnectUserId.Length - 6);
                 }

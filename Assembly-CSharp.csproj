@@ -63,10 +63,11 @@
      <Compile Include="Assets\Script\Chart\TimeController.cs" />
      <Compile Include="Assets\Script\Chart\VisualizerController.cs" />
      <Compile Include="Assets\Script\LoadingScreen\LoadSongUI.cs" />
-     <Compile Include="Assets\Script\MainMenu\ConnectionMenu.cs" />
      <Compile Include="Assets\Script\MainMenu\MainMenuConnectedAnim.cs" />
+     <Compile Include="Assets\Script\MainMenu\MainMenuConnection.cs" />
      <Compile Include="Assets\Script\MainMenu\MainMenuCubeFollowForward.cs" />
      <Compile Include="Assets\Script\MainMenu\MainMenuCubeGeneration.cs" />
+     <Compile Include="Assets\Script\MainMenu\MainMenuMode.cs" />
      <Compile Include="Assets\Script\Managers\Events.cs" />
      <Compile Include="Assets\Script\Managers\GameLocalization.cs" />
      <Compile Include="Assets\Script\Managers\GameManager.cs" />
@@ -94,6 +95,7 @@
      <Compile Include="Assets\Script\System\VersionDeserializationBinder.cs" />
      <Compile Include="Assets\Script\TempPassScene.cs" />
      <Compile Include="Assets\Script\Utils\AutoLocalize.cs" />
+     <Compile Include="Assets\Script\Utils\CameraOptionsController.cs" />
      <Compile Include="Assets\Script\Utils\CombineChildrenExtended.cs" />
      <Compile Include="Assets\Script\Utils\DestroyThisTimed.cs" />
      <Compile Include="Assets\Script\Utils\EmissionTweener.cs" />
@@ -197,7 +199,7 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="PlayerIOUnity3DClient">
- <HintPath>C:/Users/b.goze/Documents/PersonalProjects/Cublast/Assets/Plugins/PlayerIOUnity3DClient.dll</HintPath>
+ <HintPath>C:/Users/Benou/Documents/PersonalProjects/Cublast/Assets/Plugins/PlayerIOUnity3DClient.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

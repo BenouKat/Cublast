@@ -13,18 +13,26 @@ public class MainMenuConnectedAnim : MonoBehaviour {
 	public GameObject introSound;
 	public AudioSource mainMusic;
 
+	public Animation gamePanelAnim;
+
+	public UnityStandardAssets.ImageEffects.ScreenSpaceAmbientOcclusion SSAO;
+
+	public Color[] availableCubeColor;
+	public Color[] availableLightColor;
+
+	public Light[] coloredLight;
+	public Material cubeMaterial;
+
 	public Transform[] cubesVisualizer;
-	public Light[] lightVisualizer;
-
-
+	public Light lightVisualizer;
 	
 	private float[] spectrumDatas;
 	public float[] visualizerBarHeights;
 	public float heightLimit = 3.5f;
 
+	public float minLightIntensity;
 	public float maxLightIntensity;
-	
-	public float xSpacing = 0.5f;
+
 	public int bandNumber = 8;
 	public int spectrumPrec = 8;
 	public int bandIngore = 8;
@@ -33,7 +41,10 @@ public class MainMenuConnectedAnim : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		/*if (GameManager.instance.gameInitialized) {
+
+		flareAnim.SetActive (true);
+
+		if (GameManager.instance.gameInitialized) {
 			connectionMusic.gameObject.SetActive (false);
 			visualizerRoot.SetActive (true);
 			diversLight.SetActive (true);
@@ -41,13 +52,25 @@ public class MainMenuConnectedAnim : MonoBehaviour {
 			mainMusic.gameObject.SetActive (true);
 			SoundWaveManager.instance.init (mainMusic);
 			SoundWaveManager.instance.activeAnalysis (true);
-			flare.brightness = minFlare;
-		} else {*/
-			flareAnim.SetActive (true);
+			gamePanelAnim.gameObject.SetActive(true);
+			gamePanelAnim.GetComponent<CanvasGroup>().alpha = 1f;
+			SSAO.enabled = true;
+			flareAnim.GetComponent<Animation>().enabled = false;
+			flareAnim.GetComponent<LensFlare>().brightness = 0.3f;
+		} else {
 			StartCoroutine (animMusic ());
-		//}
-
+			GameManager.instance.gameInitialized = true;
+		}
+		
 		spectrumDatas = new float[spectrumPrec];
+
+		int randomColor = Random.Range(0, availableCubeColor.Length);
+		cubeMaterial.SetColor("_EmissionColor", availableCubeColor[randomColor]);
+		foreach(Light l in coloredLight)
+		{
+			l.color = availableLightColor[randomColor];
+		}
+		flareAnim.GetComponent<LensFlare>().color = availableLightColor[randomColor];
 	}
 
 	IEnumerator animMusic()
@@ -65,8 +88,15 @@ public class MainMenuConnectedAnim : MonoBehaviour {
 		visualizerRoot.SetActive (true);
 		diversLight.SetActive (true);
 		cubeGenerator.SetActive (false);
+		gamePanelAnim.gameObject.SetActive(true);
 
-		yield return new WaitForSeconds (1f);
+
+		yield return new WaitForSeconds (0.7f);
+
+		gamePanelAnim.Play();
+		SSAO.enabled = true;
+
+		yield return new WaitForSeconds(0.3f);
 
 		mainMusic.gameObject.SetActive (true);
 		SoundWaveManager.instance.init (mainMusic);
@@ -75,16 +105,17 @@ public class MainMenuConnectedAnim : MonoBehaviour {
 	
 	// Update is called once per frame
 	private float smoothFramerate;
+
 	void Update () {
 
-		if (SoundWaveManager.instance.isActiveAndEnabled) {
+		if (SoundWaveManager.instance.isAnalyseActive()) {
 			SoundWaveManager.instance.getSpectrumBand(ref spectrumDatas, visualizerBarHeights, SpectrumCut.EXP);
 			
-			smoothFramerate = Mathf.Lerp(0.2f, 0.9f, Mathf.Clamp(Time.deltaTime / 0.033f, 0f, 1f));
+			smoothFramerate = Mathf.Lerp(0.05f, 0.9f, Mathf.Clamp(Time.deltaTime / 0.033f, 0f, 1f));
 			for(int i=0; i<bandNumber; i++)
 			{
 				cubesVisualizer[i].localScale = Vector3.Lerp(cubesVisualizer[i].localScale, flatY + Vector3.up*Mathf.Clamp(spectrumDatas[i+bandIngore], 0f, heightLimit), smoothFramerate);
-				lightVisualizer[i].intensity = (cubesVisualizer[i].localScale.y / heightLimit)*maxLightIntensity;
+				if(i==(bandNumber/2)) lightVisualizer.intensity = ((cubesVisualizer[i].localScale.y / heightLimit)*(maxLightIntensity - minLightIntensity)) + minLightIntensity;
 			}
 		}
 	}
