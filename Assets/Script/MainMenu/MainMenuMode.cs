@@ -8,6 +8,8 @@ public class MainMenuMode : MonoBehaviour {
 
 	public Animation cameraAnim;
 
+	public Animation optionMenu;
+
 	// Use this for initialization
 	void Start () {
 		if(!ServerManager.instance.connected || !ServerManager.instance.connectedToRoom)
@@ -21,10 +23,29 @@ public class MainMenuMode : MonoBehaviour {
 	
 	}
 
+	public void backFromOption()
+	{
+		optionMenu.Play ("CloseOptionMenu");
+		cameraAnim.Play("OptionToMainMenu");
+		Invoke ("playCameraShake", 0.5f);
+	}
+	
+	public void playCameraShake()
+	{
+		cameraAnim.Play("OptionToMainMenu");
+	}
+
+	public void openOption()
+	{
+		optionMenu.gameObject.SetActive(true);
+		optionMenu.Play ("OpenOptionMenu");
+	}
 
 	public void goToOption()
 	{
+		CancelInvoke ("playCameraShake");
 		cameraAnim.Play("GoToOption");
+		Invoke ("openOption", 0.5f);
 	}
 
 	public void goToQuit()

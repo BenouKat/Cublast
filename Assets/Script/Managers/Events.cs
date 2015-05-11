@@ -3,6 +3,7 @@ using System.Collections;
 
 
 public delegate void BackButtonClickedHandler();
+public delegate void CameraOptionChangedHandler();
 
 public class Events : MonoBehaviour {
 
@@ -18,5 +19,11 @@ public class Events : MonoBehaviour {
 	public void FireBackButtonClicked()
 	{
 		if(BackButtonClicked != null) BackButtonClicked();
+	}
+
+	public event CameraOptionChangedHandler CameraOptionChanged;
+	public void FireCameraOptionChanged()
+	{
+		if(CameraOptionChanged != null) CameraOptionChanged();
 	}
 }

@@ -10,6 +10,12 @@ public class CameraOptionsController : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		optionController();
+		Events.instance.CameraOptionChanged += new CameraOptionChangedHandler(optionController);
+	}
+
+	void OnDestroy()
+	{
+		Events.instance.CameraOptionChanged -= new CameraOptionChangedHandler(optionController);
 	}
 
 	public void optionController()

@@ -479,6 +479,7 @@ public class LoadManager : MonoBehaviour{
 					sss = null;
 					decoupStore.Clear();
 					decoupStore = null;
+					GC.Collect();
 					return false;
 				}
 			}
@@ -489,6 +490,7 @@ public class LoadManager : MonoBehaviour{
 		sss = null;
 		decoupStore.Clear();
 		decoupStore = null;
+		GC.Collect();
 		return true;
 		
 		

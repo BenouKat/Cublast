@@ -11,6 +11,7 @@ public class MainMenuConnection : MonoBehaviour {
 	public InputField username;
 	public InputField password;
 	public Toggle automaticConnection;
+	public GameObject alreadyConnectedObject;
 
 	public GameObject waitingPanel;
 	public Text textWaiting;
@@ -47,13 +48,21 @@ public class MainMenuConnection : MonoBehaviour {
 		warningPanel.SetActive(false);
 		creationPanel.SetActive(false);
 
+		if(alreadyConnectedObject != null && forceMenu)
+		{
+			alreadyConnectedObject.SetActive(ServerManager.instance.connected && ServerManager.instance.connectedToRoom);
+		}
+
 		if (PlayerPrefs.HasKey ("username")) {
 			username.text = PlayerPrefs.GetString("username");
 		}
 
 		if (PlayerPrefs.HasKey ("autoconnect") && PlayerPrefs.GetInt ("autoconnect") == 1) {
 			password.text = PlayerPrefs.GetString("password");
-			Invoke ("connect", 0.2f);
+			if(!forceMenu)
+			{
+				Invoke ("connect", 0.2f);
+			}
 		}else{
 			automaticConnection.isOn = false;
 		}
@@ -108,9 +117,14 @@ public class MainMenuConnection : MonoBehaviour {
 
 	public void goToMainMenu()
 	{
-		globalPanelConnection.SetActive(false);
+		if(forceMenu)
+		{
+			activeCreatePanel(false);
+		}else{
+			mainMenuAnim.SetActive(true);
+			globalPanelConnection.SetActive(false);
+		}
 
-		mainMenuAnim.SetActive(true);
 	}
 
 	public void register()

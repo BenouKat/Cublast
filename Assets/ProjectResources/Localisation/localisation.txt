@@ -19,6 +19,7 @@ ErrorSongPack;Oops ! CUBLAST has detected some files but failed to load them...\
 Connection;Connection;Connexion
 PlayOffline;Play offline;Jouer hors ligne
 Create;Create;Créer
+Disconnect;Disconnect;Déconnecter
 AccountName;Account name;Nom de compte
 Password;Password;Mot de passe
 PasswordAgain;Type password again;Retapez le mot de passe
@@ -36,3 +37,28 @@ WarningOffline;If you play offline, you will only see you own score. The "Friend
 OK;OK;OK
 Back;Back;Retour
 PleaseWait;Please wait;Veuillez patientez
+Game;Game;Jeu
+Inputs;Inputs;Contrôles
+InputsHelp;Configure your inputs for each targets. You can configure 2 inputs on a target. The targets below are positionned in the exact same way as in game.;Configurez vos touches pour chaque cibles. Vous pouvez configurer 2 touches par cible. Les cibles ci-dessous sont dans le même ordre qu'en jeu.
+PrimaryInput;Primary inputs;Touches principales
+SecondInput;Alternative inputs;Touches alternatives
+GlobalOffsetSecond;Audio/video offset (in ms);Décallage audio/vidéo (en ms)
+GlobalOffsetSecondHelp;Use this if you notice an offset between the music and the notes. Increase the value if the music is ahead, decrease it if it's late. Ex : -150 shift the music 150ms forward.;Utilisez cette valeur si vous notez un décalage entre la musique et les notes. Augmentez la valeur si la musique est en avance, diminuez là si elle est en retard. Ex : -150 décale le son de 150 millisecondes en avant.
+EnableAudioEffect;Enable audio effects in game;Activer les effets audio en jeu
+EnableAudioEffectHelp;Disable audio effects if you are disturbed by them during play;Désactivez les effets audio si vous ne voulez pas être perturbé pendant le déroulement de la chanson.
+EnableVideoEffect;Enable visual effects in game;Activer les effets visuels en jeu
+EnableVideoEffectHelp;Disable visual effects if you are disturbed by them during play;Désactivez les effets visuels si vous ne voulez pas être perturbé pendant le déroulement de la chanson.
+UseCacheSystem;Use cache system;Utiliser le cache
+UseCacheSystemHelp;Cache allow CUBLAST to load faster. Be careful, you need to regenerate the cache each time you modify your song folder to maximise load performance.;Le cache permet de charger CUBLAST plus vite. Attention, vous devez regénérer le cache à chaque modification de votre dossier de chanson pour des performances de chargement maximum.
+RegenerateCache;Regenerate the cache;Regénérer le cache
+AlreadyConnected;You are already connected. A new connection will shutdown this one.;Vous êtes actuellement déjà connecté. Une nouvelle connexion vous déconnectera de celle-ci.
+AudioVideo;Audio/Video;Audio/Vidéo
+GeneralVolume;General volume;Volume principal
+EnableFXAA;Enable FXAA;Activer le FXAA
+EnableAntialiasing;Anti-Aliasing;Anti-Aliasing
+EnableBloom;Enable bloom;Activer l'effet de brillance
+EnablePostEffect;Enable post-effects;Activer les effets post-traitement
+EnableVsync;Enable vertical synchronisation;Activer la synchronisation verticale
+OnlyInGame;Disable effect only during songs;Enlever les effets seulement pendant les chansons
+AntiAliasingHelp;Drasticly decrease performance. If you have enable FXAA you shouldn't pick one.;Consomme énormément de performance. Si vous avez activé le FXAA, nous vous conseillons fortement de n'en choisir aucun.
+VsyncHelp;Lock game FPS. Can leads to loss of precision during game and performance decrease.;Fixe les IPS du jeu. Peut entrainer une perte de précision pendant le jeu ou une chute de performance.

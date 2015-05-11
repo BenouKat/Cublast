@@ -38,6 +38,7 @@ public class Profile{
 	public bool enableBloom;
 	public bool enablePostProcessEffects;
 	public bool onlyOnGame;
+	public bool enableVSync;
 
 	
 	//Songs
@@ -57,6 +58,7 @@ public class Profile{
 		enableVisualEffects = true;
 		onlyOnGame = true;
 		useTheCacheSystem = false;
+		enableVSync = false;
 		antiAliasing = 0;
 		enableFXAA = true;
 		KeyCodeUp = KeyCode.UpArrow;

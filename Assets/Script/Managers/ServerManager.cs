@@ -78,6 +78,17 @@ public class ServerManager : MonoBehaviour {
 		}
 	}
 
+	//Stay connected
+	float lastTokenAlive = 0f;
+	public float durationBetweenTokens = 60f;
+	void Update()
+	{
+		if (PIOconnection != null && PIOconnection.Connected && Time.time > lastTokenAlive + durationBetweenTokens) {
+			PIOconnection.Send("aliveToken");
+			lastTokenAlive = Time.time;
+		}
+	}
+
 
 
 	#region connectionMethods

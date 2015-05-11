@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour{
 #endif
 	
 	public Profile prefs;
+	public UnityEngine.Audio.AudioMixer masterMixer;
 
 	//MAIN MENU
 	[HideInInspector] public bool gameInitialized;
@@ -99,6 +100,7 @@ public class GameManager : MonoBehaviour{
 
 		ProfileManager.instance.LoadProfiles ();
 		prefs = ProfileManager.instance.prefs;
+		setPrefsValues();
 	}
 	
 	public void LoadScoreJudge(Judge j){
@@ -163,5 +165,18 @@ public class GameManager : MonoBehaviour{
 	public PrecisionValue findPrecValue(List<PrecisionValue> precList, Precision prec)
 	{
 		return precList.Find(c => c.precision == prec);
+	}
+
+	public void setPrefsValues()
+	{
+		QualitySettings.vSyncCount = prefs.enableVSync ? 1 : 0;
+		Application.targetFrameRate = prefs.enableVSync ? 60 : -1;
+		QualitySettings.antiAliasing = prefs.antiAliasing;
+		setMasterVolume(prefs.generalVolume);
+	}
+
+	public void setMasterVolume(float volume)
+	{
+		masterMixer.SetFloat("masterVol", Mathf.Lerp(-40f, 0f, volume));
 	}
 }
