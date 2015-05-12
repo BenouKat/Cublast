@@ -1,8 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="..\AppliTuhka\AppliTuhka\Assets\MainScript.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\MainMenu\MainMenuOptions.cs">
     <Files>
-      <File FileName="..\AppliTuhka\AppliTuhka\Assets\MainScript.cs" Line="7" Column="2" />
+      <File FileName="Assets\Script\MainMenu\MainMenuOptions.cs" Line="97" Column="56" />
+      <File FileName="Assets\Script\MainMenu\MainMenuMode.cs" Line="30" Column="34" />
+      <File FileName="Assets\Script\MainMenu\MainMenuConnection.cs" Line="48" Column="28" />
+      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="53" Column="16" />
+      <File FileName="Assets\Script\Managers\GameManager.cs" Line="178" Column="14" />
+      <File FileName="Assets\Script\Managers\TransitionManager.cs" Line="72" Column="94" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

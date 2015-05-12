@@ -177,6 +177,6 @@ public class GameManager : MonoBehaviour{
 
 	public void setMasterVolume(float volume)
 	{
-		masterMixer.SetFloat("masterVol", Mathf.Lerp(-40f, 0f, volume));
+		masterMixer.SetFloat("masterVol", Mathf.Lerp(-80f, 0f, volume));
 	}
 }

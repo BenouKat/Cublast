@@ -27,12 +27,13 @@ public class MainMenuMode : MonoBehaviour {
 	{
 		optionMenu.Play ("CloseOptionMenu");
 		cameraAnim.Play("OptionToMainMenu");
-		Invoke ("playCameraShake", 0.5f);
+		Invoke ("playCameraShake", 1f);
 	}
 	
 	public void playCameraShake()
 	{
-		cameraAnim.Play("OptionToMainMenu");
+		optionMenu.gameObject.SetActive(false);
+		cameraAnim.Play("CameraShake");
 	}
 
 	public void openOption()

@@ -45,7 +45,7 @@ public class MainMenuConnection : MonoBehaviour {
 		connectionPanel.SetActive(true);
 		waitingPanel.SetActive(false);
 		errorPanel.SetActive(false);
-		warningPanel.SetActive(false);
+		if(warningPanel != null) warningPanel.SetActive(false);
 		creationPanel.SetActive(false);
 
 		if(alreadyConnectedObject != null && forceMenu)

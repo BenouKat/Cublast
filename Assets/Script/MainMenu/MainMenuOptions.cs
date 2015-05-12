@@ -7,16 +7,16 @@ public class MainMenuOptions : MonoBehaviour {
 
 	public Sprite normalImageButton;
 	public Sprite selectedImageButton;
-	public Image currentlyPressed;
+	[HideInInspector] public Image currentlyPressed;
 	public List<Button> menuButtons;
 	public Image startingButton;
 
 	GameObject currentPanel;
 
 	public List<Button> inputButtons;
-	public Button choosingButton;
-	public Text choosingText;
-	public bool isChoosingInput;
+	[HideInInspector] public Button choosingButton;
+	[HideInInspector] public Text choosingText;
+	[HideInInspector] public bool isChoosingInput;
 	public Color selectedInput;
 	public Color normalInput;
 
@@ -30,7 +30,7 @@ public class MainMenuOptions : MonoBehaviour {
 	public Button[] antiAliasingButtons;
 	public Sprite AANotActivated;
 	public Sprite AAActivated;
-	public int enabledAA;
+	[HideInInspector] public int enabledAA;
 	public Toggle enableBloom;
 	public Toggle enablePostEffect;
 	public Toggle enableVSync;
@@ -38,6 +38,7 @@ public class MainMenuOptions : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		initializeOptions ();
 		navigate(startingButton);
 	}
 	
@@ -52,16 +53,11 @@ public class MainMenuOptions : MonoBehaviour {
 		}
 	}
 
-	public void back()
-	{
-
-	}
-
 	public void initializeOptions()
 	{
 		foreach(Button button in inputButtons)
 		{
-			choosingButton.transform.GetChild(0).GetComponent<Text>().text = getKeyCodeAsInput(button);
+			button.transform.GetChild(0).GetComponent<Text>().text = getKeyCodeAsInput(button);
 		}
 		godField.text = GameManager.instance.prefs.globalOffsetSeconds.ToString();
 		enableAudioEffect.isOn = GameManager.instance.prefs.enableSoundEffects;
