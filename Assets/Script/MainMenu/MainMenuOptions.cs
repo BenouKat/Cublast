@@ -57,7 +57,7 @@ public class MainMenuOptions : MonoBehaviour {
 	{
 		foreach(Button button in inputButtons)
 		{
-			button.transform.GetChild(0).GetComponent<Text>().text = getKeyCodeAsInput(button);
+			setInputAsKeyCode(button);
 		}
 		godField.text = GameManager.instance.prefs.globalOffsetSeconds.ToString();
 		enableAudioEffect.isOn = GameManager.instance.prefs.enableSoundEffects;
@@ -235,7 +235,7 @@ public class MainMenuOptions : MonoBehaviour {
 	}
 
 	
-	string getKeyCodeAsInput(Button button)
+	void setInputAsKeyCode(Button button)
 	{
 		Text buttonText = button.transform.GetChild(0).GetComponent<Text>();
 		if(button.name.Contains("left"))
@@ -271,6 +271,5 @@ public class MainMenuOptions : MonoBehaviour {
 				buttonText.text = GameManager.instance.prefs.SecondaryKeyCodeDown.ToString();
 			}
 		}
-		return "?";
 	}
 }
