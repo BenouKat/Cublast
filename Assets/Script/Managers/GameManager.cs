@@ -62,11 +62,8 @@ public class GameManager : MonoBehaviour{
 
 	//Debug
 	[HideInInspector]
-#if UNITY_EDITOR || UNITY_EDITOR_64
-	public string DEBUGPATH = "/../";
-#else
 	public string DEBUGPATH = "/";
-#endif
+
 	
 	public Profile prefs;
 	public UnityEngine.Audio.AudioMixer masterMixer;
@@ -82,6 +79,11 @@ public class GameManager : MonoBehaviour{
 		if(instance == null){ 
 			instance = this;
 			instance.init();
+			#if UNITY_EDITOR || UNITY_EDITOR_64
+			DEBUGPATH = "/../";
+			#else
+			DEBUGPATH = "/";
+			#endif
 		}
 		DontDestroyOnLoad (this);
 	}

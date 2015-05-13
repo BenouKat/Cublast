@@ -26,6 +26,7 @@ public class MainMenuMode : MonoBehaviour {
 	public void backFromOption()
 	{
 		optionMenu.Play ("CloseOptionMenu");
+		optionMenu.GetComponent<MainMenuOptions> ().closePanel ();
 		cameraAnim.Play("OptionToMainMenu");
 		Invoke ("playCameraShake", 1f);
 	}

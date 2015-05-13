@@ -41,20 +41,35 @@ public class MainMenuOptions : MonoBehaviour {
 		initializeOptions ();
 		navigate(startingButton);
 	}
+
+	void OnEnable()
+	{
+		initializeOptions ();
+		navigate(startingButton);
+	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(isChoosingInput && Input.anyKeyDown)
 		{
-			setKeyCodeAsInput(Event.current.keyCode);
-			choosingText.text = Event.current.keyCode.ToString();
+			KeyCode outputKey = setKeyCodeAsInput(fetchKey());
+			choosingText.text = outputKey.ToString();
 			choosingText.color = normalInput;
+			foreach(Button b in menuButtons)
+			{
+				b.interactable = true;
+			}
+			foreach(Button b in inputButtons)
+			{
+				b.interactable = true;
+			}
 			isChoosingInput = false;
 		}
 	}
 
 	public void initializeOptions()
 	{
+		initKeyCodes ();
 		foreach(Button button in inputButtons)
 		{
 			setInputAsKeyCode(button);
@@ -117,6 +132,7 @@ public class MainMenuOptions : MonoBehaviour {
 		GameManager.instance.prefs.enableVSync = enableVSync.isOn;
 		GameManager.instance.prefs.onlyOnGame = onlyInGame.isOn;
 
+		GameManager.instance.prefs.saveOptions ();
 		GameManager.instance.setPrefsValues();
 		Events.instance.FireCameraOptionChanged();
 	}
@@ -137,6 +153,14 @@ public class MainMenuOptions : MonoBehaviour {
 		}
 		currentPanel = button.transform.parent.FindChild("Panel").gameObject;
 		currentPanel.SetActive(true);
+	}
+
+	public void closePanel()
+	{
+		if(currentPanel != null)
+		{
+			currentPanel.SetActive(false);
+		}
 	}
 
 	public void setInput(Button button)
@@ -196,44 +220,79 @@ public class MainMenuOptions : MonoBehaviour {
 		}
 	}
 
+
+
+	//KEY CODES
 	
-	void setKeyCodeAsInput(KeyCode key)
+	KeyCode setKeyCodeAsInput(KeyCode key)
 	{
 		if(choosingButton.name.Contains("left"))
 		{
 			if(choosingButton.name.Contains("1"))
 			{
+				if(key == GameManager.instance.prefs.SecondaryKeyCodeLeft)
+				{
+					return GameManager.instance.prefs.KeyCodeLeft;
+				}
 				GameManager.instance.prefs.KeyCodeLeft = key;
 			}else{
+				if(key == GameManager.instance.prefs.KeyCodeLeft)
+				{
+					return GameManager.instance.prefs.SecondaryKeyCodeLeft;
+				}
 				GameManager.instance.prefs.SecondaryKeyCodeLeft = key;
 			}
 		}else if(choosingButton.name.Contains("down"))
 		{
 			if(choosingButton.name.Contains("1"))
 			{
+				if(key == GameManager.instance.prefs.SecondaryKeyCodeDown)
+				{
+					return GameManager.instance.prefs.KeyCodeDown;
+				}
 				GameManager.instance.prefs.KeyCodeDown = key;
 			}else{
+				if(key == GameManager.instance.prefs.KeyCodeDown)
+				{
+					return GameManager.instance.prefs.SecondaryKeyCodeDown;
+				}
 				GameManager.instance.prefs.SecondaryKeyCodeDown = key;
 			}
 		}else if(choosingButton.name.Contains("up"))
 		{
 			if(choosingButton.name.Contains("1"))
 			{
+				if(key == GameManager.instance.prefs.SecondaryKeyCodeUp)
+				{
+					return GameManager.instance.prefs.KeyCodeUp;
+				}
 				GameManager.instance.prefs.KeyCodeUp = key;
 			}else{
-				GameManager.instance.prefs.SecondaryKeyCodeDown = key;
+				if(key == GameManager.instance.prefs.KeyCodeUp)
+				{
+					return GameManager.instance.prefs.SecondaryKeyCodeUp;
+				}
+				GameManager.instance.prefs.SecondaryKeyCodeUp = key;
 			}
 		}else if(choosingButton.name.Contains("right"))
 		{
 			if(choosingButton.name.Contains("1"))
 			{
+				if(key == GameManager.instance.prefs.SecondaryKeyCodeRight)
+				{
+					return GameManager.instance.prefs.KeyCodeRight;
+				}
 				GameManager.instance.prefs.KeyCodeRight = key;
 			}else{
-				GameManager.instance.prefs.SecondaryKeyCodeDown = key;
+				if(key == GameManager.instance.prefs.KeyCodeRight)
+				{
+					return GameManager.instance.prefs.SecondaryKeyCodeRight;
+				}
+				GameManager.instance.prefs.SecondaryKeyCodeRight = key;
 			}
 		}
+		return key;
 	}
-
 	
 	void setInputAsKeyCode(Button button)
 	{
@@ -260,7 +319,7 @@ public class MainMenuOptions : MonoBehaviour {
 			{
 				buttonText.text = GameManager.instance.prefs.KeyCodeUp.ToString();
 			}else{
-				buttonText.text = GameManager.instance.prefs.SecondaryKeyCodeDown.ToString();
+				buttonText.text = GameManager.instance.prefs.SecondaryKeyCodeUp.ToString();
 			}
 		}else if(button.name.Contains("right"))
 		{
@@ -268,8 +327,25 @@ public class MainMenuOptions : MonoBehaviour {
 			{
 				buttonText.text = GameManager.instance.prefs.KeyCodeRight.ToString();
 			}else{
-				buttonText.text = GameManager.instance.prefs.SecondaryKeyCodeDown.ToString();
+				buttonText.text = GameManager.instance.prefs.SecondaryKeyCodeRight.ToString();
 			}
 		}
+	}
+
+	private List<KeyCode> validKeyCodes = new List<KeyCode>();
+	private void initKeyCodes() {
+		validKeyCodes.Clear ();
+		validKeyCodes.AddRange((KeyCode[])System.Enum.GetValues(typeof(KeyCode)));
+	}
+
+	private KeyCode fetchKey()
+	{
+		for (int i = 0; i < validKeyCodes.Count; i++) {
+			if (Input.GetKeyDown (validKeyCodes[i])) {
+				return validKeyCodes[i];
+			}
+		}
+		
+		return KeyCode.None;
 	}
 }

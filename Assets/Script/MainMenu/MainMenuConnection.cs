@@ -90,6 +90,8 @@ public class MainMenuConnection : MonoBehaviour {
 	public void connect()
 	{
 		if(isConnecting) return;
+		if (forceMenu && ServerManager.instance.connected)
+			ServerManager.instance.disconnect ();
 		StartCoroutine (waitingForConnection ());
 		fromRegister = false;
 		ServerManager.instance.connect (username.text, password.text, 
@@ -135,7 +137,8 @@ public class MainMenuConnection : MonoBehaviour {
 
 			if(!string.IsNullOrEmpty(passwordCreation.text) && passwordCreation.text.Equals(passwordConfirmCreation.text))
 			{
-
+				if (forceMenu && ServerManager.instance.connected)
+					ServerManager.instance.disconnect ();
 				StartCoroutine (waitingForConnection ());
 				username.text = usernameCreation.text;
 				password.text = passwordCreation.text;
