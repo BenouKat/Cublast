@@ -197,7 +197,9 @@ public class LoadManager : MonoBehaviour{
 		int packOK = 0;
 
 		foreach(string packPath in currentPackPaths){
-			string bannerPath = Directory.GetFiles(packPath).FirstOrDefault(c => c.Contains(".png") || c.Contains(".jpg") || c.Contains(".jpeg"));
+			string[] allFilesInPack = Directory.GetFiles(packPath);
+			string bannerPath = allFilesInPack.FirstOrDefault(c => c.Contains("bn") && c.Contains(".png") || c.Contains(".jpg") || c.Contains(".jpeg"))
+				?? allFilesInPack.FirstOrDefault(c => c.Contains(".png") || c.Contains(".jpg") || c.Contains(".jpeg"));
 			Texture2D texTmp = new Texture2D(512,256);
 			
 			//Chargement de la texture bannière si trouvée
