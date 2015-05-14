@@ -78,12 +78,16 @@ public class GameManager : MonoBehaviour{
 	{
 		if(instance == null){ 
 			instance = this;
-			instance.init();
+
 			#if UNITY_EDITOR || UNITY_EDITOR_64
 			DEBUGPATH = "/../";
 			#else
 			DEBUGPATH = "/";
 			#endif
+
+
+			instance.init();
+
 		}
 		DontDestroyOnLoad (this);
 	}
