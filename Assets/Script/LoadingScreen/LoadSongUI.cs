@@ -76,7 +76,7 @@ public class LoadSongUI : MonoBehaviour {
 				quitOnEchap = true;
 				errorPanel.SetActive(true);
 			}else{
-				TransitionManager.instance.changeSceneWithTransition("MainMenu", 0.5f, 1f, true, true);
+				TransitionManager.instance.changeSceneWithTransition("SelectSongs", 0.5f, 1f, true, true);
 			}
 		}
 

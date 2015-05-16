@@ -74,8 +74,8 @@ public class OpenChart{
 		//read all file
 		string[] files = (string[]) Directory.GetFiles(directory);
 		
-		string stream = files.FirstOrDefault(c => c.ToLower().Contains(".sm") && isAllowedFile(c.ToLower(), chartFileAllowed, chartFileRestricted));
-		if(stream == null) stream = files.FirstOrDefault(c => c.ToLower().Contains(".dwi") && isAllowedFile(c.ToLower(), chartFileAllowed, chartFileRestricted));
+		string stream = files.FirstOrDefault(c => c.ToLower().EndsWith(".sm") && isAllowedFile(c.ToLower(), chartFileAllowed, chartFileRestricted));
+		if(stream == null) stream = files.FirstOrDefault(c => c.ToLower().EndsWith(".dwi") && isAllowedFile(c.ToLower(), chartFileAllowed, chartFileRestricted));
 		if(stream == null) return null;
 		StreamReader sr = new StreamReader(stream);
 		songContent = sr.ReadToEnd();

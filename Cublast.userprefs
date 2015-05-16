@@ -1,16 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Managers\GameManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\SelectSongs\PackManager.cs">
     <Files>
-      <File FileName="Assets\Script\Managers\GameManager.cs" Line="88" Column="1" />
-      <File FileName="Assets\Script\MainMenu\MainMenuMode.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\MainMenu\MainMenuOptions.cs" Line="1" Column="1" />
-      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="1" Column="1" />
-      <File FileName="Assets\Script\MainMenu\MainMenuConnectedAnim.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\TempPassScene.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\System\Profile.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\MainMenu\MainMenuConnection.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\System\LoadManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\SelectSongs\PackCube.cs" Line="7" Column="23" />
+      <File FileName="Assets\Script\SelectSongs\PackManager.cs" Line="108" Column="2" />
+      <File FileName="Assets\Script\SelectSongs\PackCubeGenerator.cs" Line="32" Column="29" />
+      <File FileName="Assets\Script\LoadingScreen\LoadSongUI.cs" Line="79" Column="70" />
+      <File FileName="Assets\Script\System\OpenChart.cs" Line="338" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

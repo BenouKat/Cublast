@@ -77,6 +77,9 @@
      <Compile Include="Assets\Script\Managers\SongOptionManager.cs" />
      <Compile Include="Assets\Script\Managers\SoundWaveManager.cs" />
      <Compile Include="Assets\Script\Managers\TransitionManager.cs" />
+     <Compile Include="Assets\Script\SelectSongs\PackCube.cs" />
+     <Compile Include="Assets\Script\SelectSongs\PackCubeGenerator.cs" />
+     <Compile Include="Assets\Script\SelectSongs\PackManager.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
      <Compile Include="Assets\Script\System\OGGScripts\ByteUtilities.cs" />
@@ -100,6 +103,7 @@
      <Compile Include="Assets\Script\Utils\CombineChildrenExtended.cs" />
      <Compile Include="Assets\Script\Utils\DestroyThisTimed.cs" />
      <Compile Include="Assets\Script\Utils\EmissionTweener.cs" />
+     <Compile Include="Assets\Script\Utils\KeepDirection.cs" />
      <Compile Include="Assets\Script\Utils\LensFlareTweener.cs" />
      <Compile Include="Assets\Script\Utils\MeshCombineUtility.cs" />
      <Compile Include="Assets\Script\Utils\PlayOnAwakeAtTime.cs" />
