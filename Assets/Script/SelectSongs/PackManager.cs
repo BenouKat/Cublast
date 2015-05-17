@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PackManager : MonoBehaviour {
 
@@ -21,6 +22,15 @@ public class PackManager : MonoBehaviour {
 
 	float rotationPerCubes;
 	float rotationCounter;
+	public float percentDecal = 0.5f;
+
+	SongPack currentPack;
+	public PackCube currentCube;
+	public Text packname;
+	public Text fakepackname;
+	public Text songCountText;
+
+	public Color[] difficultyColors;
 
 	// Use this for initialization
 	void Start () {
@@ -30,15 +40,19 @@ public class PackManager : MonoBehaviour {
 		targetRotator.SetParent(transform);
 
 		rotationPerCubes = 360f / generator.packCubes.Count;
-		rotationCounter = rotationPerCubes;
+		rotationCounter = rotationPerCubes*percentDecal;
 		reloadAllTexturesAndPack();
+		reloadUI();
+		currentCube.selectPack(true);
 	}
 
 	public void reloadAllTexturesAndPack()
 	{
 		int indexPack = currentPackIndex-2;
 		int indexCube = currentCubeIndex-2;
-		SongPack currentPack;
+		SongPack currentLoopPack;
+		currentPack = LoadManager.instance.songPacks[currentPackIndex];
+		currentCube = generator.packCubes[currentCubeIndex];
 		for(int i=0; i<generator.packCubes.Count;i++)
 		{
 			if(indexPack >= LoadManager.instance.songPacks.Count)
@@ -57,30 +71,86 @@ public class PackManager : MonoBehaviour {
 				indexCube += generator.packCubes.Count;
 			}
 
-			currentPack = LoadManager.instance.songPacks[indexPack];
+			currentLoopPack = LoadManager.instance.songPacks[indexPack];
 
-			if(currentPack.banner != null)
+			if(currentLoopPack.banner != null)
 			{
-				generator.packCubes[indexCube].objectRenderer.material.mainTexture = currentPack.banner;
+				generator.packCubes[indexCube].objectRenderer.material.mainTexture = currentLoopPack.banner;
 			}else{
 				generator.packCubes[indexCube].objectRenderer.material.mainTexture = emptyPackTexture;
 			}
 
-
 			indexPack++;
 			indexCube++;
 		}
+	}
 
+	public void reloadUI()
+	{
+		packname.text = currentPack.name;
+		fakepackname.text = currentPack.name;
+		int songCount = 0;
+		int beginnersCount = 0;
+		int mediumCount = 0;
+		bool beginnersFound = false;
+		bool mediumFound = false;
+		foreach(SongData sd in currentPack.songsData)
+		{
+			beginnersFound = false;
+			mediumFound = false;
+			foreach(Song s in sd.songs.Values)
+			{
+				if(!beginnersFound && s.level >= 2 && s.level <= 4)
+				{
+					beginnersCount++;
+					beginnersFound = true;
+				}else if(!mediumFound && s.level >= 5 && s.level <= 8)
+				{
+					mediumCount++;
+					mediumFound = true;
+				}
+			}
+			songCount++;
+		}
+
+		string textCount = songCount + " " + GameLocalization.instance.Translate("Songs") + "\n";
+		float beginnersRatio = (float)beginnersCount/((float)songCount);
+		float mediumRatio = (float)mediumCount/((float)songCount);
+		if(beginnersRatio >= 0.5f)
+		{
+			songCountText.text = textCount + GameLocalization.instance.Translate("BeginnersValid");
+			songCountText.color = difficultyColors[0];
+
+		}else if(mediumRatio >= 0.5f)
+		{
+			songCountText.text = textCount + GameLocalization.instance.Translate("MediumValid");
+			songCountText.color = difficultyColors[1];
+
+		}else if(beginnersRatio >= 0.15f)
+		{
+			songCountText.text = textCount + GameLocalization.instance.Translate("BegginersContain");
+			songCountText.color = difficultyColors[0];
+
+		}else if(mediumRatio >= 0.15f)
+		{
+			songCountText.text = textCount + GameLocalization.instance.Translate("MediumContain");
+			songCountText.color = difficultyColors[1];
+
+		}else{
+			songCountText.text = textCount + GameLocalization.instance.Translate("ExpertOnly");
+			songCountText.color = difficultyColors[2];
+
+		}
 	}
 
 	void checkCubeRotation()
 	{
-		if(rotationCounter >= rotationPerCubes)
+		if(rotationCounter > rotationPerCubes)
 		{
 			rotationCounter -= rotationPerCubes;
 			currentPackIndex++;
 			currentCubeIndex++;
-		}else if(rotationCounter <= -rotationPerCubes)
+		}else if(rotationCounter < 0f)
 		{
 			rotationCounter += rotationPerCubes;
 			currentPackIndex--;
@@ -103,7 +173,10 @@ public class PackManager : MonoBehaviour {
 			currentCubeIndex -= generator.packCubes.Count;
 		}
 
+		currentCube.selectPack(false);
 		reloadAllTexturesAndPack();
+		reloadUI();
+		currentCube.selectPack(true);
 	}
 
 	bool notAligned = false;

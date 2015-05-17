@@ -62,3 +62,9 @@ EnableVsync;Enable vertical synchronisation;Activer la synchronisation verticale
 OnlyInGame;Disable effect only during songs;Enlever les effets seulement pendant les chansons
 AntiAliasingHelp;Drasticly decrease performance. If you have enable FXAA you shouldn't pick one.;Consomme énormément de performance. Si vous avez activé le FXAA, nous vous conseillons fortement de n'en choisir aucun.
 VsyncHelp;Lock game FPS. Can leads to loss of precision during game and performance decrease.;Fixe les IPS du jeu. Peut entrainer une perte de précision pendant le jeu ou une chute de performance.
+Songs;Songs;Chansons
+BeginnersValid;Beginners friendly;Jouable pour débutants
+BegginersContain;Contains beginner levels;Contient des niveaux débutants
+MediumValid;Medium players friendly;Jouable pour amateurs
+MediumContain;Contains medium levels;Contient des niveaux amateurs
+ExpertOnly;Expert Only;Expert uniquement
