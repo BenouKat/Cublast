@@ -307,6 +307,9 @@ public class LoadManager : MonoBehaviour{
 	{
 		int songOK = 0;
 		foreach(SongPack spack in songPacks){
+
+			currentPackLoaded = spack.name;
+
 			//Récupération de toutes les chansons
 			string[] songpath = (string[]) Directory.GetDirectories(spack.path);		//DEBUG
 			var lengthsp = lastDir ((string) songpath[0]).Count();
