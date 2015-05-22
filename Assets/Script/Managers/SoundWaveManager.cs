@@ -196,7 +196,7 @@ public class SoundWaveManager : MonoBehaviour {
 
 	void Update()
 	{
-		if (activeAnalyse) {
+		if (activeAnalyse && source != null) {
 			AnalyzeSound();
 		}
 	}

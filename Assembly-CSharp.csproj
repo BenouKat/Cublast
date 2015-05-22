@@ -80,6 +80,7 @@
      <Compile Include="Assets\Script\SelectSongs\PackCube.cs" />
      <Compile Include="Assets\Script\SelectSongs\PackCubeGenerator.cs" />
      <Compile Include="Assets\Script\SelectSongs\PackManager.cs" />
+     <Compile Include="Assets\Script\SelectSongs\VizualizerSongManager.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
      <Compile Include="Assets\Script\System\OGGScripts\ByteUtilities.cs" />
@@ -204,7 +205,7 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="PlayerIOUnity3DClient">
- <HintPath>C:/Users/Benou/Documents/PersonalProjects/Cublast/Assets/Plugins/PlayerIOUnity3DClient.dll</HintPath>
+ <HintPath>C:/Users/b.goze/Documents/PersonalProjects/Cublast/Assets/Plugins/PlayerIOUnity3DClient.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
