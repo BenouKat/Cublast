@@ -14,9 +14,6 @@ public class SongPack
 	public string path;
 	public Texture2D banner;
 	public List<SongData> songsData;
-	public int songsDone;
-	public int totalSongs;
-	public float songsScore = 0f;
 
 	public SongPack()
 	{
@@ -28,43 +25,6 @@ public class SongPack
 		songsData = new List<SongData> ();
 		this.name = name;
 		this.banner = banner;
-	}
-
-	//Heavy.... Statistics panel ?
-	public void computeSongsStats()
-	{
-		totalSongs = songsData.Sum(c => c.songs.Count);
-		int localSongDone = 0;
-		double scoreCumul = 0;
-		int songCumul = 0;
-		IEnumerable<SongInfoProfil> currentSongList = GameManager.instance.prefs.scoreOnSong.Where(c => songsData.Exists(d => d.songs.Any(e => e.Value.sip.CompareId(c))));
-		IEnumerable<SongInfoProfil> currentDifficulty;
-		SongInfoProfil currentSIP;
-		if(currentSongList.Count() > 0)
-		{
-			foreach(SongData sd in songsData)
-			{
-				localSongDone = 0;
-				currentDifficulty = currentSongList.Where(c => c.songName.Equals(sd.name));
-				if(currentDifficulty.Count() > 0)
-				{
-					for(int i=sd.songs.Count-1; i>=0; i--)
-					{
-						currentSIP = currentDifficulty.FirstOrDefault(c => c.CompareId(sd.songs.ElementAt(i).Value.sip));
-						if(currentSIP != null)
-						{
-							if(localSongDone == 0) localSongDone = i+1;
-							songCumul++;
-							scoreCumul += currentSIP.score;
-						}
-					}
-					songsDone += localSongDone;
-				}
-
-			}
-			songsScore = (float)(scoreCumul / (float)songCumul);
-		}
-
 	}
 }
 

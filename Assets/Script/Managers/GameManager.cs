@@ -42,7 +42,6 @@ public class GameManager : MonoBehaviour{
 	public List<NoteValue> noteBase;
 
 	public int baseRegenComboAfterMiss = 5;
-	public double globalOffsetSeconds = -0.1;
 	public double timeBeforeFreezeMiss = 0.350;
 	
 	//DATA GAME

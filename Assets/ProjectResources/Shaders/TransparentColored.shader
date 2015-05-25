@@ -21,8 +21,8 @@
  
               Pass
               {
-                         SetTexture [_MainTex]
-                         {
+                 SetTexture [_MainTex]
+                 {
                      ConstantColor [_Color]
                     Combine Texture * constant
                  }

@@ -45,9 +45,12 @@ public class ChartManager : MonoBehaviour {
 		painter = GetComponent<ArrowPainter>();
 		emissionTweener = GetComponent<EmissionTweener> ();
 
+		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.songPacks.First().songsData.Find(c => c.name.Contains("Bangkok")).songs[Difficulty.EXPERT];
+
+
 		if(GameManager.instance != null)
 		{
-			systemOffset += GameManager.instance.prefs.globalOffsetSeconds;
+			systemOffset += GameManager.instance.prefs.globalOffsetSeconds + SongOptionManager.instance.currentSongPlayed.offset;
 		}
 
 		currentTime = -1;

@@ -76,6 +76,7 @@ public class PackManager : MonoBehaviour {
 			if(currentLoopPack.banner != null)
 			{
 				generator.packCubes[indexCube].objectRenderer.material.mainTexture = currentLoopPack.banner;
+				generator.packCubes[indexCube].pack = currentLoopPack;
 			}else{
 				generator.packCubes[indexCube].objectRenderer.material.mainTexture = emptyPackTexture;
 			}
@@ -201,5 +202,10 @@ public class PackManager : MonoBehaviour {
 			rotator.rotation = targetRotator.rotation;
 			notAligned = false;
 		}
+	}
+
+	public void onPackSelected(PackCube pack)
+	{
+		CameraSwitcher.instance.goToSong(pack.pack);
 	}
 }
