@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class SongCube : MonoBehaviour {
 
 	public SongData songData;
+	public Song song;
 
 	public Image background;
 	public Outline outlineEffect;
@@ -139,8 +140,9 @@ public class SongCube : MonoBehaviour {
 
 		if(isPointed && !musicPreviewLaunched && Time.time > timeStartPointed  + 0.5f)
 		{
-			AudioSelectionManager.instance.clipInMemory = songData.songs[0].SetAudioClip();
-			AudioSelectionManager.instance.playPreview(songData.songs[0].samplestart, songData.songs[0].samplelenght);
+			song = songData.songs.First().Value;
+			AudioSelectionManager.instance.clipInMemory = song.SetAudioClip();
+			AudioSelectionManager.instance.playPreview(song.samplestart, song.samplelenght);
 			musicPreviewLaunched = true;
 		}
 	}

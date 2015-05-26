@@ -352,7 +352,7 @@ public class OpenChart{
 			theNewsong.banner = wordDictionary[FileTags.BANNER];
 			if(!System.Double.TryParse(wordDictionary[FileTags.OFFSET], out theNewsong.offset)) theNewsong.offset = 0;
 			if(!System.Double.TryParse(wordDictionary[FileTags.SAMPLESTART], out theNewsong.samplestart)) theNewsong.samplestart = 0;
-			if(!System.Double.TryParse(wordDictionary[FileTags.SAMPLELENGTH], out theNewsong.samplestart)) theNewsong.samplelenght = 0;
+			if(!System.Double.TryParse(wordDictionary[FileTags.SAMPLELENGTH], out theNewsong.samplelenght)) theNewsong.samplelenght = 0;
 			theNewsong.bpms = BPMListInTime;
 			theNewsong.stops = STOPListInTime;
 			theNewsong.mesureBPMS = BPMListInMesure;

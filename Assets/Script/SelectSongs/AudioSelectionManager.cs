@@ -12,7 +12,6 @@ public class AudioSelectionManager : MonoBehaviour {
 	float timeStartSample;
 	float sampleStart;
 	float sampleLength;
-	float transisionJauge = 1f;
 
 	public static AudioSelectionManager instance;
 	void Awake()
@@ -34,7 +33,7 @@ public class AudioSelectionManager : MonoBehaviour {
 		songMusic.Play();
 		this.sampleStart = (float)sampleStart;
 		this.sampleLength = (float)sampleLength;
-		songMusic.time = Mathf.Clamp(this.sampleStart - speedTransition/2f, 0f, Mathf.Infinity);
+		songMusic.time = this.sampleStart;
 		timeStartSample = Time.time;
 		isPlayingPreview = true;
 	}
@@ -63,7 +62,7 @@ public class AudioSelectionManager : MonoBehaviour {
 
 		if (isPlayingPreview && sampleLength > 0f && Time.time > timeStartSample + sampleLength - speedTransition) {
 			StartCoroutine (fadeSample());
-			timeStartSample = Time.time + speedTransition;
+			timeStartSample = Time.time + 1f;
 		}
 	}
 
@@ -72,7 +71,7 @@ public class AudioSelectionManager : MonoBehaviour {
 		float timeSpent = 0f;
 		while (isPlayingPreview && timeSpent < speedTransition) {
 			timeSpent += Time.deltaTime;
-			songMusic.volume = Mathf.Lerp(1f, 0f, timeSpent);
+			songMusic.volume = Mathf.Lerp(1f, 0f, timeSpent/speedTransition);
 			yield return 0;
 		}
 
