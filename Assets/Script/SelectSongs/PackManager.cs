@@ -50,6 +50,12 @@ public class PackManager : MonoBehaviour {
 	{
 		int indexPack = currentPackIndex-2;
 		int indexCube = currentCubeIndex-2;
+
+		if (LoadManager.instance.songPacks.Count == 1) {
+			indexPack += 1;
+			indexCube += 1;
+		}
+
 		SongPack currentLoopPack;
 		currentPack = LoadManager.instance.songPacks[currentPackIndex];
 		currentCube = generator.packCubes[currentCubeIndex];
@@ -76,10 +82,10 @@ public class PackManager : MonoBehaviour {
 			if(currentLoopPack.banner != null)
 			{
 				generator.packCubes[indexCube].objectRenderer.material.mainTexture = currentLoopPack.banner;
-				generator.packCubes[indexCube].pack = currentLoopPack;
 			}else{
 				generator.packCubes[indexCube].objectRenderer.material.mainTexture = emptyPackTexture;
 			}
+			generator.packCubes[indexCube].pack = currentLoopPack;
 
 			indexPack++;
 			indexCube++;

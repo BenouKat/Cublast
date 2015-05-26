@@ -1,18 +1,18 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\LoadingScreen\LoadSongUI.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="E:\Projets\Partouche\Partouche\Assets\Scripts\UI\PersoUI.cs">
     <Files>
-      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="47" Column="1" />
-      <File FileName="Assets\Script\LoadingScreen\LoadSongUI.cs" Line="57" Column="29" />
-      <File FileName="Assets\Script\SelectSongs\PackCube.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\PackManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\MainMenu\MainMenuConnectedAnim.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\SelectSongs\AudioSelectionManager.cs" Line="76" Column="19" />
+      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\UI\PersoUI.cs" Line="23" Column="1" />
+      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\Data\Character.cs" Line="1" Column="1" />
+      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\UI\AvatarUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\SelectSongs\SongCube.cs" Line="143" Column="40" />
       <File FileName="Assets\Script\SelectSongs\SongSelectionManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\CameraSwitcher.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\PackCubeGenerator.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\SongCube.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\SelectSongs\SongCubeGenerator.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\AudioSelectionManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\System\Song.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\SelectSongs\PackManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\SelectSongs\CameraSwitcher.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\SelectSongs\PackCube.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

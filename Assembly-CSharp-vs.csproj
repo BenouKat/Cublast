@@ -213,7 +213,7 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="PlayerIOUnity3DClient">
- <HintPath>C:/Users/Benou/Documents/PersonalProjects/Cublast/Assets/Plugins/PlayerIOUnity3DClient.dll</HintPath>
+ <HintPath>C:/Users/b.goze/Documents/PersonalProjects/Cublast/Assets/Plugins/PlayerIOUnity3DClient.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

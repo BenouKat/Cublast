@@ -39,6 +39,7 @@ public class SongSelectionManager : MonoBehaviour {
 	public void packSelected(SongPack pack)
 	{
 		generator.instanceAllSongs(pack.songsData);
+		applyRootVisualEffects ();
 	}
 
 	public void difficultyChanged(string difficulty)
@@ -52,6 +53,11 @@ public class SongSelectionManager : MonoBehaviour {
 			}
 		}
 
+		applyRootVisualEffects ();
+	}
+
+	public void applyRootVisualEffects()
+	{
 		for(int i=0; i<particuleColor.Length; i++)
 		{
 			if((Difficulty)i == difficultySelected)
@@ -62,7 +68,7 @@ public class SongSelectionManager : MonoBehaviour {
 				particuleColor[i].SetActive(false);
 			}
 		}
-
+		
 		cubeHeartMaterial.color = cubeHeartColor[(int)difficultySelected];
 		visualizerMaterial.SetColor("_EmissionColor", visualizerBarColor[(int)difficultySelected]);
 	}

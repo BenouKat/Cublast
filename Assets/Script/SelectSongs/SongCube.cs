@@ -59,7 +59,7 @@ public class SongCube : MonoBehaviour {
 			bool found = false;
 			for(int i=(int)selected; i>=0; i--)
 			{
-				if(songData.songs.ContainsKey((Difficulty)i))
+				if(!found && songData.songs.ContainsKey((Difficulty)i))
 				{
 					selectedDifficulty = (Difficulty)i;
 					found = true;
@@ -94,7 +94,11 @@ public class SongCube : MonoBehaviour {
 			}
 		}
 
-		pointOutSong();
+		if (isPointed) {
+			pointOnSong();
+		} else {
+			pointOutSong();
+		}
 		outlineEffect.effectColor = SongSelectionManager.instance.outlineColor[(int)selectedDifficulty];
 	}
 
@@ -115,6 +119,7 @@ public class SongCube : MonoBehaviour {
 	{
 		background.color = SongSelectionManager.instance.songBarColor[(int)selectedDifficulty];
 		isPointed = false;
+		AudioSelectionManager.instance.stopPreview ();
 	}
 
 	void OnDisable()
@@ -132,10 +137,11 @@ public class SongCube : MonoBehaviour {
 			transform.rotation = Quaternion.identity;
 		}
 
-		if(isPointed && !musicPreviewLaunched && timeStartPointed > Time.time + 1.5f)
+		if(isPointed && !musicPreviewLaunched && Time.time > timeStartPointed  + 0.5f)
 		{
 			AudioSelectionManager.instance.clipInMemory = songData.songs[0].SetAudioClip();
-			AudioSelectionManager.instance.playPreview();
+			AudioSelectionManager.instance.playPreview(songData.songs[0].samplestart, songData.songs[0].samplelenght);
+			musicPreviewLaunched = true;
 		}
 	}
 }

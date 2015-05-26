@@ -111,7 +111,7 @@ public class Song {
 	public AudioClip SetAudioClip(){
 		WWW thewww = new WWW(song);
 		while(!thewww.isDone){  }
-		return thewww.GetAudioClip(false, false);
+		return thewww.GetAudioClip(false, true);
 	}
 	
 	public Texture2D GetBanner(Texture2D tex){
