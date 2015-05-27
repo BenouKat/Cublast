@@ -25,6 +25,7 @@ public class PackManager : MonoBehaviour {
 	public float percentDecal = 0.5f;
 
 	SongPack currentPack;
+	public int currentDifficultyTypePack;
 	public PackCube currentCube;
 	public Text packname;
 	public Text fakepackname;
@@ -126,28 +127,28 @@ public class PackManager : MonoBehaviour {
 		if(beginnersRatio >= 0.5f)
 		{
 			songCountText.text = textCount + GameLocalization.instance.Translate("BeginnersValid");
-			songCountText.color = difficultyColors[0];
+			currentDifficultyTypePack = 0;
 
 		}else if(mediumRatio >= 0.5f)
 		{
 			songCountText.text = textCount + GameLocalization.instance.Translate("MediumValid");
-			songCountText.color = difficultyColors[1];
+			currentDifficultyTypePack = 1;
 
 		}else if(beginnersRatio >= 0.15f)
 		{
 			songCountText.text = textCount + GameLocalization.instance.Translate("BegginersContain");
-			songCountText.color = difficultyColors[0];
+			currentDifficultyTypePack = 0;
 
 		}else if(mediumRatio >= 0.15f)
 		{
 			songCountText.text = textCount + GameLocalization.instance.Translate("MediumContain");
-			songCountText.color = difficultyColors[1];
+			currentDifficultyTypePack = 1;
 
 		}else{
 			songCountText.text = textCount + GameLocalization.instance.Translate("ExpertOnly");
-			songCountText.color = difficultyColors[2];
-
+			currentDifficultyTypePack = 2;
 		}
+		songCountText.color = difficultyColors[currentDifficultyTypePack];
 	}
 
 	void checkCubeRotation()

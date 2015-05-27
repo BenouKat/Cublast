@@ -84,10 +84,12 @@
      <Compile Include="Assets\Script\SelectSongs\PackManager.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongCube.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongCubeGenerator.cs" />
+     <Compile Include="Assets\Script\SelectSongs\SongSearchBar.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongSelectionManager.cs" />
      <Compile Include="Assets\Script\SelectSongs\VizualizerSongManager.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
+     <Compile Include="Assets\Script\System\MP3Script\MP3Import.cs" />
      <Compile Include="Assets\Script\System\OGGScripts\ByteUtilities.cs" />
      <Compile Include="Assets\Script\System\OGGScripts\LiveDebugger.cs" />
      <Compile Include="Assets\Script\System\OGGScripts\LowLevel.cs" />
@@ -149,6 +151,7 @@
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\FisheyeShader.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\Contrast Stretch\Apply.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\frag_ao.cginc" />
+     <None Include="Assets\NAudio.xml" />
      <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonBasicOutline.shader" />
      <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAlpha.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_DepthOfField\DepthOfField34.shader" />
@@ -212,8 +215,14 @@
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
+ <Reference Include="NAudio">
+ <HintPath>C:/Users/b.goze/Documents/PersonalProjects/Cublast/Assets/NAudio.dll</HintPath>
+ </Reference>
+ <Reference Include="NAudio.WindowsMediaFormat">
+ <HintPath>C:/Users/b.goze/Documents/PersonalProjects/Cublast/Assets/NAudio.WindowsMediaFormat.dll</HintPath>
+ </Reference>
  <Reference Include="PlayerIOUnity3DClient">
- <HintPath>C:/Users/Benou/Documents/PersonalProjects/Cublast/Assets/Plugins/PlayerIOUnity3DClient.dll</HintPath>
+ <HintPath>C:/Users/b.goze/Documents/PersonalProjects/Cublast/Assets/Plugins/PlayerIOUnity3DClient.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

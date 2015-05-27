@@ -1,16 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\SelectSongs\AudioSelectionManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\SelectSongs\SongCube.cs">
     <Files>
-      <File FileName="Assets\Script\SelectSongs\AudioSelectionManager.cs" Line="43" Column="16" />
-      <File FileName="Assets\Script\SelectSongs\SongCube.cs" Line="145" Column="74" />
-      <File FileName="Assets\Script\SelectSongs\SongSelectionManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\SongCubeGenerator.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\System\Song.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\PackManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\CameraSwitcher.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\PackCube.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\System\OpenChart.cs" Line="352" Column="37" />
+      <File FileName="Assets\Script\SelectSongs\SongSearchBar.cs" Line="49" Column="29" />
+      <File FileName="Assets\Script\System\EnumManager.cs" Line="27" Column="13" />
+      <File FileName="Assets\Script\SelectSongs\SongSelectionManager.cs" Line="77" Column="34" />
+      <File FileName="Assets\Script\System\OpenChart.cs" Line="360" Column="40" />
+      <File FileName="Assets\Script\SelectSongs\PackManager.cs" Line="182" Column="4" />
+      <File FileName="Assets\Script\SelectSongs\PackCube.cs" Line="39" Column="4" />
+      <File FileName="Assets\Script\SelectSongs\SongCube.cs" Line="169" Column="3" />
+      <File FileName="Assets\Script\System\Song.cs" Line="139" Column="16" />
+      <File FileName="Assets\Script\SelectSongs\AudioSelectionManager.cs" Line="45" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

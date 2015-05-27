@@ -39,6 +39,8 @@ public class Song {
 	public int numberOfCross;
 	public int numberOfFootswitch;
 	public string song;
+	public string songWav;
+	public bool isWavAvailable;
 	
 	public SongInfoProfil sip;
 	
@@ -109,9 +111,33 @@ public class Song {
 	}
 
 	public AudioClip SetAudioClip(){
-		WWW thewww = new WWW(song);
+		WWW thewww = new WWW(isMP3() ? songWav : song);
 		while(!thewww.isDone){  }
 		return thewww.GetAudioClip(false, true);
+	}
+
+	public bool isMP3()
+	{
+		return song.EndsWith (".mp3") || song.EndsWith (".MP3");
+	}
+
+	public void setWav()
+	{
+		if (isMP3 ()) {
+			isWavAvailable = false;
+			songWav = song.Replace (".mp3", ".wav").Replace (".MP3", ".wav");
+			MP3Import.instance.createMP3 (this);
+		}
+
+	}
+
+	public void cleanWav()
+	{
+		if (isMP3() && !string.IsNullOrEmpty(songWav)) {
+			MP3Import.instance.cleanMP3(songWav.Replace("file://", ""));
+		}
+		songWav = "";
+		isWavAvailable = false;
 	}
 	
 	public Texture2D GetBanner(Texture2D tex){

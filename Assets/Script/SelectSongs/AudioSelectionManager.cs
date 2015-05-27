@@ -7,6 +7,7 @@ public class AudioSelectionManager : MonoBehaviour {
 	public AudioSource songMusic;
 	public AudioClip clipInMemory;
 	public float speedTransition;
+	public float speedFadeSample;
 
 	bool isPlayingPreview;
 	float timeStartSample;
@@ -33,6 +34,9 @@ public class AudioSelectionManager : MonoBehaviour {
 		songMusic.Play();
 		this.sampleStart = (float)sampleStart;
 		this.sampleLength = (float)sampleLength;
+		if ((int)(sampleLength + 0.5f) == 12) { //ITG defaultValue
+			this.sampleLength = 25f;
+		}
 		songMusic.time = this.sampleStart;
 		timeStartSample = Time.time;
 		isPlayingPreview = true;
@@ -40,7 +44,6 @@ public class AudioSelectionManager : MonoBehaviour {
 
 	public void stopPreview()
 	{
-		StopCoroutine (fadeSample ());
 		isPlayingPreview = false;
 	}
 
@@ -60,23 +63,27 @@ public class AudioSelectionManager : MonoBehaviour {
 			if(mainMusic.volume > 0.5f) SoundWaveManager.instance.source = mainMusic;
 		}
 
-		if (isPlayingPreview && sampleLength > 0f && Time.time > timeStartSample + sampleLength - speedTransition) {
+		if (isPlayingPreview && sampleLength > 0f && Time.time > timeStartSample + sampleLength - speedFadeSample) {
 			StartCoroutine (fadeSample());
-			timeStartSample = Time.time + 1f;
+			timeStartSample = Time.time + speedFadeSample*2f;
 		}
 	}
 
 	IEnumerator fadeSample()
 	{
 		float timeSpent = 0f;
-		while (isPlayingPreview && timeSpent < speedTransition) {
+		while (isPlayingPreview && timeSpent < speedFadeSample) {
 			timeSpent += Time.deltaTime;
-			songMusic.volume = Mathf.Lerp(1f, 0f, timeSpent/speedTransition);
+			songMusic.volume = Mathf.Lerp(1f, 0f, timeSpent/speedFadeSample);
 			yield return 0;
 		}
 
-		songMusic.time = sampleStart;
-		songMusic.volume = 1f;
-		timeStartSample = Time.time;
+		if (isPlayingPreview) {
+			songMusic.time = sampleStart;
+			songMusic.volume = 1f;
+			timeStartSample = Time.time;
+		}
+
+
 	}
 }

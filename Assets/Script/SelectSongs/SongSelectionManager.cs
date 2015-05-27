@@ -14,7 +14,8 @@ public class SongSelectionManager : MonoBehaviour {
 	}
 
 	public SongCubeGenerator generator;
-	public Difficulty difficultySelected = Difficulty.EASY;
+	public Difficulty difficultySelected = Difficulty.NONE;
+	public SongPack currentPack;
 
 	public Color[] songBarColor;
 	public Color[] songBarSelectedColor;
@@ -36,9 +37,45 @@ public class SongSelectionManager : MonoBehaviour {
 		generator.checkScrollWheel ();
 	}
 
+	public void selectAppropriateDifficulty()
+	{
+		if (!packContainsDifficulty (difficultySelected)) {
+			bool found = false;
+			for(int i=(int)difficultySelected; i>=0; i--)
+			{
+				if(!found && packContainsDifficulty ((Difficulty)i))
+				{
+					difficultySelected = (Difficulty)i;
+					found = true;
+				}
+			}
+			
+			if(!found)
+			{
+				for(int i=(int)difficultySelected; i<(int)Difficulty.NONE; i++)
+				{
+					if(packContainsDifficulty ((Difficulty)i))
+					{
+						difficultySelected = (Difficulty)i;
+					}
+				}
+			}
+		}
+	}
+
+	public bool packContainsDifficulty(Difficulty d)
+	{
+		foreach (SongData data in currentPack.songsData) {
+			if(data.songs.ContainsKey(d)) return true;
+		}
+		return false;
+	}
+
 	public void packSelected(SongPack pack)
 	{
-		generator.instanceAllSongs(pack.songsData);
+		currentPack = pack;
+		selectAppropriateDifficulty ();
+		generator.instanceAllSongs(currentPack.songsData);
 		applyRootVisualEffects ();
 	}
 

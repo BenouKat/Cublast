@@ -31,6 +31,17 @@ public class CameraSwitcher : MonoBehaviour {
 
 		packManager.gameObject.SetActive(false);
 		songSelectionManager.gameObject.SetActive(true);
+		switch (packManager.currentDifficultyTypePack) {
+		case 0:
+			songSelectionManager.difficultySelected = Difficulty.EASY;
+			break;
+		case 1:
+			songSelectionManager.difficultySelected = Difficulty.MEDIUM;
+			break;
+		case 2:
+			songSelectionManager.difficultySelected = Difficulty.EXPERT;
+			break;
+		}
 		songSelectionManager.packSelected(packSelected);
 
 		yield return new WaitForSeconds(0.5f);
