@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class SongSelectionManager : MonoBehaviour {
 
@@ -16,6 +17,8 @@ public class SongSelectionManager : MonoBehaviour {
 	public SongCubeGenerator generator;
 	public Difficulty difficultySelected = Difficulty.NONE;
 	public SongPack currentPack;
+	public RawImage packImage;
+	public SongSearchBar searchBar;
 
 	public Color[] songBarColor;
 	public Color[] songBarSelectedColor;
@@ -77,6 +80,41 @@ public class SongSelectionManager : MonoBehaviour {
 		selectAppropriateDifficulty ();
 		generator.instanceAllSongs(currentPack.songsData);
 		applyRootVisualEffects ();
+		packImage.texture = currentPack.banner ?? GameManager.instance.emptyPackTexture;
+	}
+
+	public void nextPack()
+	{
+		PackManager.instance.selectNextPack ();
+		currentPack = PackManager.instance.currentPack;
+		generator.instanceAllSongs(currentPack.songsData);
+		packImage.texture = currentPack.banner ?? GameManager.instance.emptyPackTexture;
+		if (searchBar.opened) {
+			searchBar.cleanSearchBar();
+			searchBar.callSearchBar ();
+		}
+			
+	}
+
+	public void previousPack()
+	{
+		PackManager.instance.selectPreviousPack ();
+		currentPack = PackManager.instance.currentPack;
+		generator.instanceAllSongs(currentPack.songsData);
+		packImage.texture = currentPack.banner ?? GameManager.instance.emptyPackTexture;
+		if (searchBar.opened) {
+			searchBar.cleanSearchBar();
+			searchBar.callSearchBar ();
+		}
+	}
+
+	public void returnToPackSelection()
+	{
+		if (searchBar.opened) {
+			searchBar.cleanSearchBar();
+			searchBar.callSearchBar ();
+		}
+		CameraSwitcher.instance.goToPack ();
 	}
 
 	public void difficultyChanged(string difficulty)

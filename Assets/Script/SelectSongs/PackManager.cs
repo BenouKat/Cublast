@@ -7,13 +7,12 @@ public class PackManager : MonoBehaviour {
 	public static PackManager instance;
 	void Awake()
 	{
-		if(instance != null) instance = this;
+		if(instance == null) instance = this;
 	}
 
 	public PackCubeGenerator generator;
 	public Transform rotator;
 	Transform targetRotator;
-	public Texture2D emptyPackTexture;
 
 	int currentPackIndex = 0;
 	int currentCubeIndex = 0;
@@ -24,7 +23,7 @@ public class PackManager : MonoBehaviour {
 	float rotationCounter;
 	public float percentDecal = 0.5f;
 
-	SongPack currentPack;
+	public SongPack currentPack;
 	public int currentDifficultyTypePack;
 	public PackCube currentCube;
 	public Text packname;
@@ -84,7 +83,7 @@ public class PackManager : MonoBehaviour {
 			{
 				generator.packCubes[indexCube].objectRenderer.material.mainTexture = currentLoopPack.banner;
 			}else{
-				generator.packCubes[indexCube].objectRenderer.material.mainTexture = emptyPackTexture;
+				generator.packCubes[indexCube].objectRenderer.material.mainTexture = GameManager.instance.emptyPackTexture;
 			}
 			generator.packCubes[indexCube].pack = currentLoopPack;
 
@@ -187,6 +186,8 @@ public class PackManager : MonoBehaviour {
 		currentCube.selectPack(true);
 	}
 
+
+
 	bool notAligned = false;
 	// Update is called once per frame
 	void Update () {
@@ -200,6 +201,14 @@ public class PackManager : MonoBehaviour {
 			notAligned = true;
 		}
 
+		if (Input.GetKeyDown (GameManager.instance.prefs.KeyCodeRight) || Input.GetKeyDown (GameManager.instance.prefs.SecondaryKeyCodeRight)) {
+			selectNextPack(false);
+		}
+
+		if (Input.GetKeyDown (GameManager.instance.prefs.KeyCodeLeft) || Input.GetKeyDown (GameManager.instance.prefs.KeyCodeLeft)) {
+			selectPreviousPack(false);
+		}
+
 		if(Quaternion.Angle(targetRotator.rotation, rotator.rotation) > 0.01f)
 		{
 			rotator.rotation = Quaternion.Slerp(rotator.rotation, targetRotator.rotation, 0.1f);
@@ -211,8 +220,32 @@ public class PackManager : MonoBehaviour {
 		}
 	}
 
-	public void onPackSelected(PackCube pack)
+	public void selectNextPack(bool autoRotation = true)
 	{
-		CameraSwitcher.instance.goToSong(pack.pack);
+		targetRotator.Rotate(axisRotation*Mathf.Sign(-speedRotation)*(rotationPerCubes + 0.0001f), Space.Self);
+		rotationCounter += Mathf.Sign(-speedRotation)*(rotationPerCubes + 0.0001f);
+
+		if(autoRotation) rotator.rotation = targetRotator.rotation;
+		notAligned = !autoRotation;
+		
+		checkCubeRotation();
+	}
+
+	public void selectPreviousPack(bool autoRotation = true)
+	{
+		targetRotator.Rotate(axisRotation*Mathf.Sign(speedRotation)*(rotationPerCubes + 0.0001f), Space.Self);
+		rotationCounter += Mathf.Sign(speedRotation)*(rotationPerCubes + 0.0001f);
+
+		if(autoRotation) rotator.rotation = targetRotator.rotation;
+		notAligned = !autoRotation;
+		
+		checkCubeRotation();
+	}
+
+	public void onPackSelected()
+	{
+		if (currentPack == null)
+			return;
+		CameraSwitcher.instance.goToSong(currentPack);
 	}
 }

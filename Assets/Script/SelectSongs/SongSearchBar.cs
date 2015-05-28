@@ -6,15 +6,29 @@ using UnityEngine.UI;
 
 public class SongSearchBar : MonoBehaviour {
 
+	public InputField textField;
+	public InputField numberField;
+	public Text textSearch;
+	public Animation anim;
+	public GameObject searchButton;
+	public GameObject hideButton;
+
 	public int[] minCharacForSearch;
 
-	public bool isInSearch;
+	bool isInSearch = false;
+	public bool opened = false;
 	Sort currentSortSystem = Sort.NAME;
 	List<SongData> searchingList;
 	int oldSearchLength = 0;
 	// Use this for initialization
 	void Start () {
-
+		textField.gameObject.SetActive (!(currentSortSystem == Sort.DIFFICULTY || currentSortSystem == Sort.BPM));
+		numberField.gameObject.SetActive ((currentSortSystem == Sort.DIFFICULTY || currentSortSystem == Sort.BPM));
+		textSearch.text = GameLocalization.instance.Translate ("SearchBy" + currentSortSystem.ToString ());
+		textField.text = "";
+		numberField.text = "";
+		searchButton.SetActive (!opened);
+		hideButton.SetActive (opened);
 	}
 	
 	// Update is called once per frame
@@ -29,9 +43,10 @@ public class SongSearchBar : MonoBehaviour {
 			{
 				searchingList.Clear ();
 				SongSelectionManager.instance.generator.instanceAllSongs (SongSelectionManager.instance.currentPack.songsData);
+				isInSearch = false;
 			}
 		} else {
-			if(!isInSearch || search.Length < oldSearchLength)
+			if(!isInSearch || search.Length < oldSearchLength || currentSortSystem == Sort.DIFFICULTY || currentSortSystem == Sort.BPM)
 			{
 				searchingList = new List<SongData>();
 				foreach(SongPack sp in LoadManager.instance.songPacks)
@@ -49,7 +64,7 @@ public class SongSearchBar : MonoBehaviour {
 				searchByBPM(int.Parse(search));
 				break;
 			case Sort.DIFFICULTY:
-				searchByBPM(int.Parse(search));
+				searchByDifficulty(int.Parse(search));
 				break;
 			case Sort.NAME:
 				searchByName(search.ToLower());
@@ -64,6 +79,50 @@ public class SongSearchBar : MonoBehaviour {
 			SongSelectionManager.instance.generator.instanceAllSongs (searchingList);
 		}
 		oldSearchLength = search.Length;
+	}
+
+	public void previousSearch()
+	{
+		int sortSystemint = (int)currentSortSystem;
+		sortSystemint--;
+		if (sortSystemint < 0) {
+			sortSystemint = System.Enum.GetValues (typeof(Sort)).Length - 1;
+		}
+		currentSortSystem = (Sort)sortSystemint;
+
+		cleanSearchBar ();
+	}
+
+	public void nextSearch()
+	{
+		int sortSystemint = (int)currentSortSystem;
+		sortSystemint++;
+		if (sortSystemint >= System.Enum.GetValues (typeof(Sort)).Length) {
+			sortSystemint = 0;
+		}
+		currentSortSystem = (Sort)sortSystemint;
+
+		cleanSearchBar ();
+	}
+
+	public void cleanSearchBar()
+	{
+		isInSearch = false;
+		searchingList.Clear ();
+		textField.gameObject.SetActive (!(currentSortSystem == Sort.DIFFICULTY || currentSortSystem == Sort.BPM));
+		numberField.gameObject.SetActive ((currentSortSystem == Sort.DIFFICULTY || currentSortSystem == Sort.BPM));
+		textSearch.text = GameLocalization.instance.Translate ("SearchBy" + currentSortSystem.ToString ());
+		textField.text = "";
+		numberField.text = "";
+		onEditSearch ("");
+	}
+
+	public void callSearchBar()
+	{
+		opened = !opened;
+		anim.Play(opened ? "OpenSearchBar" : "CloseSearchBar");
+		searchButton.SetActive (!opened);
+		hideButton.SetActive (opened);
 	}
 
 	public void searchByName(string search)

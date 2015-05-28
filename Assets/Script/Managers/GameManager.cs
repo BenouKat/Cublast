@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour{
 	
 	public Profile prefs;
 	public UnityEngine.Audio.AudioMixer masterMixer;
+	public Texture2D emptyPackTexture;
 
 	//MAIN MENU
 	[HideInInspector] public bool gameInitialized;
@@ -196,4 +197,20 @@ public class GameManager : MonoBehaviour{
 		}
 
 	}
+
+	/*void OnApplicationQuit()
+	{
+		if (LoadManager.instance != null && LoadManager.instance.songPacks != null) {
+			foreach(SongPack sp in LoadManager.instance.songPacks)
+			{
+				if(sp.songsData != null)
+				{
+					foreach(SongData sd in SongData)
+					{
+						sd.songs.First().Value.cleanWav();
+					}
+				}
+			}
+		}
+	}*/
 }

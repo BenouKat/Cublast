@@ -281,7 +281,7 @@ public class OpenChart{
 			
 		string displayBPM = listLine.FirstOrDefault(c => c.Contains("DISPLAYBPM"));
 		string displayBPMValue = "";
-		if(displayBPM != null){
+		if(!string.IsNullOrEmpty(displayBPM) && !displayBPM.Contains(":*;")){
 			string[] displayBPMSplit = displayBPM.Split(':');
 			double displayBPMFirstValue = 0;
 			double displayBPMSecondValue = 0;
@@ -357,7 +357,7 @@ public class OpenChart{
 			theNewsong.stops = STOPListInTime;
 			theNewsong.mesureBPMS = BPMListInMesure;
 			theNewsong.mesureSTOPS = STOPListInMesure;
-			theNewsong.bpmToDisplay = displayBPM;
+			theNewsong.bpmToDisplay = wordDictionary [FileTags.DISPLAYBPM];
 
 			theNewsong.song = files.FirstOrDefault(c => isAllowedFile(c, audioFileAllowed));
 			if(theNewsong.song != null) theNewsong.song = "file://" + theNewsong.song.Replace('\\', '/');

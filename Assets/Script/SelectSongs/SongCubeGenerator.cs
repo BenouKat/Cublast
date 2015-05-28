@@ -36,6 +36,7 @@ public class SongCubeGenerator : MonoBehaviour {
 		{
 			Destroy(cube.gameObject);
 		}
+		songCubes.Clear ();
 
 		rollRoot.rotation = Quaternion.identity;
 		

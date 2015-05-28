@@ -114,6 +114,7 @@
      <Compile Include="Assets\Script\Utils\KeepDirection.cs" />
      <Compile Include="Assets\Script\Utils\LensFlareTweener.cs" />
      <Compile Include="Assets\Script\Utils\MeshCombineUtility.cs" />
+     <Compile Include="Assets\Script\Utils\PlayAnimationOnEnable.cs" />
      <Compile Include="Assets\Script\Utils\PlayOnAwakeAtTime.cs" />
      <Compile Include="Assets\Script\Utils\PlayOnAwakeRandomTime.cs" />
      <Compile Include="Assets\Script\Utils\Rotate.cs" />

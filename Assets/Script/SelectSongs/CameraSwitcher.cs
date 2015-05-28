@@ -7,6 +7,8 @@ public class CameraSwitcher : MonoBehaviour {
 	public Animation anim;
 	public PackManager packManager;
 	public SongSelectionManager songSelectionManager;
+	public GameObject UIPack;
+	public GameObject UISong;
 
 	public static CameraSwitcher instance;
 	void Awake()
@@ -26,6 +28,7 @@ public class CameraSwitcher : MonoBehaviour {
 		anim.Play("PackToSongMenu");
 
 		packManager.enabled = false;
+		UIPack.SetActive (false);
 
 		yield return new WaitForSeconds(0.5f);
 
@@ -42,7 +45,9 @@ public class CameraSwitcher : MonoBehaviour {
 			songSelectionManager.difficultySelected = Difficulty.EXPERT;
 			break;
 		}
+		UISong.SetActive (true);
 		songSelectionManager.packSelected(packSelected);
+
 
 		yield return new WaitForSeconds(0.5f);
 
@@ -63,10 +68,13 @@ public class CameraSwitcher : MonoBehaviour {
 
 		songSelectionManager.enabled = false;
 		
+		UISong.SetActive (false);
+		
 		yield return new WaitForSeconds(0.25f);
 		
-		packManager.gameObject.SetActive(false);
-		songSelectionManager.gameObject.SetActive(true);
+		packManager.gameObject.SetActive(true);
+		songSelectionManager.gameObject.SetActive(false);
+		UIPack.SetActive (true);
 		
 		yield return new WaitForSeconds(0.25f);
 

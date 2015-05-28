@@ -68,3 +68,14 @@ BegginersContain;Contains beginner levels;Contient des niveaux débutants
 MediumValid;Medium players friendly;Jouable pour amateurs
 MediumContain;Contains medium levels;Contient des niveaux amateurs
 ExpertOnly;Expert Only;Expert uniquement
+BackToPack;Back to packs;Retour aux packs;
+SearchInPack;Search...;Rechercher...
+Hide;Hide;Cacher
+SearchByNAME;By Title (contains);Par Titre (contenu)
+SearchBySTARTWITH;By Title (start with);Par Titre (commence par)
+SearchByARTIST;By Artist;Par Artiste
+SearchBySTEPARTIST;By Stepartist;Par Step-artiste
+SearchByDIFFICULTY;By song level;Par niveau de difficulté
+SearchByBPM;By BPM;Par BPM
+EnterText;Enter a text;Entrez un texte
+EnterNumber;Enter a number;Entrez un nombre

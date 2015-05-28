@@ -122,8 +122,13 @@ public class SongCube : MonoBehaviour {
 
 		if (isPointed || musicPreviewLaunched) {
 			AudioSelectionManager.instance.stopPreview ();
-			song = songData.songs.First().Value;
-			song.cleanWav();
+			if(MP3Loaded)
+			{
+				song = songData.songs.First().Value;
+				song.cleanWav();
+				MP3Loaded = false;
+			}
+
 		}
 
 		isPointed = false;
@@ -138,6 +143,7 @@ public class SongCube : MonoBehaviour {
 	bool isPointed;
 	float timeStartPointed = -1000f;
 	bool musicPreviewLaunched = false;
+	bool MP3Loaded = false;
 	// Update is called once per frame
 	void Update () {
 		if(!Mathf.Approximately(Quaternion.Angle(transform.rotation, Quaternion.identity), 0f))
@@ -150,7 +156,7 @@ public class SongCube : MonoBehaviour {
 			song = songData.songs.First().Value;
 			if(song.isMP3())
 			{
-				StartCoroutine(loadAndAssignMP3(song));
+				if(!MP3Loaded) StartCoroutine(loadAndAssignMP3(song));
 			}else{
 				AudioSelectionManager.instance.clipInMemory = song.SetAudioClip();
 				AudioSelectionManager.instance.playPreview(song.samplestart, song.samplelenght);
@@ -171,8 +177,10 @@ public class SongCube : MonoBehaviour {
 			AudioSelectionManager.instance.clipInMemory = s.SetAudioClip ();
 			AudioSelectionManager.instance.playPreview (song.samplestart, song.samplelenght);
 			musicPreviewLaunched = true;
+			MP3Loaded = true;
 		} else {
 			s.cleanWav();
+			MP3Loaded = false;
 		}
 	}
 }
