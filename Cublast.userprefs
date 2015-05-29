@@ -1,22 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\SelectSongs\SongSelectionManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ProjectResources\Shaders\Transparent_Linear_Gamma.shader">
     <Files>
-      <File FileName="E:\Projets\Partouche\Partouche\Assets\Scripts\G4-WallGame\WallShadow.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\SongSelectionManager.cs" Line="117" Column="39" />
-      <File FileName="Assets\Script\SelectSongs\PackManager.cs" Line="227" Column="3" />
-      <File FileName="Assets\Script\SelectSongs\CameraSwitcher.cs" Line="34" Column="3" />
-      <File FileName="Assets\Script\Utils\PlayAnimationOnEnable.cs" Line="11" Column="1" />
-      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="32" Column="59" />
-      <File FileName="Assets\Script\SelectSongs\SongSearchBar.cs" Line="110" Column="22" />
-      <File FileName="Assets\Script\System\EnumManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Managers\GameManager.cs" Line="181" Column="40" />
-      <File FileName="Assets\Script\Managers\GameLocalization.cs" Line="36" Column="3" />
-      <File FileName="Assets\Script\SelectSongs\SongCubeGenerator.cs" Line="43" Column="44" />
-      <File FileName="Assets\Script\SelectSongs\SongCube.cs" Line="133" Column="1" />
-      <File FileName="Assets\Script\Managers\ServerManager.cs" Line="189" Column="2" />
-      <File FileName="Assets\Script\System\MP3Script\MP3Import.cs" Line="30" Column="12" />
-      <File FileName="Assets\Script\System\OpenChart.cs" Line="375" Column="116" />
+      <File FileName="Assets\ProjectResources\Shaders\Transparent_Linear_Gamma.shader" Line="31" Column="16" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
