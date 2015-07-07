@@ -79,3 +79,14 @@ SearchByDIFFICULTY;By song level;Par niveau de difficulté
 SearchByBPM;By BPM;Par BPM
 EnterText;Enter a text;Entrez un texte
 EnterNumber;Enter a number;Entrez un nombre
+Stepby;Step by _NAME;Steppé par _NAME
+StepSec;s/s;n/s
+Maxstream;Max Rush : _TIME (_SPS Steps/sec);Rush Max : _TIME (_SPS Notes/sec)
+Steps;Steps;Notes
+Jumps;Jumps;Sauts
+Hands;Hands;Mains
+Mines;Mines;Mines
+Freezes;Freezes;Gels
+Rolls;Rolls;Roulements
+DetectedCross;Detected Cross patterns;"Cross" detectés
+DetectedFS;Detected Footswitch patterns;"Footswitchs" detectés

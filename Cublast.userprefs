@@ -1,8 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ProjectResources\Shaders\Transparent_Linear_Gamma.shader">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\SelectSongs\SongInfoPanel.cs">
     <Files>
-      <File FileName="Assets\ProjectResources\Shaders\Transparent_Linear_Gamma.shader" Line="31" Column="16" />
+      <File FileName="Assets\Script\SelectSongs\SongInfoPanel.cs" Line="9" Column="24" />
+      <File FileName="Assets\Script\System\Song.cs" Line="143" Column="2" />
+      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="92" Column="11" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
