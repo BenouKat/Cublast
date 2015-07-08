@@ -90,3 +90,5 @@ Freezes;Freezes;Gels
 Rolls;Rolls;Roulements
 DetectedCross;Detected Cross patterns;"Cross" detectés
 DetectedFS;Detected Footswitch patterns;"Footswitchs" detectés
+YourScore;You :;Vous :
+NoRecord;No record yet;Pas de record

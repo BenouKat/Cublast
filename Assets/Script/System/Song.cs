@@ -141,7 +141,7 @@ public class Song {
 	}
 	
 	public Texture2D GetBanner(Texture2D tex){
-		if(banner != "noBanner"){
+		if(banner != "noBanner" && !string.IsNullOrEmpty(banner)){
 			WWW www = new WWW(banner);
 			while(!www.isDone){}
 			

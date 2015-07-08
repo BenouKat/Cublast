@@ -28,6 +28,11 @@ public class ServerManager : MonoBehaviour {
 
 	public bool debug;
 
+	public bool isOnline()
+	{
+		return user != null && connected && connectedToRoom;
+	}
+
 	void onConnectionSuccess(string user, Client client){
 		Debug.Log("Connected !");
 		connected = true;
@@ -206,6 +211,22 @@ public class ServerManager : MonoBehaviour {
 		Debug.Log("Retrieving from " + username);
 		PIOclient.BigDB.Load("Users", username, delegate(DatabaseObject userDbo) {
 			user = new User(userDbo);
+		});
+	}
+
+	public void retrieveScore(string songID, Callback<SongTop> success = null, Callback fail = null)
+	{
+		PIOclient.BigDB.Load ("SongTop", songID, delegate(DatabaseObject songTop) {
+
+			if(songTop != null)
+			{
+				success(new SongTop(songTop));
+			}else{
+				fail();
+			}
+
+		}, delegate(PlayerIOError error) {
+			fail();
 		});
 	}
 

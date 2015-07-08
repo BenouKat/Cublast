@@ -17,6 +17,8 @@ public class SongCube : MonoBehaviour {
 
 	Difficulty selectedDifficulty = Difficulty.NONE;
 
+	public SongInfoPanel panel;
+
 	// Use this for initialization
 	void Start () {
 		transform.rotation = Quaternion.identity;
@@ -97,6 +99,7 @@ public class SongCube : MonoBehaviour {
 
 		if (isPointed) {
 			background.color = SongSelectionManager.instance.songBarSelectedColor[(int)selectedDifficulty];
+			panel.songSelected (songData.songs [selectedDifficulty]);
 		} else {
 			pointOutSong();
 		}
@@ -114,6 +117,7 @@ public class SongCube : MonoBehaviour {
 		timeStartPointed = Time.time;
 		isPointed = true;
 		musicPreviewLaunched = false;
+		panel.songSelected (songData.songs [selectedDifficulty]);
 	}
 
 	public void pointOutSong()
@@ -132,6 +136,8 @@ public class SongCube : MonoBehaviour {
 		}
 
 		isPointed = false;
+
+		panel.close ();
 
 	}
 
