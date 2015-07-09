@@ -513,6 +513,9 @@ public class OpenChart{
 		
 		//freeze
 		bool[] freezed = new bool[4] { false, false, false, false };
+
+		setCross (0,0,0,0);
+		setFootswitch(0,0,0,0);
 		
 		//graph
 		Dictionary<double, double> listNumberStep = new Dictionary<double, double>();
@@ -593,6 +596,7 @@ public class OpenChart{
 				bool arrowFound = finalBeatLine.Any(c => "124".Contains(c));
 				bool actionFound = finalBeatLine.Any(c => "1234M".Contains(c));
 				int numberOfArrows = 0;
+				int numberOfArrowsFixed = 0;
 				Lanes laneSelected = Lanes.LEFT;
 				
 				
@@ -604,9 +608,15 @@ public class OpenChart{
 					{
 						freezed[i] = false;
 					}
+
+					if("124".Contains(finalBeatLine[i]))
+					{
+						laneSelected = (Lanes) i;
+					}
 				}
 
 				numberOfArrows = freezed.Count(c => c) + finalBeatLine.Count(c => c == '1');
+				numberOfArrowsFixed = finalBeatLine.Count(c => c == '1' || c == '2' || c == '4');
 				
 				if(numberOfArrows >= 3f){
 					numberOfHands++;
@@ -616,7 +626,7 @@ public class OpenChart{
 				if(actionFound){
 					stoptime = currentTime;	
 				}
-				
+
 				if(arrowFound){
 				
 					if(timestart == -1000) timestart = currentTime;
@@ -624,79 +634,82 @@ public class OpenChart{
 					countStep++;
 					numberStepBetweenTwoBeat++;
 					
-					if(numberOfArrows < 2){
-						switch(laneSelected){
-							case Lanes.LEFT:
-								//fs
-								if(verifyFootswitch(0,2,0,1)
-								   || verifyFootswitch(0,0,2,1))
-								{
-									numberOfFootswitch++;
-								}
-								setFootswitch(1,0,0,0);
+					if(numberOfArrowsFixed < 2){
+						if(numberOfArrowsFixed > 0)
+						{
+							switch(laneSelected){
+								case Lanes.LEFT:
+									//fs
+									if(verifyFootswitch(0,2,0,1)
+									   || verifyFootswitch(0,0,2,1))
+									{
+										numberOfFootswitch++;
+									}
+									setFootswitch(1,0,0,0);
 
-								//cross
-								if(verifyCross(0,1,0,1) || verifyCross(0,0,1,1))
-								{
-									numberOfCross++;
-								}
-								setCross(1,0,0,0);
+									//cross
+									if(verifyCross(0,1,0,1) || verifyCross(0,0,1,1))
+									{
+										numberOfCross++;
+									}
+									setCross(1,0,0,0);
 
-								break;
+									break;
 
-							case Lanes.DOWN:
-								//fs
-								if(verifyFootswitch(1,0,0,0) || verifyFootswitch(1,1,0,0) || verifyFootswitch(0,0,0,1) || verifyFootswitch(0,1,0,1))
-								{
-									addFootswitch(0,1,0,0);
-								}else{
-									setFootswitch(0,0,0,0);
-								}
+								case Lanes.DOWN:
+									//fs
+									if(verifyFootswitch(1,0,0,0) || verifyFootswitch(1,1,0,0) || verifyFootswitch(0,0,0,1) || verifyFootswitch(0,1,0,1))
+									{
+										addFootswitch(0,1,0,0);
+									}else{
+										setFootswitch(0,0,0,0);
+									}
 
-								//cross
-								if(verifyCross(1,0,0,0) || verifyCross(0,0,0,1))
-								{
-									addCross(0,1,0,0);
-								}else if(verifyCross(1,0,1,0))
-								{
-									addCross(0,0,-1,0);
-								}
+									//cross
+									if(verifyCross(1,0,0,0) || verifyCross(0,0,0,1))
+									{
+										addCross(0,1,0,0);
+									}else if(verifyCross(1,0,1,0) || verifyCross(0,0,1,1))
+									{
+										addCross(0,0,-1,0);
+									}
 
-								break;
-							case Lanes.UP:
-								//fs
-								if(verifyFootswitch(1,0,0,0) || verifyFootswitch(1,0,1,0) || verifyFootswitch(0,0,0,1) || verifyFootswitch(0,0,1,1))
-								{
-									addFootswitch(0,0,1,0);
-								}else{
-									setFootswitch(0,0,0,0);
-								}
+									break;
+								case Lanes.UP:
+									//fs
+									if(verifyFootswitch(1,0,0,0) || verifyFootswitch(1,0,1,0) || verifyFootswitch(0,0,0,1) || verifyFootswitch(0,0,1,1))
+									{
+										addFootswitch(0,0,1,0);
+									}else{
+										setFootswitch(0,0,0,0);
+									}
 
-								//cross
-								if(verifyCross(1,0,0,0) || verifyCross(0,0,0,1))
-								{
-									addCross(0,0,1,0);
-								}else if(verifyCross(1,1,0,0))
-								{
-									addCross(0,-1,0,0);
-								}
-								break;
-							case Lanes.RIGHT:
-								//fs
-								if(verifyFootswitch(1,2,0,0)
-								   || verifyFootswitch(1,0,2,0))
-								{
-									numberOfFootswitch++;
-								}
-								setFootswitch(0,0,0,1);
-								
-								//cross
-								if(verifyCross(1,1,0,0) || verifyCross(1,0,1,0))
-								{
-									numberOfCross++;
-								}
-								setCross(0,0,0,1);
-								break;
+									//cross
+									if(verifyCross(1,0,0,0) || verifyCross(0,0,0,1))
+									{
+										addCross(0,0,1,0);
+									}else if(verifyCross(1,1,0,0) || verifyCross(0,1,0,1))
+									{
+										addCross(0,-1,0,0);
+									}
+									break;
+								case Lanes.RIGHT:
+									//fs
+									if(verifyFootswitch(1,2,0,0)
+									   || verifyFootswitch(1,0,2,0))
+									{
+										numberOfFootswitch++;
+									}
+									setFootswitch(0,0,0,1);
+									
+									//cross
+									if(verifyCross(1,1,0,0) || verifyCross(1,0,1,0))
+									{
+										numberOfCross++;
+									}
+									setCross(0,0,0,1);
+									break;
+							}
 						}
 					}else{
 						setCross (0,0,0,0);

@@ -73,9 +73,10 @@ public class SongCube : MonoBehaviour {
 			{
 				for(int i=(int)selected; i<(int)Difficulty.NONE; i++)
 				{
-					if(songData.songs.ContainsKey((Difficulty)i))
+					if(!found && songData.songs.ContainsKey((Difficulty)i))
 					{
 						selectedDifficulty = (Difficulty)i;
+						found = true;
 					}
 				}
 			}
@@ -124,8 +125,12 @@ public class SongCube : MonoBehaviour {
 	{
 		background.color = SongSelectionManager.instance.songBarColor[(int)selectedDifficulty];
 
-		if (isPointed || musicPreviewLaunched) {
+		if (isPointed) {
 			AudioSelectionManager.instance.stopPreview ();
+		}
+
+		if (isPointed || musicPreviewLaunched) {
+
 			if(MP3Loaded)
 			{
 				song = songData.songs.First().Value;
@@ -137,7 +142,7 @@ public class SongCube : MonoBehaviour {
 
 		isPointed = false;
 
-		panel.close ();
+		panel.close (songData.songs [selectedDifficulty]);
 
 	}
 

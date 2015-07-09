@@ -8,6 +8,7 @@ public enum WarningInfoSongID { STOP, SLOWDOWN, SPEEDUP }
 
 public class SongInfoPanel : MonoBehaviour {
 
+	Song currentSong;
 	public bool opened = false;
 	public bool closed = true;
 	Texture2D tempTexture;
@@ -34,31 +35,72 @@ public class SongInfoPanel : MonoBehaviour {
 	public LineRenderer graph;
 	public GameObject[] warningObjects;
 
+	public GameObject topLabel;
+	public Text recordOwnerName;
+	List<TopObject> topLabels = new List<TopObject>();
+
+	public GameObject displayTopButton;
+	public Animation displayTopAnim;
+	bool topIsOpen = false;
+
 	public float maxYGraph = 80f;
 	public float maxXGraph = 330f;
 
-	public SongTop currentSongTop;
+	float timeLoadImage = 0.2f;
+	float timeStartLoadImage;
+	bool textureLoaded;
+
+	float timeOuverture;
 
 	List<GameObject> warningObjectPool = new List<GameObject>();
+
+	bool firstOpening = false;
+	float timeFirstOpening;
 
 	void Start()
 	{
 		tempTexture = new Texture2D (1024, 512);
+
+		for(int i=0; i<100; i++)
+		{
+			GameObject labelInst = Instantiate(topLabel, topLabel.transform.position, topLabel.transform.rotation) as GameObject;
+			labelInst.transform.SetParent(topLabel.transform.parent);
+			labelInst.transform.localScale = Vector3.one;
+			topLabels.Add(labelInst.GetComponent<TopObject>());
+		}
+
+		displayTopButton.SetActive(false);
 	}
 
 	public void songSelected(Song song)
 	{
+
 		opened = true;
 		closed = false;
-		root.GetComponent<Animation> ().Stop ();
+		timeOuverture = Time.time;
+		if (!firstOpening) {
+			firstOpening = true;
+			timeFirstOpening = Time.time;
+		}
+		root.GetComponent<Animation> ().Stop ("CloseSongInfoPanel");
 		root.GetComponent<CanvasGroup> ().alpha = 1f;
 		root.SetActive (true);
 
-		if (song.GetBanner (tempTexture) == null) {
-			bannerImage.texture = SongSelectionManager.instance.packImage.texture ?? GameManager.instance.emptyPackTexture;
-		} else {
-			bannerImage.texture = tempTexture ?? SongSelectionManager.instance.packImage.texture ?? GameManager.instance.emptyPackTexture;
+		timeStartLoadImage = Time.time;
+		textureLoaded = false;
+
+		if (topIsOpen) {
+			displayRecord();
+			displayTopButton.GetComponent<SwitchButtonImage>().switchImage();
 		}
+
+		bannerImage.texture = SongSelectionManager.instance.packImage.texture ?? GameManager.instance.emptyPackTexture;
+
+		if (currentSong != null && song.banner != null && song.banner.Equals (currentSong.banner)) {
+			textureLoaded = true;
+		}
+
+		currentSong = song;
 
 		songTitle.text = song.title;
 		artist.text = "- " + song.artist + " -";
@@ -101,7 +143,7 @@ public class SongInfoPanel : MonoBehaviour {
 		}
 
 		for (int i=0; i<song.stops.Count; i++) {
-			poolObject = warningObjectPool.Find(c => c.name == WarningInfoSongID.STOP.ToString() && c.activeSelf);
+			poolObject = warningObjectPool.Find(c => c.name == WarningInfoSongID.STOP.ToString() && !c.activeSelf);
 			if(poolObject == null)
 			{
 				poolObject = Instantiate(warningObjects[(int)WarningInfoSongID.STOP], 
@@ -109,6 +151,7 @@ public class SongInfoPanel : MonoBehaviour {
 				                         warningObjects[(int)WarningInfoSongID.STOP].transform.rotation) as GameObject;
 				poolObject.transform.SetParent(warningObjects[(int)WarningInfoSongID.STOP].transform.parent);
 				poolObject.transform.localScale = Vector3.one;
+				poolObject.name = WarningInfoSongID.STOP.ToString();
 				warningObjectPool.Add(poolObject);
 			}
 			poolObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(Mathf.Lerp(0f, maxXGraph, (float)(song.stops.ElementAt(i).Key / song.duration)), 0f);
@@ -121,7 +164,7 @@ public class SongInfoPanel : MonoBehaviour {
 			{
 				if(song.bpms.ElementAt(i).Value < currentBPM)
 				{
-					poolObject = warningObjectPool.Find(c => c.name == WarningInfoSongID.SLOWDOWN.ToString() && c.activeSelf);
+					poolObject = warningObjectPool.Find(c => c.name == WarningInfoSongID.SLOWDOWN.ToString() && !c.activeSelf);
 					if(poolObject == null)
 					{
 						poolObject = Instantiate(warningObjects[(int)WarningInfoSongID.SLOWDOWN], 
@@ -129,13 +172,14 @@ public class SongInfoPanel : MonoBehaviour {
 						                         warningObjects[(int)WarningInfoSongID.SLOWDOWN].transform.rotation) as GameObject;
 						poolObject.transform.SetParent(warningObjects[(int)WarningInfoSongID.SLOWDOWN].transform.parent);
 						poolObject.transform.localScale = Vector3.one;
+						poolObject.name = WarningInfoSongID.SLOWDOWN.ToString();
 						warningObjectPool.Add(poolObject);
 					}
 					poolObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(Mathf.Lerp(0f, maxXGraph, (float)(song.bpms.ElementAt(i).Key / song.duration)), 0f);
 					poolObject.SetActive(true);
 				}else if(song.bpms.ElementAt(i).Value > currentBPM)
 				{
-					poolObject = warningObjectPool.Find(c => c.name == WarningInfoSongID.SPEEDUP.ToString() && c.activeSelf);
+					poolObject = warningObjectPool.Find(c => c.name == WarningInfoSongID.SPEEDUP.ToString() && !c.activeSelf);
 					if(poolObject == null)
 					{
 						poolObject = Instantiate(warningObjects[(int)WarningInfoSongID.SPEEDUP], 
@@ -143,6 +187,7 @@ public class SongInfoPanel : MonoBehaviour {
 						                         warningObjects[(int)WarningInfoSongID.SPEEDUP].transform.rotation) as GameObject;
 						poolObject.transform.SetParent(warningObjects[(int)WarningInfoSongID.SPEEDUP].transform.parent);
 						poolObject.transform.localScale = Vector3.one;
+						poolObject.name = WarningInfoSongID.SPEEDUP.ToString();
 						warningObjectPool.Add(poolObject);
 					}
 					poolObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(Mathf.Lerp(0f, maxXGraph, (float)(song.bpms.ElementAt(i).Key / song.duration)), 0f);
@@ -167,15 +212,19 @@ public class SongInfoPanel : MonoBehaviour {
 			userScore.text = GameLocalization.instance.Translate("NoRecord");
 		}
 
-		currentSongTop = null;
-
 		if (ServerManager.instance.isOnline ()) {
+			displayTopButton.SetActive(false);
 			ServerManager.instance.retrieveScore (song.sip.getSongNetId (), delegate(SongTop songTop) {
 				if (this != null) {
-					currentSongTop = songTop;
+
 					firstScore.text = "---";
 					secondScore.text = "---";
 					thirdScore.text = "---";
+					recordOwnerName.text = "---";
+
+					if(songTop == null) return;
+
+					displayTopButton.SetActive(true);
 
 					if(songTop.users.Count > 0) firstScore.text = songTop.users[0] + " (" + ((float)songTop.score[0] / 100f).ToString("0.00") + "%)";
 					if(songTop.users.Count > 1) secondScore.text = songTop.users[1] + " (" + ((float)songTop.score[1] / 100f).ToString("0.00") + "%)";
@@ -188,31 +237,80 @@ public class SongInfoPanel : MonoBehaviour {
 							userScore.text = ((float)songTop.score[2] / 100f).ToString("0.00") + "% (" + i + "e)";
 						}
 					}
+
+					if(songTop.users.Count > 0)
+					{
+						recordOwnerName.text = songTop.users[0];
+					}
+
+					for(int i=0; i<100; i++)
+					{
+						if(i < songTop.users.Count)
+						{
+							topLabels[i].rank.text = (i + 1).ToString() + ".";
+							topLabels[i].pseudo.text = songTop.users[i];
+							topLabels[i].score.text = ((float)songTop.score[i] / 100f).ToString("0.00") + "%";
+						}else if(topLabels[i].gameObject.activeSelf){
+							topLabels[i].gameObject.SetActive(false);
+						}
+					}
 				}
 			}, delegate() {
 				firstScore.text = "---";
 				secondScore.text = "---";
 				thirdScore.text = "---";
+				recordOwnerName.text = "---";
+				for(int i=0; i<100; i++)
+				{
+					if(topLabels[i].gameObject.activeSelf){
+						topLabels[i].gameObject.SetActive(false);
+					}
+				}
 			});
 		} else {
+			displayTopButton.SetActive(false);
 			firstScore.text = "---";
 			secondScore.text = "---";
 			thirdScore.text = "---";
+			recordOwnerName.text = "---";
 		}
 	}
 
 	float timeStartClose;
-	public float timeClose = 0.5f;
-	public void close()
+	public float timeClose = 0.25f;
+	public void close(Song song)
 	{
+		if (currentSong != song)
+			return;
 		opened = false;
 		closed = false;
 		timeStartClose = Time.time;
 	}
+
+	public void displayRecord()
+	{
+		if (topIsOpen) {
+			topIsOpen = false;
+			displayTopAnim.Play ("OpenStatsCloseTop");
+		} else {
+			topIsOpen = true;
+			displayTopAnim.Play ("OpenTopCloseStats");
+		}
+	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (!opened && !closed && Time.time > timeStartClose) {
+		if (opened && !textureLoaded && Time.time > timeStartLoadImage + timeLoadImage) {
+			if (currentSong.GetBanner (tempTexture) == null) {
+				bannerImage.texture = SongSelectionManager.instance.packImage.texture ?? GameManager.instance.emptyPackTexture;
+			} else {
+				bannerImage.texture = tempTexture ?? SongSelectionManager.instance.packImage.texture ?? GameManager.instance.emptyPackTexture;
+			}
+			textureLoaded = true;
+		}
+
+		if (!opened && !closed && Time.time > timeStartClose + timeClose) {
+			if(Time.time < timeFirstOpening + 1f) return;
 			root.GetComponent<Animation> ().Play ("CloseSongInfoPanel");
 			closed = true;
 		}

@@ -87,6 +87,7 @@
      <Compile Include="Assets\Script\SelectSongs\SongInfoPanel.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongSearchBar.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongSelectionManager.cs" />
+     <Compile Include="Assets\Script\SelectSongs\TopObject.cs" />
      <Compile Include="Assets\Script\SelectSongs\VizualizerSongManager.cs" />
      <Compile Include="Assets\Script\System\EnumManager.cs" />
      <Compile Include="Assets\Script\System\LoadManager.cs" />
@@ -123,6 +124,7 @@
      <Compile Include="Assets\Script\Utils\Rotate.cs" />
      <Compile Include="Assets\Script\Utils\RotateTick.cs" />
      <Compile Include="Assets\Script\Utils\ScaleTweener.cs" />
+     <Compile Include="Assets\Script\Utils\SwitchButtonImage.cs" />
      <Compile Include="Assets\Script\Utils\TweenSoundFade.cs" />
      <Compile Include="Assets\Script\Utils\Utils.cs" />
      <Compile Include="Assets\Sonic Ether\Natural Bloom\Scripts\SENaturalBloomAndDirtyLens.cs" />
