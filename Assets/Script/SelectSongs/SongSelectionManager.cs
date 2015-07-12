@@ -19,6 +19,7 @@ public class SongSelectionManager : MonoBehaviour {
 	public SongPack currentPack;
 	public RawImage packImage;
 	public SongSearchBar searchBar;
+	public Song songSelected;
 
 	public Color[] songBarColor;
 	public Color[] songBarSelectedColor;

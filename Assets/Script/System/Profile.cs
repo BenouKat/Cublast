@@ -18,10 +18,10 @@ public class Profile{
 	public KeyCode SecondaryKeyCodeRight;
 
 	//Recording
-	public string lastSpeedmodUsed;
-	public string lastBPM;
+	public float lastSpeedmod;
+	public float lastBPM;
 	public bool inBPMMode;
-	public int numberOfSkinSelected;
+	public int skinSelected;
 	
 	//general - Options
 	public float globalOffsetSeconds;
@@ -48,9 +48,10 @@ public class Profile{
 	public Profile ()
 	{
 		scoreOnSong = new List<SongInfoProfil>();
-		lastSpeedmodUsed = "";
-		lastBPM = "";
+		lastSpeedmod = 1.5f;
+		lastBPM = 250f;
 		inBPMMode = false;
+		skinSelected = 0;
 		generalVolume = 1f;
 		enableBloom = true;
 		enablePostProcessEffects = true;
@@ -75,11 +76,12 @@ public class Profile{
 		SongInfoProfil thesip = sip.Copy();
 		thesip.score = scoreEarned;
 		thesip.speedmodpref = speedmodPref;
+		thesip.fail = fail;
 		SongInfoProfil oldSIP = scoreOnSong.FirstOrDefault(c => c.CompareId(thesip));
 		if(oldSIP != null){
-			if(oldSIP.score < scoreEarned){
+			if(oldSIP.score < scoreEarned && (!fail || !oldSIP.fail)){
 				scoreOnSong.Remove(oldSIP);
-				scoreOnSong.Add(thesip);	
+				scoreOnSong.Add(thesip);
 			}else{
 				oldSIP.speedmodpref = speedmodPref;
 			}

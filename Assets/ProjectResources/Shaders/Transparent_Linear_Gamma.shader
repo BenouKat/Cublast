@@ -9,15 +9,31 @@ Shader "Unlit/Transparent_Linear_Gamma"
 	{
 		_Color ("Main Color", COLOR) = (1,1,1,1)
 		_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
+		
+		_StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+
+        _ColorMask ("Color Mask", Float) = 15
 	}
 
 	SubShader 
 	{
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
-		LOD 100
+		LOD 200
+	
+		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "PreviewType"="Plane"}
+		
 
+		Cull Off
+		Lighting Off
 		ZWrite Off
+		ZTest Always
+		Offset -1, -1
+        Fog { Mode Off }
 		Blend SrcAlpha OneMinusSrcAlpha 
+		ColorMask [_ColorMask]
 		
 		Pass 
 		{  
@@ -37,7 +53,7 @@ Shader "Unlit/Transparent_Linear_Gamma"
 
 				struct v2f 
 				{
-					float4 vertex : SV_POSITION;
+					float4 vertex : POSITION;
 					half4 color : COLOR;
 					half2 texcoord : TEXCOORD0;
 				};
@@ -52,10 +68,14 @@ Shader "Unlit/Transparent_Linear_Gamma"
 					o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 					o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
 					o.color = v.color;
+					#ifdef UNITY_HALF_TEXEL_OFFSET
+                    o.vertex.xy += (_ScreenParams.zw-1.0)*float2(-1,1);
+					#endif
+					
 					return o;
 				}
 
-				fixed4 frag (v2f i) : COLOR
+				half4 frag (v2f i) : COLOR
 				{
 					half4 col = i.color;
                     col.a *= tex2D(_MainTex, i.texcoord).a;
@@ -64,6 +84,7 @@ Shader "Unlit/Transparent_Linear_Gamma"
 					#if !defined(UNITY_COLORSPACE_GAMMA)
 						col.a = pow(col.a, 2.2);
 					#endif
+					
 					return col;
 				}
 			ENDCG

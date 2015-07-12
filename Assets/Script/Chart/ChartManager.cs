@@ -600,9 +600,6 @@ public class ChartManager : MonoBehaviour {
 					case OptionsMod.NOFREEZE:
 						unmanagedLine = unmanagedLine.Replace('2', '1').Replace('3', '0');
 						break;
-					case OptionsMod.NOROLLS:
-						unmanagedLine = unmanagedLine.Replace('4', '1').Replace('3', '0');
-						break;
 					case OptionsMod.ROLLTOFREEZE:
 						unmanagedLine = unmanagedLine.Replace('4', '2');
 						break;

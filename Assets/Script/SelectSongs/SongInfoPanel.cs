@@ -50,8 +50,6 @@ public class SongInfoPanel : MonoBehaviour {
 	float timeStartLoadImage;
 	bool textureLoaded;
 
-	float timeOuverture;
-
 	List<GameObject> warningObjectPool = new List<GameObject>();
 
 	bool firstOpening = false;
@@ -74,10 +72,8 @@ public class SongInfoPanel : MonoBehaviour {
 
 	public void songSelected(Song song)
 	{
-
 		opened = true;
 		closed = false;
-		timeOuverture = Time.time;
 		if (!firstOpening) {
 			firstOpening = true;
 			timeFirstOpening = Time.time;
@@ -280,7 +276,7 @@ public class SongInfoPanel : MonoBehaviour {
 	public float timeClose = 0.25f;
 	public void close(Song song)
 	{
-		if (currentSong != song)
+		if (currentSong != song || closed)
 			return;
 		opened = false;
 		closed = false;

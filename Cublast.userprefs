@@ -1,17 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\Managers\EnvironnementManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\ChartManager.cs">
     <Files>
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\Managers\EnvironnementManager.cs" Line="52" Column="1" />
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\Game\BoatSpawnIsland.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\GUI\ShipBoardPopup.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\ProjectResources\Localization\globalLoc.txt" Line="1" Column="1" />
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\GUI\BuildingInfosExecutant.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\GUI\BuildingInfosController.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\Managers\ServerManager.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\Managers\BattleBoatsManager.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\GUI\KoaluQuickPanel.cs" Line="1" Column="1" />
-      <File FileName="E:\Projets\TropicalWars\Tropical Wars\Assets\Scripts\GUI\KoaluLine.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Managers\SongOptionManager.cs" Line="23" Column="55" />
+      <File FileName="Assets\Script\SelectSongs\SongOptionPanel.cs" Line="111" Column="4" />
+      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="111" Column="15" />
+      <File FileName="Assets\Script\Managers\GameManager.cs" Line="17" Column="23" />
+      <File FileName="Assets\Script\System\EnumManager.cs" Line="133" Column="11" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="580" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

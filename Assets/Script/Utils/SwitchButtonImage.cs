@@ -4,20 +4,20 @@ using UnityEngine.UI;
 
 public class SwitchButtonImage : MonoBehaviour {
 
-	public Image on;
-	public Image off;
+	public GameObject on;
+	public GameObject off;
 	public bool isOn;
 
 	void Awake()
 	{
-		on.enabled = isOn;
-		off.enabled = !isOn;
+		on.SetActive(isOn);
+		off.SetActive(!isOn);
 	}
 
 	public void switchImage()
 	{
 		isOn = !isOn;
-		on.enabled = isOn;
-		off.enabled = !isOn;
+		on.SetActive(isOn);
+		off.SetActive(!isOn);
 	}
 }
