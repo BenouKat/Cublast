@@ -46,7 +46,7 @@ public class ChartManager : MonoBehaviour {
 		emissionTweener = GetComponent<EmissionTweener> ();
 
 		SongOptionManager.instance.currentSongPlayed = LoadManager.instance.songPacks.First().songsData.Find(c => c.name.Contains("Bangkok")).songs[Difficulty.EXPERT];
-
+		SongOptionManager.instance.speedmodSelected = 3f;
 
 		if(GameManager.instance != null)
 		{

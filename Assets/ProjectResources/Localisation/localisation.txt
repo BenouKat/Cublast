@@ -104,8 +104,8 @@ LifeJudge;Life Judge;Juge de vie
 Death;Death condition;Condition de défaite
 DisplayOption;Display Options;Options d'affichage
 SkinType;Cublast$Arrow$Bubble$Arrow cube;Cublast$Flèche$Bulle$Flèche cubique
-HitJudge;Childish$Light$Normal$Hardcore$Hellish;Enfantin$Cool$Normal$Hardu$Horrible
-ScoreJudge;Sweet$Simple$Normal$Severe$No mercy;Tendre$Simple$Normal$Sévère$Sans pitié
-LifeJudge;Tanky$Resistant$Normal$Painful$AtrociousIncrevable$Resistant$Normal$Douloureux$Atroce
+HitJudgeDiff;Childish$Light$Normal$Hardcore$Hellish;Enfantin$Cool$Normal$Hardu$Horrible
+ScoreJudgeDiff;Sweet$Simple$Normal$Severe$No mercy;Tendre$Simple$Normal$Sévère$Sans pitié
+LifeJudgeDiff;Tanky$Resistant$Normal$Painful$AtrociousIncrevable$Resistant$Normal$Douloureux$Atroce
 RaceType;None$C Medal$B Medal$A Medal$S Medal$Bronze Medal$Silver Medal$Gold Medal$Platinium Medal;Aucun$Médaille C$Médalle B$Médaille A$Médaille S$Médaille Bronze$Médaille Silver$Médaille Or$Médaille Platine
 DeathCondition;Immediate$After 30 misses$Never;Immédiat$Après 30 ratés$Jamais
