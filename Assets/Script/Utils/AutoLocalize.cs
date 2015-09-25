@@ -7,8 +7,15 @@ public class AutoLocalize : MonoBehaviour {
 	public string key;
 	public string prefix;
 	public string postfix;
+	public bool toUpperCase;
+
+	string textTemp;
 
 	void Awake () {
-		GetComponent<Text>().text = prefix + GameLocalization.instance.Translate(key) + postfix;
+		textTemp = prefix + GameLocalization.instance.Translate(key) + postfix;
+		if (toUpperCase)
+			textTemp = textTemp.ToUpper ();
+
+		GetComponent<Text>().text = textTemp;
 	}
 }

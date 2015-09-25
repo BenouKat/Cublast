@@ -77,8 +77,8 @@ public class LoadSongUI : MonoBehaviour {
 				errorPanel.SetActive(true);
 			}else{
 				//TransitionManager.instance.changeSceneWithTransition("MainMenu", 0.5f, 1f, true, true);
-				TransitionManager.instance.changeSceneWithTransition("SoloChart", 0.5f, 1f, true, true);
-				//TransitionManager.instance.changeSceneWithTransition("SelectSongs", 0.5f, 0.2f, true, true);
+				//TransitionManager.instance.changeSceneWithTransition("SoloChart", 0.5f, 1f, true, true);
+				TransitionManager.instance.changeSceneWithTransition("SelectSongs", 0.5f, 0.2f, true, true);
 			}
 		}
 

@@ -153,3 +153,10 @@ public enum Language
 	EN,
 	FR
 }
+
+public enum DeathMode
+{
+	INSTANT,
+	AFTERMISSES,
+	NEVER
+}

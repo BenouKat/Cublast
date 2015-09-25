@@ -20,6 +20,7 @@ public class SongSelectionManager : MonoBehaviour {
 	public RawImage packImage;
 	public SongSearchBar searchBar;
 	public Song songSelected;
+	public SongData songDataSelected;
 
 	public Color[] songBarColor;
 	public Color[] songBarSelectedColor;
