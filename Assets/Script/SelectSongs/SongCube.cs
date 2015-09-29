@@ -109,11 +109,13 @@ public class SongCube : MonoBehaviour {
 
 	public void selectSong()
 	{
+		if(SongSelectionManager.instance.isSelectingSong) return;
 
 	}
 
 	public void pointOnSong()
 	{
+		if(SongSelectionManager.instance.isSelectingSong) return;
 		background.color = SongSelectionManager.instance.songBarSelectedColor[(int)selectedDifficulty];
 		timeStartPointed = Time.time;
 		isPointed = true;
@@ -123,6 +125,7 @@ public class SongCube : MonoBehaviour {
 
 	public void pointOutSong()
 	{
+		if(SongSelectionManager.instance.isSelectingSong) return;
 		background.color = SongSelectionManager.instance.songBarColor[(int)selectedDifficulty];
 
 		if (isPointed) {
@@ -148,6 +151,7 @@ public class SongCube : MonoBehaviour {
 
 	void OnDisable()
 	{
+		if(SongSelectionManager.instance.isSelectingSong) return;
 		pointOutSong();
 	}
 

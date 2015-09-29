@@ -32,6 +32,11 @@ public class SongSelectionManager : MonoBehaviour {
 	public Material cubeHeartMaterial;
 	public Material visualizerMaterial;
 
+	public SongOptionPanel optionUI;
+
+	public bool isSelectingSong = false;
+	public GameObject songSelectedObject;
+
 	void Start()
 	{
 
@@ -149,4 +154,128 @@ public class SongSelectionManager : MonoBehaviour {
 		cubeHeartMaterial.color = cubeHeartColor[(int)difficultySelected];
 		visualizerMaterial.SetColor("_EmissionColor", visualizerBarColor[(int)difficultySelected]);
 	}
+
+	private GameObject fakeBar;
+	private CanvasGroup cgRolling;
+	private GameObject songInQuestion;
+
+	public IEnumerator selectOnSong(GameObject songSelected)
+	{
+		songInQuestion = songSelected;
+		isSelectingSong = true;
+		cgRolling = generator.GetComponent<SongCubeGenerator> ().rollRoot.GetComponent<CanvasGroup> ();
+		generator.GetComponent<SongCubeGenerator> ().enabled = false;
+		fakeBar = Instantiate (songInQuestion, songInQuestion.transform.position, songInQuestion.transform.rotation) as GameObject;
+		fakeBar.transform.parent = songInQuestion.transform.parent;
+		fakeBar.GetComponent<RectTransform> ().pivot = new Vector2 (0.5f, 0.5f);
+		songInQuestion.SetActive (false);
+
+		float sizeObj = 1f;
+		float canvasFloat = 1f;
+		float timePast = 0f;
+		float firstPhase = 0.5f;
+		float secondPhase = 2.5f;
+		bool canceled = false;
+		bool optionCalled = false;
+
+		while (timePast < firstPhase + secondPhase) {
+
+			if(timePast < firstPhase)
+			{
+				sizeObj = Mathf.Lerp(1f, 1.2f, timePast/firstPhase);
+				canvasFloat = Mathf.Lerp(1f, 0.7f, timePast/firstPhase);
+			}else{
+				sizeObj = Mathf.Lerp(1.2f, 1.4f, (timePast + firstPhase)/secondPhase);
+				canvasFloat = Mathf.Lerp(0.7f, 0.2f, (timePast + firstPhase)/secondPhase);
+			}
+
+			fakeBar.transform.localScale = Vector3.one * sizeObj;
+			cgRolling.alpha = canvasFloat;
+
+
+			canceled = checkCancelSong();
+			optionCalled = checkCallOption();
+
+			if(canceled || optionCalled) timePast = 10000f;
+
+			yield return 0;
+			timePast += Time.deltaTime;
+		}
+
+		if (!canceled && !optionCalled) {
+			launchSong(false);
+		} else if (canceled) {
+			cancelSelectSong(sizeObj, canvasFloat);
+		} else if (optionCalled) {
+			openOption();
+		}
+	}
+
+	public bool checkCancelSong()
+	{
+		return Input.GetMouseButtonDown (1) || Input.GetKeyDown (KeyCode.Escape) || Input.GetKeyDown (KeyCode.Backspace);
+	}
+
+	public bool checkCallOption()
+	{
+		return Input.GetMouseButtonDown (0);
+	}
+
+	public IEnumerator cancelSelectSong(float currentSize, float currentAlpha)
+	{
+		float timePast = 0f;
+		float timeRecover = 0.3f;
+		float sizeObj = 1f;
+		float canvasFloat = 1f;
+
+		while (timePast < timeRecover) {
+			sizeObj = Mathf.Lerp(currentSize, 1f, timePast/timeRecover);
+			canvasFloat = Mathf.Lerp(currentAlpha, 1f, timePast/timeRecover);
+
+			fakeBar.transform.localScale = Vector3.one * sizeObj;
+			cgRolling.alpha = canvasFloat;
+
+			yield return 0;
+			timePast += Time.deltaTime;
+		}
+
+		cgRolling.alpha = 1f;
+		Destroy (fakeBar);
+		generator.GetComponent<SongCubeGenerator> ().enabled = true;
+		songInQuestion.SetActive (true);
+		isSelectingSong = false;
+	}
+
+	public IEnumerator openOption()
+	{
+		optionUI.GetComponent<Animation> ().Play ("OpenOptionUI");
+		generator.GetComponent<Animation> ().Play ("CanvasGroupClose");
+	}
+
+	public IEnumerator cancelOption()
+	{
+		generator.GetComponent<Animation> ().Play ("CanvasGroupOpen");
+		cgRolling.alpha = 1f;
+		Destroy (fakeBar);
+		songInQuestion.SetActive (true);
+
+		optionUI.GetComponent<Animation> ().Play ("CloseOptionUI");
+		yield return new WaitForSeconds (0.33f);
+		
+		generator.GetComponent<SongCubeGenerator> ().enabled = true;
+		isSelectingSong = false;
+	}
+
+	public IEnumerator launchSong(bool fromOption)
+	{
+		if (!fromOption) {
+			generator.GetComponent<Animation> ().Play ("CanvasGroupClose");
+			yield return new WaitForSeconds (0.33f);
+		} else {
+			optionUI.GetComponent<Animation> ().Play ("CanvasGroupClose");
+			yield return new WaitForSeconds (0.33f);
+		}
+
+	}
+
 }
