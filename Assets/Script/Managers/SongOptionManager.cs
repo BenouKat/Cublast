@@ -68,4 +68,22 @@ public class SongOptionManager : MonoBehaviour {
 			break;
 		}
 	}
+
+	public bool isRanked()
+	{
+		if(rateSelected < 1f || hitJudgeSelected < 2 || scoreJudgeSelected < 2 || lifeJudgeSelected < 2)
+		{
+			return false;
+		}
+
+		foreach (OptionsMod mod in currentOptions) {
+			if(mod == OptionsMod.NOFREEZE || mod == OptionsMod.NOHANDS || mod == OptionsMod.NOJUMPS
+			   || mod == OptionsMod.NOMINES || mod == OptionsMod.ROLLTOFREEZE)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 }

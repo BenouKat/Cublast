@@ -55,6 +55,10 @@ public class SongInfoPanel : MonoBehaviour {
 	bool firstOpening = false;
 	float timeFirstOpening;
 
+	public float localRecord = -1f;
+	public string worldRecordName = "";
+	public float worldRecordScore = -1f;
+
 	void Start()
 	{
 		tempTexture = new Texture2D (1024, 512);
@@ -204,6 +208,7 @@ public class SongInfoPanel : MonoBehaviour {
 		SongInfoProfil sipSong = GameManager.instance.prefs.scoreOnSong.Find (c => c.CompareId (song.sip));
 		if (sipSong != null) {
 			userScore.text = sipSong.score.ToString ("0.00") + "%";
+			localRecord = (float)sipSong.score;
 		} else {
 			userScore.text = GameLocalization.instance.Translate("NoRecord");
 		}
@@ -237,6 +242,8 @@ public class SongInfoPanel : MonoBehaviour {
 					if(songTop.users.Count > 0)
 					{
 						recordOwnerName.text = songTop.users[0];
+						worldRecordName = songTop.users[0];
+						worldRecordScore = ((float)songTop.score[0] / 100f);
 					}
 
 					for(int i=0; i<100; i++)

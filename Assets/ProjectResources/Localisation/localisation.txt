@@ -1,4 +1,5 @@
 BestPersonal;Best Personal;Record personel
+WorldRecord;World Record;Record du monde
 Streak;Streak;Série
 Fantastic;Perfect;Parfait
 Excellent;Excellent;Excellent
@@ -6,6 +7,12 @@ Great;Great;Bien
 Decent;Cheap;Moyen
 Wayoff;Awful;Mauvais
 Miss;Miss;Raté
+BEGINNER;Child mode;Mode enfant
+EASY;Rookie;Débutant
+NORMAL;Amateur;Amateur
+HARD;Pro;Pro
+EXPERT;Expert;Expert
+EDIT;Custom;Edité
 Cleared;CLEARED;TERMINÉ
 Failed;FAILED;ECHEC
 FC;Full\ncombo;Série\nsaute faute
@@ -65,8 +72,8 @@ VsyncHelp;Lock game FPS. Can leads to loss of precision during game and performa
 Songs;Songs;Chansons
 BeginnersValid;Beginners friendly;Jouable pour débutants
 BegginersContain;Contains beginner levels;Contient des niveaux débutants
-MediumValid;Medium players friendly;Jouable pour amateurs
-MediumContain;Contains medium levels;Contient des niveaux amateurs
+MediumValid;Amateur players friendly;Jouable pour amateurs
+MediumContain;Contains amateur levels;Contient des niveaux amateurs
 ExpertOnly;Expert Only;Expert uniquement
 BackToPack;Back to packs;Retour aux packs;
 SearchInPack;Search...;Rechercher...
@@ -112,3 +119,9 @@ DeathCondition;Immediate$After 30 misses$Never;Immédiat$Après 30 ratés$Jamais
 SoloMode;Solo mode;Mode solo
 DuelMode;Duel mode;Mode duel
 MultiMode;Online mode;Mode en ligne
+UnrankedSolo;Unranked solo mode;Mode solo non classé
+ValidSong;<color=#FFFFFF>Valid again</color>\nto access options;<color=#FFFFFF>Valide à nouveau</color>\npour accéder aux options
+CancelSong;<color=#FFFFFF>Right click</color>\nor <color=#FFFFFF>back button</color>\nto cancel;<color=#FFFFFF>Clic droit</color>\nou <color=#FFFFFF>bouton retour</color>\npour annuler
+Invited;Guest;Invité
+NoLocalRecord;Never done;Jamais terminée
+NoWorldRecord;Not found;Non trouvé

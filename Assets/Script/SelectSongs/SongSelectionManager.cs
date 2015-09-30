@@ -14,6 +14,7 @@ public class SongSelectionManager : MonoBehaviour {
 		}
 	}
 
+	public SongInfoPanel infoPanel;
 	public SongCubeGenerator generator;
 	public Difficulty difficultySelected = Difficulty.NONE;
 	public SongPack currentPack;
@@ -36,6 +37,9 @@ public class SongSelectionManager : MonoBehaviour {
 
 	public bool isSelectingSong = false;
 	public GameObject songSelectedObject;
+
+	public SongLaunchPanel songLaunchPanel;
+	public GameObject contextLaunchUI;
 
 	void Start()
 	{
@@ -169,6 +173,8 @@ public class SongSelectionManager : MonoBehaviour {
 		fakeBar.transform.parent = songInQuestion.transform.parent;
 		fakeBar.GetComponent<RectTransform> ().pivot = new Vector2 (0.5f, 0.5f);
 		songInQuestion.SetActive (false);
+		infoPanel.GetComponent<Animation> ().Play ("CanvasGroupClose");
+		contextLaunchUI.SetActive (true);
 
 		float sizeObj = 1f;
 		float canvasFloat = 1f;
@@ -203,11 +209,11 @@ public class SongSelectionManager : MonoBehaviour {
 		}
 
 		if (!canceled && !optionCalled) {
-			launchSong(false);
+			StartCoroutine(launchSong(false));
 		} else if (canceled) {
-			cancelSelectSong(sizeObj, canvasFloat);
+			StartCoroutine(cancelSelectSong(sizeObj, canvasFloat));
 		} else if (optionCalled) {
-			openOption();
+			StartCoroutine(openOption());
 		}
 	}
 
@@ -218,7 +224,12 @@ public class SongSelectionManager : MonoBehaviour {
 
 	public bool checkCallOption()
 	{
-		return Input.GetMouseButtonDown (0);
+		return Input.GetMouseButtonDown (0) || Input.GetKeyDown(KeyCode.Return);
+	}
+
+	public void callCancelOption()
+	{
+		StartCoroutine (cancelOption ());
 	}
 
 	public IEnumerator cancelSelectSong(float currentSize, float currentAlpha)
@@ -227,6 +238,8 @@ public class SongSelectionManager : MonoBehaviour {
 		float timeRecover = 0.3f;
 		float sizeObj = 1f;
 		float canvasFloat = 1f;
+		infoPanel.GetComponent<Animation> ().Play ("CanvasGroupOpen");
+		contextLaunchUI.GetComponent<Animation> ().Play ("CanvasGroupClose");
 
 		while (timePast < timeRecover) {
 			sizeObj = Mathf.Lerp(currentSize, 1f, timePast/timeRecover);
@@ -250,6 +263,8 @@ public class SongSelectionManager : MonoBehaviour {
 	{
 		optionUI.GetComponent<Animation> ().Play ("OpenOptionUI");
 		generator.GetComponent<Animation> ().Play ("CanvasGroupClose");
+		contextLaunchUI.GetComponent<Animation> ().Play ("CanvasGroupClose");
+		yield return 0;
 	}
 
 	public IEnumerator cancelOption()
@@ -258,16 +273,19 @@ public class SongSelectionManager : MonoBehaviour {
 		cgRolling.alpha = 1f;
 		Destroy (fakeBar);
 		songInQuestion.SetActive (true);
+		infoPanel.GetComponent<Animation> ().Play ("CanvasGroupOpen");
 
 		optionUI.GetComponent<Animation> ().Play ("CloseOptionUI");
 		yield return new WaitForSeconds (0.33f);
-		
+
+
 		generator.GetComponent<SongCubeGenerator> ().enabled = true;
 		isSelectingSong = false;
 	}
 
 	public IEnumerator launchSong(bool fromOption)
 	{
+		contextLaunchUI.GetComponent<Animation> ().Play ("CanvasGroupClose");
 		if (!fromOption) {
 			generator.GetComponent<Animation> ().Play ("CanvasGroupClose");
 			yield return new WaitForSeconds (0.33f);
@@ -276,6 +294,23 @@ public class SongSelectionManager : MonoBehaviour {
 			yield return new WaitForSeconds (0.33f);
 		}
 
+		SongOptionManager.instance.currentSongPlayed = songSelected;
+		songLaunchPanel.titleSong.text = songSelected.title;
+		songLaunchPanel.pseudo.text = !string.IsNullOrEmpty (ServerManager.instance.username) ? 
+			ServerManager.instance.username : GameLocalization.instance.Translate ("Invited");
+		songLaunchPanel.titleDifficulty.text = GameLocalization.instance.Translate (songSelected.difficulty.ToString ());
+
+		songLaunchPanel.mode.text = GameLocalization.instance.Translate (SongOptionManager.instance.isRanked() ? "SoloMode" : "UnrankedSolo");
+		songLaunchPanel.localRecord.text = infoPanel.localRecord > 0f ? 
+			infoPanel.localRecord.ToString ("0.00") + "%" : GameLocalization.instance.Translate ("NoLocalRecord");
+		songLaunchPanel.worldRecord.text = (infoPanel.worldRecordScore > 0f && !string.IsNullOrEmpty(infoPanel.worldRecordName)) ?
+			infoPanel.worldRecordName + " (" + infoPanel.worldRecordScore.ToString("0.00") + "%)" : GameLocalization.instance.Translate ("NoWorldRecord");
+
+
+
+		yield return new WaitForSeconds(4f);
+
+		TransitionManager.instance.changeSceneWithTransition("SoloChart", 0.2f, 0.5f, false, false);
 	}
 
 }

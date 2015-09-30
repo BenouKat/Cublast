@@ -268,7 +268,7 @@ public class SongOptionPanel : MonoBehaviour {
 				okRate = false;
 				return;
 			}
-			SongOptionManager.instance.rateSelected = theNewRate;
+			SongOptionManager.instance.rateSelected = theNewRate/(double)100;
 		}
 	}
 

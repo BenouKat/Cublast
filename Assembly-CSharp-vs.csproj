@@ -85,6 +85,7 @@
      <Compile Include="Assets\Script\SelectSongs\SongCube.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongCubeGenerator.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongInfoPanel.cs" />
+     <Compile Include="Assets\Script\SelectSongs\SongLaunchPanel.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongOptionPanel.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongSearchBar.cs" />
      <Compile Include="Assets\Script\SelectSongs\SongSelectionManager.cs" />
