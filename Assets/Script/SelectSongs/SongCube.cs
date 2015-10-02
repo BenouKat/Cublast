@@ -109,13 +109,26 @@ public class SongCube : MonoBehaviour {
 
 	public void selectSong()
 	{
-		if(SongSelectionManager.instance.isSelectingSong) return;
-
+		if(SongSelectionManager.instance.cantLaunchSong) return;
+		song = songData.songs.First().Value;
+		if (!musicPreviewLaunched && AudioSelectionManager.instance.checkPreviewAlreadyPlayed (song)) {
+			if(song.isMP3())
+			{
+				if(!MP3Loaded) StartCoroutine(loadAndAssignMP3(song));
+			}else{
+				AudioSelectionManager.instance.clipInMemory = song.SetAudioClip();
+				AudioSelectionManager.instance.playPreview(song.samplestart, song.samplelenght);
+			}
+			musicPreviewLaunched = true;
+		}
+		song = songData.songs [selectedDifficulty];
+		SongSelectionManager.instance.selectOnSong (this);
 	}
 
 	public void pointOnSong()
 	{
 		if(SongSelectionManager.instance.isSelectingSong) return;
+		if (selectedDifficulty == Difficulty.NONE) return;
 		background.color = SongSelectionManager.instance.songBarSelectedColor[(int)selectedDifficulty];
 		timeStartPointed = Time.time;
 		isPointed = true;
@@ -123,16 +136,22 @@ public class SongCube : MonoBehaviour {
 		panel.songSelected (songData.songs [selectedDifficulty]);
 	}
 
+	public void forcePointOut()
+	{
+		isPointed = true;
+		pointOutSong ();
+	}
+
 	public void pointOutSong()
 	{
-		if(SongSelectionManager.instance.isSelectingSong) return;
+		if (selectedDifficulty == Difficulty.NONE) return;
 		background.color = SongSelectionManager.instance.songBarColor[(int)selectedDifficulty];
 
-		if (isPointed) {
+		if (isPointed && !SongSelectionManager.instance.isSelectingSong) {
 			AudioSelectionManager.instance.stopPreview ();
 		}
 
-		if (isPointed || musicPreviewLaunched) {
+		if ((isPointed || musicPreviewLaunched)  && !SongSelectionManager.instance.isSelectingSong) {
 
 			if(MP3Loaded)
 			{
@@ -146,12 +165,10 @@ public class SongCube : MonoBehaviour {
 		isPointed = false;
 
 		panel.close (songData.songs [selectedDifficulty]);
-
 	}
 
 	void OnDisable()
 	{
-		if(SongSelectionManager.instance.isSelectingSong) return;
 		pointOutSong();
 	}
 
@@ -169,12 +186,15 @@ public class SongCube : MonoBehaviour {
 		if(isPointed && !musicPreviewLaunched && Time.time > timeStartPointed  + 0.5f)
 		{
 			song = songData.songs.First().Value;
-			if(song.isMP3())
+			if(AudioSelectionManager.instance.checkPreviewAlreadyPlayed(song))
 			{
-				if(!MP3Loaded) StartCoroutine(loadAndAssignMP3(song));
-			}else{
-				AudioSelectionManager.instance.clipInMemory = song.SetAudioClip();
-				AudioSelectionManager.instance.playPreview(song.samplestart, song.samplelenght);
+				if(song.isMP3())
+				{
+					if(!MP3Loaded) StartCoroutine(loadAndAssignMP3(song));
+				}else{
+					AudioSelectionManager.instance.clipInMemory = song.SetAudioClip();
+					AudioSelectionManager.instance.playPreview(song.samplestart, song.samplelenght);
+				}
 			}
 
 			musicPreviewLaunched = true;
@@ -197,5 +217,30 @@ public class SongCube : MonoBehaviour {
 			s.cleanWav();
 			MP3Loaded = false;
 		}
+	}
+
+	void OnDestroy()
+	{
+		if(MP3Loaded)
+		{
+			song = songData.songs.First().Value;
+			song.cleanWav();
+			MP3Loaded = false;
+		}
+	}
+
+
+	public void stopPreviewCash()
+	{
+		if(MP3Loaded)
+		{
+			song = songData.songs.First().Value;
+			song.cleanWav();
+			MP3Loaded = false;
+		}
+
+		AudioSelectionManager.instance.enabled = false;
+		AudioSelectionManager.instance.mainMusic.volume = 0f;
+		AudioSelectionManager.instance.songMusic.volume = 0f;
 	}
 }

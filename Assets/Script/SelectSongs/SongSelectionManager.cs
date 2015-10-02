@@ -36,10 +36,14 @@ public class SongSelectionManager : MonoBehaviour {
 	public SongOptionPanel optionUI;
 
 	public bool isSelectingSong = false;
+	public bool cantLaunchSong = false;
 	public GameObject songSelectedObject;
 
 	public SongLaunchPanel songLaunchPanel;
 	public GameObject contextLaunchUI;
+	public RectTransform animLaunch;
+
+	public GameObject cacheRaycast;
 
 	void Start()
 	{
@@ -48,7 +52,10 @@ public class SongSelectionManager : MonoBehaviour {
 
 	void Update()
 	{
-		generator.checkScrollWheel ();
+		if (!isSelectingSong && !cantLaunchSong) {
+			generator.checkScrollWheel ();
+		}
+
 	}
 
 	public void selectAppropriateDifficulty()
@@ -162,38 +169,51 @@ public class SongSelectionManager : MonoBehaviour {
 	private GameObject fakeBar;
 	private CanvasGroup cgRolling;
 	private GameObject songInQuestion;
+	private SongCube songCubeObject;
 
-	public IEnumerator selectOnSong(GameObject songSelected)
+	public void selectOnSong(SongCube songCubeObj)
 	{
-		songInQuestion = songSelected;
+		songCubeObject = songCubeObj;
+		songDataSelected = songCubeObj.songData;
+		songSelected = songCubeObj.songData.songs [difficultySelected];
+		StartCoroutine (selectOnSongRoutine (songCubeObj.gameObject));
+	}
+
+	public IEnumerator selectOnSongRoutine(GameObject songObject)
+	{
+		songInQuestion = songObject;
 		isSelectingSong = true;
+		cantLaunchSong = true;
+		cacheRaycast.SetActive (true);
 		cgRolling = generator.GetComponent<SongCubeGenerator> ().rollRoot.GetComponent<CanvasGroup> ();
 		generator.GetComponent<SongCubeGenerator> ().enabled = false;
 		fakeBar = Instantiate (songInQuestion, songInQuestion.transform.position, songInQuestion.transform.rotation) as GameObject;
-		fakeBar.transform.parent = songInQuestion.transform.parent;
+		fakeBar.transform.SetParent(cgRolling.transform.parent);
+		fakeBar.transform.localScale = Vector3.one;
+		fakeBar.transform.position = songInQuestion.transform.position;
 		fakeBar.GetComponent<RectTransform> ().pivot = new Vector2 (0.5f, 0.5f);
+		fakeBar.GetComponent<RectTransform> ().anchoredPosition = new Vector2 (
+			fakeBar.GetComponent<RectTransform> ().anchoredPosition.x + 750f,
+			fakeBar.GetComponent<RectTransform> ().anchoredPosition.y);
+
 		songInQuestion.SetActive (false);
 		infoPanel.GetComponent<Animation> ().Play ("CanvasGroupClose");
 		contextLaunchUI.SetActive (true);
+		contextLaunchUI.GetComponent<Animation> ().Play ("CanvasGroupOpen");
+		animLaunch.GetComponent<Animation> ().Stop ();
+		animLaunch.GetComponent<Animation> ().Play ("AnimSongDisappear");
+		animLaunch.anchoredPosition = new Vector2(0f, 0f);
 
 		float sizeObj = 1f;
 		float canvasFloat = 1f;
 		float timePast = 0f;
-		float firstPhase = 0.5f;
-		float secondPhase = 2.5f;
 		bool canceled = false;
 		bool optionCalled = false;
 
-		while (timePast < firstPhase + secondPhase) {
+		while (timePast < 3f) {
 
-			if(timePast < firstPhase)
-			{
-				sizeObj = Mathf.Lerp(1f, 1.2f, timePast/firstPhase);
-				canvasFloat = Mathf.Lerp(1f, 0.7f, timePast/firstPhase);
-			}else{
-				sizeObj = Mathf.Lerp(1.2f, 1.4f, (timePast + firstPhase)/secondPhase);
-				canvasFloat = Mathf.Lerp(0.7f, 0.2f, (timePast + firstPhase)/secondPhase);
-			}
+			sizeObj = Mathf.Lerp(1f, 1.1f, animLaunch.anchoredPosition.x);
+			canvasFloat = Mathf.Lerp(1f, 0f, animLaunch.anchoredPosition.y);
 
 			fakeBar.transform.localScale = Vector3.one * sizeObj;
 			cgRolling.alpha = canvasFloat;
@@ -209,7 +229,7 @@ public class SongSelectionManager : MonoBehaviour {
 		}
 
 		if (!canceled && !optionCalled) {
-			StartCoroutine(launchSong(false));
+			callLaunchSong(false);
 		} else if (canceled) {
 			StartCoroutine(cancelSelectSong(sizeObj, canvasFloat));
 		} else if (optionCalled) {
@@ -241,6 +261,7 @@ public class SongSelectionManager : MonoBehaviour {
 		infoPanel.GetComponent<Animation> ().Play ("CanvasGroupOpen");
 		contextLaunchUI.GetComponent<Animation> ().Play ("CanvasGroupClose");
 
+
 		while (timePast < timeRecover) {
 			sizeObj = Mathf.Lerp(currentSize, 1f, timePast/timeRecover);
 			canvasFloat = Mathf.Lerp(currentAlpha, 1f, timePast/timeRecover);
@@ -256,11 +277,15 @@ public class SongSelectionManager : MonoBehaviour {
 		Destroy (fakeBar);
 		generator.GetComponent<SongCubeGenerator> ().enabled = true;
 		songInQuestion.SetActive (true);
+		cacheRaycast.SetActive (false);
 		isSelectingSong = false;
+		cantLaunchSong = false;
 	}
 
 	public IEnumerator openOption()
 	{
+		cacheRaycast.SetActive (false);
+		optionUI.gameObject.SetActive (true);
 		optionUI.GetComponent<Animation> ().Play ("OpenOptionUI");
 		generator.GetComponent<Animation> ().Play ("CanvasGroupClose");
 		contextLaunchUI.GetComponent<Animation> ().Play ("CanvasGroupClose");
@@ -276,11 +301,25 @@ public class SongSelectionManager : MonoBehaviour {
 		infoPanel.GetComponent<Animation> ().Play ("CanvasGroupOpen");
 
 		optionUI.GetComponent<Animation> ().Play ("CloseOptionUI");
+		optionUI.GetComponent<CanvasGroup> ().blocksRaycasts = false;
+		optionUI.GetComponent<CanvasGroup> ().interactable = false;
+		isSelectingSong = false;
+		songCubeObject.forcePointOut ();
+
 		yield return new WaitForSeconds (0.33f);
 
-
+		contextLaunchUI.gameObject.SetActive (false);
+		optionUI.gameObject.SetActive (false);
+		optionUI.GetComponent<CanvasGroup> ().blocksRaycasts = true;
+		optionUI.GetComponent<CanvasGroup> ().interactable = true;
 		generator.GetComponent<SongCubeGenerator> ().enabled = true;
-		isSelectingSong = false;
+
+		cantLaunchSong = false;
+	}
+
+	public void callLaunchSong(bool fromOption)
+	{
+		StartCoroutine (launchSong (fromOption));
 	}
 
 	public IEnumerator launchSong(bool fromOption)
@@ -288,13 +327,17 @@ public class SongSelectionManager : MonoBehaviour {
 		contextLaunchUI.GetComponent<Animation> ().Play ("CanvasGroupClose");
 		if (!fromOption) {
 			generator.GetComponent<Animation> ().Play ("CanvasGroupClose");
-			yield return new WaitForSeconds (0.33f);
+			//yield return new WaitForSeconds (0.33f);
 		} else {
 			optionUI.GetComponent<Animation> ().Play ("CanvasGroupClose");
-			yield return new WaitForSeconds (0.33f);
+			//yield return new WaitForSeconds (0.33f);
 		}
 
+		CameraSwitcher.instance.anim.Play ("SongToLaunch");
+
+		songCubeObject.stopPreviewCash ();
 		SongOptionManager.instance.currentSongPlayed = songSelected;
+		songLaunchPanel.gameObject.SetActive (true);
 		songLaunchPanel.titleSong.text = songSelected.title;
 		songLaunchPanel.pseudo.text = !string.IsNullOrEmpty (ServerManager.instance.username) ? 
 			ServerManager.instance.username : GameLocalization.instance.Translate ("Invited");
@@ -308,7 +351,7 @@ public class SongSelectionManager : MonoBehaviour {
 
 
 
-		yield return new WaitForSeconds(4f);
+		yield return new WaitForSeconds(5f);
 
 		TransitionManager.instance.changeSceneWithTransition("SoloChart", 0.2f, 0.5f, false, false);
 	}

@@ -14,6 +14,8 @@ public class AudioSelectionManager : MonoBehaviour {
 	float sampleStart;
 	float sampleLength;
 
+	Song previewPlayed;
+
 	public static AudioSelectionManager instance;
 	void Awake()
 	{
@@ -24,6 +26,15 @@ public class AudioSelectionManager : MonoBehaviour {
 	{
 		mainMusic.volume = 1f;
 		songMusic.volume = 0f;
+	}
+
+	public bool checkPreviewAlreadyPlayed(Song song)
+	{
+		if (song != previewPlayed) {
+			previewPlayed = song;
+			return true;
+		}
+		return false;
 	}
 
 	public void playPreview(double sampleStart, double sampleLength)
@@ -45,6 +56,7 @@ public class AudioSelectionManager : MonoBehaviour {
 	public void stopPreview()
 	{
 		isPlayingPreview = false;
+		previewPlayed = null;
 	}
 
 	void Update()

@@ -49,11 +49,22 @@ public class SongOptionPanel : MonoBehaviour {
 	double firstBPM;
 	double secondBPM;
 
-	void Start()
+	public Color okColor;
+	public Color wrongColor;
+
+	Texture2D texturePool;
+
+	void Awake()
 	{
+		texturePool = new Texture2D (256, 256);
+	}
+
+	void OnEnable()
+	{
+		autoChaningInputfields = true;
 		songTitle.text = SongSelectionManager.instance.songSelected.title;
 
-		bannerImage.texture = SongSelectionManager.instance.songSelected.GetBanner((Texture2D)bannerImage.texture) ?? GameManager.instance.emptyPackTexture;
+		bannerImage.texture = SongSelectionManager.instance.songSelected.GetBanner(texturePool) ?? SongSelectionManager.instance.packImage.texture ?? GameManager.instance.emptyPackTexture;
 
 
 		currentSIP = GameManager.instance.prefs.scoreOnSong.Find (c => c.CompareId (SongSelectionManager.instance.songSelected.sip));
@@ -146,129 +157,195 @@ public class SongOptionPanel : MonoBehaviour {
 		}
 
 		applyChangeDifficulty (SongSelectionManager.instance.songSelected.difficulty);
+		autoChaningInputfields = false;
 	}
+
+	public bool autoChaningInputfields = false;
 
 	public void changingBPMPerMultip(string value)
 	{
+
+		if (autoChaningInputfields)
+			return;
+		autoChaningInputfields = true;
+		okBPM = true;
 		GameManager.instance.prefs.inBPMMode = false;
 		if (string.IsNullOrEmpty (value)) {
 			okBPM = false;
-			return;
 		} else {
 			float bpm = 0f;
 			if(!float.TryParse(value, out bpm))
 			{
 				okBPM = false;
-				return;
 			}
 			if((bpm < 0.01f || bpm > 99f))
 			{
 				okBPM = false;
-				return;
 			}
-			GameManager.instance.prefs.lastSpeedmod = bpm;
-			if (twoSpeedObj.activeSelf) {
-				lowerBPMSpeedmod.text = ((int)(Mathf.Min ((float)firstBPM, (float)secondBPM) * GameManager.instance.prefs.lastSpeedmod)).ToString ();
-				higherBPMSpeedmod.text = ((int)(Mathf.Max ((float)firstBPM, (float)secondBPM) * GameManager.instance.prefs.lastSpeedmod)).ToString ();
-			} else {
-				bpmSpeedmod.text = ((int)firstBPM * GameManager.instance.prefs.lastSpeedmod).ToString ();
+
+			if(okBPM)
+			{
+				GameManager.instance.prefs.lastSpeedmod = bpm;
+				if (twoSpeedObj.activeSelf) {
+					lowerBPMSpeedmod.text = ((int)(Mathf.Min ((float)firstBPM, (float)secondBPM) * GameManager.instance.prefs.lastSpeedmod)).ToString ();
+					higherBPMSpeedmod.text = ((int)(Mathf.Max ((float)firstBPM, (float)secondBPM) * GameManager.instance.prefs.lastSpeedmod)).ToString ();
+				} else {
+					bpmSpeedmod.text = ((int)firstBPM * GameManager.instance.prefs.lastSpeedmod).ToString ();
+				}
+				SongOptionManager.instance.speedmodSelected = GameManager.instance.prefs.lastSpeedmod;
 			}
-			SongOptionManager.instance.speedmodSelected = GameManager.instance.prefs.lastSpeedmod;
 		}
+
+		if (okBPM) {
+			bpmSpeedmod.transform.parent.parent.GetComponent<Image>().color = okColor;
+		} else {
+			bpmSpeedmod.transform.parent.parent.GetComponent<Image>().color = wrongColor;
+		}
+
+		autoChaningInputfields = false;
 	}
 
 	public void changingBPMPerValue(string value)
 	{
+		if (autoChaningInputfields)
+			return;
+		autoChaningInputfields = true;
+		okBPM = true;
 		GameManager.instance.prefs.inBPMMode = true;
 		if (string.IsNullOrEmpty (value)) {
 			okBPM = false;
-			return;
 		} else {
 			float bpm = 0f;
 			if(!float.TryParse(value, out bpm))
 			{
 				okBPM = false;
-				return;
 			}
 			if((bpm < 1 || bpm > 9999))
 			{
 				okBPM = false;
-				return;
 			}
-			GameManager.instance.prefs.lastBPM = bpm;
-			multipSpeedmod.text = (GameManager.instance.prefs.lastBPM / firstBPM).ToString ("0.00");
-			SongOptionManager.instance.speedmodSelected = bpm / firstBPM;
+
+			if(okBPM)
+			{
+				GameManager.instance.prefs.lastBPM = bpm;
+				multipSpeedmod.text = (GameManager.instance.prefs.lastBPM / firstBPM).ToString ("0.00");
+				SongOptionManager.instance.speedmodSelected = bpm / firstBPM;
+			}
+
 		}
+
+		if (okBPM) {
+			multipSpeedmod.transform.parent.GetComponent<Image>().color = okColor;
+		} else {
+			multipSpeedmod.transform.parent.GetComponent<Image>().color = wrongColor;
+		}
+
+		autoChaningInputfields = false;
 	}
 
 	public void changingBPMPerHighValue(string value)
 	{
-		GameManager.instance.prefs.inBPMMode = false;
+		if (autoChaningInputfields)
+			return;
+		autoChaningInputfields = true;
+		okBPM = true;
+		GameManager.instance.prefs.inBPMMode = true;
 		if (string.IsNullOrEmpty (value)) {
 			okBPM = false;
-			return;
 		} else {
 			float bpm = 0f;
 			if(!float.TryParse(value, out bpm))
 			{
 				okBPM = false;
-				return;
 			}
 			if((bpm < 1 || bpm > 9999))
 			{
 				okBPM = false;
-				return;
 			}
-			GameManager.instance.prefs.lastSpeedmod = bpm / Mathf.Min ((float)firstBPM, (float)secondBPM);
-			multipSpeedmod.text = (bpm / Mathf.Min ((float)firstBPM, (float)secondBPM)).ToString ("0.00");
-			higherBPMSpeedmod.text = ((int)(Mathf.Max ((float)firstBPM, (float)secondBPM) * GameManager.instance.prefs.lastSpeedmod)).ToString ();
-			SongOptionManager.instance.speedmodSelected = GameManager.instance.prefs.lastSpeedmod;
+
+			if(okBPM)
+			{
+				GameManager.instance.prefs.lastBPM = bpm;
+				GameManager.instance.prefs.lastSpeedmod = bpm / Mathf.Min ((float)firstBPM, (float)secondBPM);
+				multipSpeedmod.text = (bpm / Mathf.Min ((float)firstBPM, (float)secondBPM)).ToString ("0.00");
+				higherBPMSpeedmod.text = ((int)(Mathf.Max ((float)firstBPM, (float)secondBPM) * GameManager.instance.prefs.lastSpeedmod)).ToString ();
+				SongOptionManager.instance.speedmodSelected = GameManager.instance.prefs.lastSpeedmod;
+			}
+
 		}
+
+		if (okBPM) {
+			multipSpeedmod.transform.parent.GetComponent<Image>().color = okColor;
+		} else {
+			multipSpeedmod.transform.parent.GetComponent<Image>().color = wrongColor;
+		}
+
+		autoChaningInputfields = false;
 	}
 
 	public void changingBPMPerLowValue(string value)
 	{
-		GameManager.instance.prefs.inBPMMode = false;
+		if (autoChaningInputfields)
+			return;
+		autoChaningInputfields = true;
+		okBPM = true;
+		GameManager.instance.prefs.inBPMMode = true;
 		if (string.IsNullOrEmpty (value)) {
 			okBPM = false;
-			return;
 		} else {
 			float bpm = 0f;
 			if(!float.TryParse(value, out bpm))
 			{
 				okBPM = false;
-				return;
 			}
 			if((bpm < 1 || bpm > 9999))
 			{
 				okBPM = false;
-				return;
 			}
-			GameManager.instance.prefs.lastSpeedmod = bpm / Mathf.Max ((float)firstBPM, (float)secondBPM);
-			multipSpeedmod.text = (bpm / Mathf.Max ((float)firstBPM, (float)secondBPM)).ToString ("0.00");
-			lowerBPMSpeedmod.text = ((int)(Mathf.Min ((float)firstBPM, (float)secondBPM) * GameManager.instance.prefs.lastSpeedmod)).ToString ();
-			SongOptionManager.instance.speedmodSelected = GameManager.instance.prefs.lastSpeedmod;
+
+			if(okBPM)
+			{
+				GameManager.instance.prefs.lastBPM = bpm;
+				GameManager.instance.prefs.lastSpeedmod = bpm / Mathf.Max ((float)firstBPM, (float)secondBPM);
+				multipSpeedmod.text = (bpm / Mathf.Max ((float)firstBPM, (float)secondBPM)).ToString ("0.00");
+				lowerBPMSpeedmod.text = ((int)(Mathf.Min ((float)firstBPM, (float)secondBPM) * GameManager.instance.prefs.lastSpeedmod)).ToString ();
+				SongOptionManager.instance.speedmodSelected = GameManager.instance.prefs.lastSpeedmod;
+			}
+
 		}
+
+		if (okBPM) {
+			multipSpeedmod.transform.parent.GetComponent<Image>().color = okColor;
+		} else {
+			multipSpeedmod.transform.parent.GetComponent<Image>().color = wrongColor;
+		}
+
+		autoChaningInputfields = false;
 	}
 
 	public void changingRate(string newRate)
 	{
+		okRate = true;
 		if (string.IsNullOrEmpty (newRate)) {
 			okRate = false;
-			return;
 		} else {
 			float theNewRate = 0f;
 			if(!float.TryParse(newRate, out theNewRate))
 			{
 				okRate = false;
-				return;
 			}
 			if(theNewRate < 1f || theNewRate > 200f)
 			{
 				okRate = false;
-				return;
 			}
-			SongOptionManager.instance.rateSelected = theNewRate/(double)100;
+
+			if(okRate) SongOptionManager.instance.rateSelected = theNewRate/(double)100;
+		}
+
+		if (okRate) {
+			rate.transform.parent.parent.GetComponent<Image>().color = okColor;
+		} else {
+			rate.transform.parent.parent.GetComponent<Image>().color = wrongColor;
 		}
 	}
 
@@ -287,7 +364,7 @@ public class SongOptionPanel : MonoBehaviour {
 				SongOptionManager.instance.skinSelected = 3;
 			}
 		}
-		objectiveText.text = GameLocalization.instance.Translate ("SkinType").Split ('$') [SongOptionManager.instance.skinSelected];
+		skinSelectedText.text = GameLocalization.instance.Translate ("SkinType").Split ('$') [SongOptionManager.instance.skinSelected];
 	}
 
 	public void changingBigNotes(bool active)
@@ -299,7 +376,7 @@ public class SongOptionPanel : MonoBehaviour {
 	{
 		if (next) {
 			SongOptionManager.instance.raceSelected++;
-			if(SongOptionManager.instance.raceSelected > System.Enum.GetValues(typeof(ScoreNote)).Length - 1)
+			if(SongOptionManager.instance.raceSelected > 8)
 			{
 				SongOptionManager.instance.raceSelected = 0;
 			}
@@ -307,7 +384,7 @@ public class SongOptionPanel : MonoBehaviour {
 			SongOptionManager.instance.raceSelected--;
 			if(SongOptionManager.instance.raceSelected < 0)
 			{
-				SongOptionManager.instance.raceSelected = System.Enum.GetValues(typeof(ScoreNote)).Length - 1;
+				SongOptionManager.instance.raceSelected = 8;
 			}
 		}
 		objectiveText.text = GameLocalization.instance.Translate ("RaceType").Split ('$') [SongOptionManager.instance.raceSelected];
@@ -322,13 +399,13 @@ public class SongOptionPanel : MonoBehaviour {
 			SongOptionManager.instance.lifeJudgeSelected++;
 			if(SongOptionManager.instance.lifeJudgeSelected >= System.Enum.GetValues(typeof(Judge)).Length - 1)
 			{
-				rightLife.gameObject.SetActive(true);
+				rightLife.gameObject.SetActive(false);
 			}
 		} else {
 			SongOptionManager.instance.lifeJudgeSelected--;
 			if(SongOptionManager.instance.lifeJudgeSelected <= 0)
 			{
-				leftLife.gameObject.SetActive(true);
+				leftLife.gameObject.SetActive(false);
 			}
 		}
 		lifeJudgeText.text = GameLocalization.instance.Translate ("LifeJudgeDiff").Split ('$') [SongOptionManager.instance.lifeJudgeSelected];
@@ -343,13 +420,13 @@ public class SongOptionPanel : MonoBehaviour {
 			SongOptionManager.instance.scoreJudgeSelected++;
 			if(SongOptionManager.instance.scoreJudgeSelected >= System.Enum.GetValues(typeof(Judge)).Length - 1)
 			{
-				rightScore.gameObject.SetActive(true);
+				rightScore.gameObject.SetActive(false);
 			}
 		} else {
 			SongOptionManager.instance.scoreJudgeSelected--;
 			if(SongOptionManager.instance.scoreJudgeSelected <= 0)
 			{
-				leftScore.gameObject.SetActive(true);
+				leftScore.gameObject.SetActive(false);
 			}
 		}
 		scoreJudgeText.text = GameLocalization.instance.Translate ("ScoreJudgeDiff").Split ('$') [SongOptionManager.instance.scoreJudgeSelected];
@@ -364,13 +441,13 @@ public class SongOptionPanel : MonoBehaviour {
 			SongOptionManager.instance.hitJudgeSelected++;
 			if(SongOptionManager.instance.hitJudgeSelected >= System.Enum.GetValues(typeof(Judge)).Length - 1)
 			{
-				rightHit.gameObject.SetActive(true);
+				rightHit.gameObject.SetActive(false);
 			}
 		} else {
 			SongOptionManager.instance.hitJudgeSelected--;
 			if(SongOptionManager.instance.hitJudgeSelected <= 0)
 			{
-				leftHit.gameObject.SetActive(true);
+				leftHit.gameObject.SetActive(false);
 			}
 		}
 		hitJudgeText.text = GameLocalization.instance.Translate ("HitJudgeDiff").Split ('$') [SongOptionManager.instance.hitJudgeSelected];
@@ -392,7 +469,7 @@ public class SongOptionPanel : MonoBehaviour {
 				SongOptionManager.instance.deathConditionSelected = System.Enum.GetValues(typeof(DeathMode)).Length - 1;
 			}
 		}
-		objectiveText.text = GameLocalization.instance.Translate ("DeathCondition").Split ('$') [SongOptionManager.instance.deathConditionSelected];
+		deathConditionText.text = GameLocalization.instance.Translate ("DeathCondition").Split ('$') [SongOptionManager.instance.deathConditionSelected];
 	}
 
 	public void pushOption(GameObject go)
@@ -435,7 +512,12 @@ public class SongOptionPanel : MonoBehaviour {
 	public void playChart()
 	{
 		if (okBPM && okRate) {
-			//Anim !
+			SongSelectionManager.instance.callLaunchSong(true);
 		}
+	}
+
+	public void back()
+	{
+		SongSelectionManager.instance.callCancelOption ();
 	}
 }

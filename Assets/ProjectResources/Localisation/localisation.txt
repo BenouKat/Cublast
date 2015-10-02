@@ -113,7 +113,7 @@ DisplayOption;Display Options;Options d'affichage
 SkinType;Cublast$Arrow$Bubble$Arrow cube;Cublast$Flèche$Bulle$Flèche cubique
 HitJudgeDiff;Childish$Light$Normal$Hardcore$Hellish;Enfantin$Cool$Normal$Hardu$Horrible
 ScoreJudgeDiff;Sweet$Simple$Normal$Severe$No mercy;Tendre$Simple$Normal$Sévère$Sans pitié
-LifeJudgeDiff;Tanky$Resistant$Normal$Painful$AtrociousIncrevable$Resistant$Normal$Douloureux$Atroce
+LifeJudgeDiff;Tanky$Resistant$Normal$Painful$Atrocious;Increvable$Resistant$Normal$Douloureux$Atroce
 RaceType;None$C Medal$B Medal$A Medal$S Medal$Bronze Medal$Silver Medal$Gold Medal$Platinium Medal;Aucun$Médaille C$Médalle B$Médaille A$Médaille S$Médaille Bronze$Médaille Silver$Médaille Or$Médaille Platine
 DeathCondition;Immediate$After 30 misses$Never;Immédiat$Après 30 ratés$Jamais
 SoloMode;Solo mode;Mode solo

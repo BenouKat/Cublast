@@ -1,13 +1,15 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\SelectSongs\SongSelectionManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ProjectResources\Localisation\localisation.txt">
     <Files>
-      <File FileName="Assets\Script\SelectSongs\SongSelectionManager.cs" Line="280" Column="3" />
-      <File FileName="Assets\Script\Managers\SongOptionManager.cs" Line="46" Column="61" />
-      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="127" Column="14" />
-      <File FileName="Assets\Script\SelectSongs\SongLaunchPanel.cs" Line="5" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\SongInfoPanel.cs" Line="216" Column="44" />
-      <File FileName="Assets\Script\LoadingScreen\LoadSongUI.cs" Line="80" Column="5" />
+      <File FileName="Assets\Script\SelectSongs\SongCube.cs" Line="112" Column="30" />
+      <File FileName="Assets\Script\SelectSongs\AudioSelectionManager.cs" Line="56" Column="27" />
+      <File FileName="Assets\Script\SelectSongs\SongInfoPanel.cs" Line="157" Column="31" />
+      <File FileName="Assets\Script\SelectSongs\SongSelectionManager.cs" Line="234" Column="45" />
+      <File FileName="Assets\Script\SelectSongs\SongOptionPanel.cs" Line="288" Column="30" />
+      <File FileName="Assets\Script\System\Song.cs" Line="148" Column="1" />
+      <File FileName="Assets\Script\Managers\SongOptionManager.cs" Line="18" Column="32" />
+      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="40" Column="99" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
