@@ -26,6 +26,8 @@ public class EndingController : MonoBehaviour {
 			ComboObjects[(int)comboType].SetActive(true);
 			AudioController.instance.playSoundOnShot("Combo");
 		}
+
+		Invoke ("back", 3f);
 	}
 
 	public void showFailed()
@@ -35,6 +37,13 @@ public class EndingController : MonoBehaviour {
 		AudioController.instance.stopSongFailed();
 		AudioController.instance.playSoundOnShot("Failed");
 		StartCoroutine (endingAnimation ());
+
+		Invoke ("back", 3f);
+	}
+
+	public void back()
+	{
+		TransitionManager.instance.changeSceneWithTransition("SelectSongs", 0.5f, 0.2f, true, true);
 	}
 
 	IEnumerator endingAnimation()
