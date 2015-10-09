@@ -1,19 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\EndingController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Chart\DescriptionController.cs">
     <Files>
-      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="462" Column="37" />
-      <File FileName="Assets\Script\Utils\ControlEmissive.cs" Line="15" Column="2" />
-      <File FileName="Assets\Script\SelectSongs\SongCube.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\AudioSelectionManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\SongInfoPanel.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\SelectSongs\SongOptionPanel.cs" Line="106" Column="55" />
       <File FileName="Assets\Script\SelectSongs\SongSelectionManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SelectSongs\SongOptionPanel.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\System\Song.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Managers\SongOptionManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\ProjectResources\Localisation\localisation.txt" Line="1" Column="1" />
-      <File FileName="Assets\Script\Chart\EndingController.cs" Line="41" Column="23" />
-      <File FileName="Assets\Script\LoadingScreen\LoadSongUI.cs" Line="81" Column="5" />
+      <File FileName="Assets\Script\Chart\VisualizerController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Chart\ChartManager.cs" Line="462" Column="75" />
+      <File FileName="Assets\Script\Chart\ComboController.cs" Line="162" Column="83" />
+      <File FileName="Assets\Script\Chart\DescriptionController.cs" Line="17" Column="13" />
+      <File FileName="Assets\Script\Utils\Utils.cs" Line="83" Column="73" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

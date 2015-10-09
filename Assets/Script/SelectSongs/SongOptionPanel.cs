@@ -86,6 +86,7 @@ public class SongOptionPanel : MonoBehaviour {
 				bpmSpeedmod.text = ((int)firstBPM * currentSIP.speedmodpref).ToString ();
 				bpm.text = ((int)firstBPM).ToString();
 			}
+			SongOptionManager.instance.speedmodSelected = currentSIP.speedmodpref;
 		} else {
 
 			if (oneSpeedObj.activeSelf && GameManager.instance.prefs.inBPMMode) {
@@ -94,6 +95,7 @@ public class SongOptionPanel : MonoBehaviour {
 
 				multipSpeedmod.text = (GameManager.instance.prefs.lastBPM / firstBPM).ToString ("0.00");
 				bpm.text = ((int)firstBPM).ToString();
+				SongOptionManager.instance.speedmodSelected = (GameManager.instance.prefs.lastBPM / firstBPM);
 			} else {
 
 				multipSpeedmod.text = GameManager.instance.prefs.lastSpeedmod.ToString ("0.00");

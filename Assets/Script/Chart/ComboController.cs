@@ -39,6 +39,9 @@ public class ComboController : MonoBehaviour {
 	public Text comboText;
 	public Outline comboOutline;
 	public float maxAlpha;
+	public float alphaFlash;
+	public float minFontSize;
+	public float maxFontSize;
 	public float speedAlphaDiminution;
 
 	// Use this for initialization
@@ -56,7 +59,7 @@ public class ComboController : MonoBehaviour {
 	{
 		if (comboText.color.a > maxAlpha) {
 			tempTextColor = comboText.color;
-			tempTextColor.a = Mathf.Clamp(tempTextColor.a - (Time.deltaTime/speedAlphaDiminution), maxAlpha, 1f);
+			tempTextColor.a = Mathf.Clamp(tempTextColor.a - (Time.deltaTime*alphaFlash/speedAlphaDiminution), maxAlpha, alphaFlash);
 			comboText.color = tempTextColor;
 		}
 	}
@@ -152,9 +155,15 @@ public class ComboController : MonoBehaviour {
 	void writeCombo(bool withAnim = true)
 	{
 		tempTextColor = comboText.color;
-		tempTextColor.a = withAnim ? 1f : maxAlpha;
+		tempTextColor.a = withAnim ? alphaFlash : maxAlpha;
 		comboText.color = tempTextColor;
-		comboText.text = combo.ToString ("0");
+		if (combo >= 5) {
+			comboText.text = combo.ToString ("0");
+			comboText.resizeTextMaxSize = (int)Mathf.Lerp(minFontSize, maxFontSize, (float)combo/100f);
+		} else {
+			comboText.text = "";
+		}
+
 	}
 
 	void changeComboMaterialColor(Color colorToGo)

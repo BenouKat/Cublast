@@ -77,4 +77,9 @@ public class Utils {
 			des.CreateEncryptor().TransformFinalBlock(buffer, 0, buffer.Length));
 		
 	}
+
+	public static string UppercaseFirst(string text)
+	{
+		return text.ToUpper()[0] + text.ToLower().Substring(1, text.Length-1);
+	}
 }

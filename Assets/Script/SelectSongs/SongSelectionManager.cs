@@ -204,6 +204,26 @@ public class SongSelectionManager : MonoBehaviour {
 		animLaunch.GetComponent<Animation> ().Play ("AnimSongDisappear");
 		animLaunch.anchoredPosition = new Vector2(0f, 0f);
 
+		//Adjust speedmod
+		SongInfoProfil currentSIP = GameManager.instance.prefs.scoreOnSong.Find (c => c.CompareId (SongSelectionManager.instance.songSelected.sip));
+		if (currentSIP != null) {
+			SongOptionManager.instance.speedmodSelected = currentSIP.speedmodpref;
+		}
+
+		if (GameManager.instance.prefs.inBPMMode) {
+			double firstBPM = 0;
+			if(SongSelectionManager.instance.songSelected.bpmToDisplay.Contains ("$"))
+			{
+				firstBPM = double.Parse (SongSelectionManager.instance.songSelected.bpmToDisplay.Split ('$') [0]);
+				double secondBPM = double.Parse (SongSelectionManager.instance.songSelected.bpmToDisplay.Split ('$') [1]);
+				firstBPM = (double)Mathf.Max((float)firstBPM, (float)secondBPM);
+			}else{
+				firstBPM = double.Parse (SongSelectionManager.instance.songSelected.bpmToDisplay);
+			}
+
+			SongOptionManager.instance.speedmodSelected = (GameManager.instance.prefs.lastBPM / firstBPM);
+		}
+
 		float sizeObj = 1f;
 		float canvasFloat = 1f;
 		float timePast = 0f;
