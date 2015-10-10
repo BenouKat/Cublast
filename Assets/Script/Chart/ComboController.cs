@@ -38,8 +38,8 @@ public class ComboController : MonoBehaviour {
 	//UI
 	public Text comboText;
 	public Outline comboOutline;
-	public float maxAlpha;
-	public float alphaFlash;
+	float colorLerp = 0.5f;
+	public Color currentOutlineColor = Color.black;
 	public float minFontSize;
 	public float maxFontSize;
 	public float speedAlphaDiminution;
@@ -51,16 +51,15 @@ public class ComboController : MonoBehaviour {
 		playParticle (particlesNoneCombo [(int)NoneComboType.NORMAL]);
 		materialCombo.SetColor ("_EmissionColor", materialColorNoneCombo [(int)NoneComboType.NORMAL]);
 		comboOutline.effectColor = textColorNoneCombo [(int)NoneComboType.NORMAL];
+		currentOutlineColor = comboOutline.effectColor;
 		writeCombo (false);
 	}
 
-	Color tempTextColor = new Color();
 	void Update()
 	{
-		if (comboText.color.a > maxAlpha) {
-			tempTextColor = comboText.color;
-			tempTextColor.a = Mathf.Clamp(tempTextColor.a - (Time.deltaTime*alphaFlash/speedAlphaDiminution), maxAlpha, alphaFlash);
-			comboText.color = tempTextColor;
+		if (colorLerp > 0.5f) {
+			colorLerp = Mathf.Clamp(colorLerp - Time.deltaTime*speedAlphaDiminution, 0.5f, 1f);
+			comboOutline.effectColor = Color.Lerp(Color.black, currentOutlineColor, colorLerp);
 		}
 	}
 	
@@ -129,6 +128,7 @@ public class ComboController : MonoBehaviour {
 			comboOutline.effectColor = textColorNoneCombo[(int)NoneComboType.MISSED];
 			changeComboMaterialColor(materialColorNoneCombo[(int)NoneComboType.MISSED]);
 			ChartManager.instance.modelLane.activeAllComboParticles(false);
+			currentOutlineColor = comboOutline.effectColor;
 			return;
 		}
 
@@ -136,6 +136,7 @@ public class ComboController : MonoBehaviour {
 			playParticle (particlesNoneCombo [(int)NoneComboType.NORMAL]);
 			comboOutline.effectColor = textColorNoneCombo[(int)NoneComboType.NORMAL];
 			changeComboMaterialColor(materialColorNoneCombo[(int)NoneComboType.NORMAL]);
+			currentOutlineColor = comboOutline.effectColor;
 
 		} else if (combo == comboGreatCap || (previousComboType != currentComboType && combo >= comboGreatCap)) {
 			if(currentComboType == ComboType.NONE)
@@ -143,20 +144,23 @@ public class ComboController : MonoBehaviour {
 				playParticle (particlesNoneCombo [(int)NoneComboType.GREAT]);
 				comboOutline.effectColor = textColorNoneCombo[(int)NoneComboType.GREAT];
 				changeComboMaterialColor(materialColorNoneCombo[(int)NoneComboType.GREAT]);
+				currentOutlineColor = comboOutline.effectColor;
 			}else{
 				playParticle (particlesCombo [(int)currentComboType]);
 				comboOutline.effectColor = textColorCombo[(int)currentComboType];
 				changeComboMaterialColor(materialColorCombo[(int)currentComboType]);
+				currentOutlineColor = comboOutline.effectColor;
 			}
 			ChartManager.instance.modelLane.activeAllComboParticles(true);
 		}
+
+
 	}
 
 	void writeCombo(bool withAnim = true)
 	{
-		tempTextColor = comboText.color;
-		tempTextColor.a = withAnim ? alphaFlash : maxAlpha;
-		comboText.color = tempTextColor;
+		if(withAnim) colorLerp = 1f;
+		comboOutline.effectColor = currentOutlineColor;
 		if (combo >= 5) {
 			comboText.text = combo.ToString ("0");
 			comboText.resizeTextMaxSize = (int)Mathf.Lerp(minFontSize, maxFontSize, (float)combo/100f);

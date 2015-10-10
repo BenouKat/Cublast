@@ -355,7 +355,8 @@ public class ChartManager : MonoBehaviour {
 			indexJump++;
 			
 			//All jumps effect
-			BackgroundColorController.instance.bumpExposure();
+			//BackgroundColorController.instance.bumpExposure(); naze
+			EffectController.instance.activeJumpParticles();
 		}
 	}
 	#endregion
