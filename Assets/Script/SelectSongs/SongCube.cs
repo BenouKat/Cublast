@@ -15,7 +15,7 @@ public class SongCube : MonoBehaviour {
 	public Text subtitle;
 	public List<GameObject> difficultyButton;
 
-	Difficulty selectedDifficulty = Difficulty.NONE;
+	public Difficulty selectedDifficulty = Difficulty.NONE;
 
 	public SongInfoPanel panel;
 
@@ -121,6 +121,7 @@ public class SongCube : MonoBehaviour {
 			}
 			musicPreviewLaunched = true;
 		}
+		changeDifficulty(selectedDifficulty.ToString());
 		song = songData.songs [selectedDifficulty];
 		SongSelectionManager.instance.selectOnSong (this);
 	}
@@ -144,7 +145,7 @@ public class SongCube : MonoBehaviour {
 
 	public void pointOutSong()
 	{
-		if (selectedDifficulty == Difficulty.NONE) return;
+		if (selectedDifficulty == Difficulty.NONE || songData == null) return;
 		background.color = SongSelectionManager.instance.songBarColor[(int)selectedDifficulty];
 
 		if (isPointed && !SongSelectionManager.instance.isSelectingSong) {
@@ -163,7 +164,6 @@ public class SongCube : MonoBehaviour {
 		}
 
 		isPointed = false;
-
 		panel.close (songData.songs [selectedDifficulty]);
 	}
 

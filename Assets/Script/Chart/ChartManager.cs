@@ -51,6 +51,7 @@ public class ChartManager : MonoBehaviour {
 		if(GameManager.instance != null)
 		{
 			systemOffset += GameManager.instance.prefs.globalOffsetSeconds + SongOptionManager.instance.currentSongPlayed.offset;
+			rate = SongOptionManager.instance.rateSelected;
 		}
 
 		currentTime = -1;
@@ -73,6 +74,7 @@ public class ChartManager : MonoBehaviour {
 	public Transform scrollingObject;
 	public float systemSpeedmod = 1f; //Resize the chart to ITG Like base spacement
 	public double systemOffset = -0.150; //Engine Offset
+	public double rate;
 	public float timeBeforeStart;
 
 	//Private global variable
@@ -183,7 +185,7 @@ public class ChartManager : MonoBehaviour {
 	public void computeTime()
 	{
 		//The time is a buffer. This buffer will decrease for each time operation we're gonna make within the frame.
-		timeBuffer.init((double)Time.deltaTime);
+		timeBuffer.init((double)Time.deltaTime * rate);
 		timeBuffer.buffer = 0;
 		timeBuffer.completed = 0;
 
@@ -223,6 +225,8 @@ public class ChartManager : MonoBehaviour {
 		}
 
 		addTimeToSyncTime(timeBuffer.available);
+
+
 	}
 
 	public void addTimeToSyncTime(double time)

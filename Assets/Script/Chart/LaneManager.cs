@@ -211,6 +211,7 @@ public class LaneManager : MonoBehaviour {
 				ChartManager.instance.modelLane.getParticleEffect (lane).playMine();
 				LifeController.instance.addHPbyPrecision(Precision.MINE);
 				ScoreController.instance.addScoreByPrecision(Precision.MINE);
+				AudioController.instance.playSound("MineBoom", 0.8f, 1.2f);
 			}else{
 				if(arrowValid.type == ArrowType.NORMAL || !endFreezeValidation)
 				{

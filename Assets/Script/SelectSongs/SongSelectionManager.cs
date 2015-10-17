@@ -175,7 +175,7 @@ public class SongSelectionManager : MonoBehaviour {
 	{
 		songCubeObject = songCubeObj;
 		songDataSelected = songCubeObj.songData;
-		songSelected = songCubeObj.songData.songs [difficultySelected];
+		songSelected = songCubeObj.songData.songs [songCubeObj.selectedDifficulty];
 		StartCoroutine (selectOnSongRoutine (songCubeObj.gameObject));
 	}
 

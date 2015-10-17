@@ -12,13 +12,14 @@ public class AudioController : MonoBehaviour {
 
 		for(int i=0; i<transform.childCount; i++)
 		{
-			sounds.Add(transform.GetChild(i).gameObject);
+			sounds.Add(transform.GetChild(i).gameObject.GetComponent<AudioSource>());
 		}
 	}
 
 	public AudioSource audioSource;
 
-	List<GameObject> sounds = new List<GameObject>();
+	List<AudioSource> sounds = new List<AudioSource>();
+	AudioSource currentSource;
 
 	public void loadSong(Song s)
 	{
@@ -30,6 +31,7 @@ public class AudioController : MonoBehaviour {
 	public void startSong()
 	{
 		audioSource.Play ();
+		audioSource.pitch = (float)SongOptionManager.instance.rateSelected;
 		
 		SoundWaveManager.instance.init(audioSource);
 		SoundWaveManager.instance.activeAnalysis(true);
@@ -42,6 +44,18 @@ public class AudioController : MonoBehaviour {
 
 	public void playSoundOnShot(string sound)
 	{
-		sounds.Find(c => c.name == sound).SetActive(true);
+		sounds.Find(c => c.name == sound).gameObject.SetActive(true);
+	}
+
+	public void playSound(string sound)
+	{
+		sounds.Find(c => c.name == sound).Play();
+	}
+
+	public void playSound(string sound, float pitchMin, float pitchMax)
+	{
+		currentSource = sounds.Find(c => c.name == sound);
+		currentSource.pitch = Random.Range(pitchMin, pitchMax);
+		currentSource.PlayOneShot(currentSource.clip);
 	}
 }

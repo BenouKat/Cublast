@@ -19,6 +19,7 @@ public class SongOptionPanel : MonoBehaviour {
 	public InputField higherBPMSpeedmod;
 
 	public InputField rate;
+	public AudioSource musicSource;
 
 	public Text skinSelectedText;
 	public Toggle bigNotesToggle;
@@ -154,6 +155,7 @@ public class SongOptionPanel : MonoBehaviour {
 			}else{
 				Song s = SongSelectionManager.instance.songDataSelected.songs[(
 					(Difficulty)System.Enum.Parse(typeof(Difficulty), buttons.name))];
+				buttons.SetActive(true);
 				buttons.transform.FindChild("Level").GetComponent<Text>().text = s.level.ToString();
 			}
 		}
@@ -341,7 +343,12 @@ public class SongOptionPanel : MonoBehaviour {
 				okRate = false;
 			}
 
-			if(okRate) SongOptionManager.instance.rateSelected = theNewRate/(double)100;
+			if(okRate)
+			{
+				SongOptionManager.instance.rateSelected = theNewRate/(double)100;
+				if(newRate.Equals("100")) SongOptionManager.instance.rateSelected = 1;
+				musicSource.pitch = (float)SongOptionManager.instance.rateSelected;
+			}
 		}
 
 		if (okRate) {
@@ -514,12 +521,14 @@ public class SongOptionPanel : MonoBehaviour {
 	public void playChart()
 	{
 		if (okBPM && okRate) {
+			musicSource.pitch = 1f;
 			SongSelectionManager.instance.callLaunchSong(true);
 		}
 	}
 
 	public void back()
 	{
+		musicSource.pitch = 1f;
 		SongSelectionManager.instance.callCancelOption ();
 	}
 }

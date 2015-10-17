@@ -393,7 +393,7 @@ public class OpenChart{
 				
 				if(listLine.ElementAt(indexBeginStepchart).Contains("NOTES")) exitTrigger = true;
 				//if(theNewsong.title == "The Last Kiss") Debug.Log(listLine.ElementAt(beginstepchart));
-				
+
 				if(!exitTrigger){
 					int numberOfSteps = 0;
 					int numberOfMines = 0;
@@ -403,7 +403,7 @@ public class OpenChart{
 					int numberOfStepsWJ = 0;
 					int numberOfStepsAbs = 0;
 					theNewsong.stepchart.Add(new List<string>());
-					for(int i = indexBeginStepchart; !listLine.ElementAt(i).Contains(";"); i++){
+					for(int i = indexBeginStepchart;!(i >= listLine.Count || listLine.ElementAt(i).Contains(";")); i++){
 						if(listLine.ElementAt(i).Contains(",")){
 							theNewsong.stepchart.Add(new List<string>());
 						}else if(!String.IsNullOrEmpty(listLine.ElementAt(i))){
