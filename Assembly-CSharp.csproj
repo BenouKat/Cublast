@@ -50,6 +50,7 @@
      <Compile Include="Assets\Script\Chart\ArrowPainter.cs" />
      <Compile Include="Assets\Script\Chart\AudioController.cs" />
      <Compile Include="Assets\Script\Chart\BackgroundColorController.cs" />
+     <Compile Include="Assets\Script\Chart\BackgroundController.cs" />
      <Compile Include="Assets\Script\Chart\ChartManager.cs" />
      <Compile Include="Assets\Script\Chart\ComboController.cs" />
      <Compile Include="Assets\Script\Chart\DescriptionController.cs" />

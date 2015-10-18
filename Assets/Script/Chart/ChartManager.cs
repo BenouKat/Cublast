@@ -129,6 +129,7 @@ public class ChartManager : MonoBehaviour {
 
 		//Data initialization
 		actualBPM = SongOptionManager.instance.currentSongPlayed.bpms.First ().Value;
+		BackgroundController.instance.setSpeedCursor((float)actualBPM);
 		actualSTOPBuffer = null;
 		BPMIndex = 1;
 		STOPIndex = 0;
@@ -207,6 +208,7 @@ public class ChartManager : MonoBehaviour {
 					currentSyncTime = 0;
 					
 					actualBPM = nextBPMValue;
+					BackgroundController.instance.setSpeedCursor((float)actualBPM);
 					BPMIndex++;
 				} else if (nextSTOPKey <= currentTime && nextSTOPKey <= nextBPMKey) {
 					nextSTOPValue = SongOptionManager.instance.currentSongPlayed.stops.ElementAt (STOPIndex).Value;
@@ -217,6 +219,7 @@ public class ChartManager : MonoBehaviour {
 					
 					actualSTOPBuffer = new TimeBuffer ();
 					actualSTOPBuffer.init (nextSTOPValue);
+					BackgroundController.instance.setSpeedCursor(0f);
 					STOPIndex++;
 				}
 
@@ -240,7 +243,11 @@ public class ChartManager : MonoBehaviour {
 				time = 0;
 			}
 			actualSTOPBuffer.flushBuffer();
-			if(actualSTOPBuffer.available <= 0) actualSTOPBuffer = null;
+			if(actualSTOPBuffer.available <= 0)
+			{
+				actualSTOPBuffer = null;
+				BackgroundController.instance.setSpeedCursor((float)actualBPM);
+			}
 		}
 
 		currentSyncTime += time;

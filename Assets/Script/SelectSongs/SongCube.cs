@@ -15,9 +15,16 @@ public class SongCube : MonoBehaviour {
 	public Text subtitle;
 	public List<GameObject> difficultyButton;
 
+	public Transform rootMedal;
+	GameObject currentMedal;
+
 	public Difficulty selectedDifficulty = Difficulty.NONE;
 
 	public SongInfoPanel panel;
+
+	SongInfoProfil currentSip;
+	Difficulty difficultySip = Difficulty.NONE;
+	bool noSip = false;
 
 	// Use this for initialization
 	void Start () {
@@ -27,8 +34,14 @@ public class SongCube : MonoBehaviour {
 	void OnEnable()
 	{
 		transform.rotation = Quaternion.identity;
-		if(songData != null) applyChangeDifficulty(SongSelectionManager.instance.difficultySelected);
+		if(songData != null)
+		{
+			applyChangeDifficulty(SongSelectionManager.instance.difficultySelected);
+			searchMedal();
+		}
 	}
+
+
 
 	public void refresh()
 	{
@@ -242,5 +255,37 @@ public class SongCube : MonoBehaviour {
 		AudioSelectionManager.instance.enabled = false;
 		AudioSelectionManager.instance.mainMusic.volume = 0f;
 		AudioSelectionManager.instance.songMusic.volume = 0f;
+	}
+
+	public void searchMedal()
+	{
+		if(difficultySip != selectedDifficulty)
+		{
+			noSip = false;
+			currentSip = null;
+			if(currentMedal != null) Destroy (currentMedal);
+		}
+		
+		if(!noSip && currentSip == null)
+		{
+			difficultySip = selectedDifficulty;
+			currentSip = GameManager.instance.prefs.scoreOnSong.Find(c => c.CompareId(songData.songs[selectedDifficulty].sip));
+		
+			if(currentSip == null || currentSip.fail)
+			{
+				noSip = true;
+			}else{
+				int note = GameManager.instance.noteBase.FindAll(c => c.score < currentSip.score).Max(d => (int)d.note);
+				if(note < SongSelectionManager.instance.medals.Length)
+				{
+					currentMedal = Instantiate(SongSelectionManager.instance.medals[note], rootMedal.position, rootMedal.rotation) as GameObject;
+					currentMedal.transform.SetParent(rootMedal);
+					currentMedal.transform.localPosition = Vector3.zero;
+					currentMedal.transform.localRotation = Quaternion.identity;
+					currentMedal.transform.localScale = Vector3.one;
+				}
+				
+			}
+		}
 	}
 }

@@ -45,6 +45,8 @@ public class SongSelectionManager : MonoBehaviour {
 
 	public GameObject cacheRaycast;
 
+	public GameObject[] medals;
+
 	void Start()
 	{
 

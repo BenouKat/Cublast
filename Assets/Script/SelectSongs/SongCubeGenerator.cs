@@ -53,12 +53,14 @@ public class SongCubeGenerator : MonoBehaviour {
 			GameObject songCube = Instantiate(model, rotator.position, rotator.rotation) as GameObject;
 			songCube.transform.SetParent(rollRoot);
 			songCube.transform.localScale = Vector3.one;
-			if(i <= maxDisplayed && rotator.right.x >= -0.2f) songCube.SetActive(true);
+
 
 			SongCube songCubeObj = songCube.GetComponent<SongCube>();
 			songCubeObj.songData = songDatas[i];
 			songCubeObj.refresh();
 			songCubes.Add(songCubeObj);
+
+			if(i <= maxDisplayed && rotator.right.x >= -0.2f) songCube.SetActive(true);
 			
 			turn(rotator, -rotationPerCubes);
 		}

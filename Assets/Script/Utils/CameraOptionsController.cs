@@ -6,6 +6,7 @@ public class CameraOptionsController : MonoBehaviour {
 	public UnityStandardAssets.ImageEffects.Antialiasing fxaa;
 	public UnityStandardAssets.ImageEffects.ScreenSpaceAmbientOcclusion ssao;
 	public UnityStandardAssets.ImageEffects.Bloom bloom;
+	public UnityStandardAssets.ImageEffects.DepthOfField dof;
 
 	// Use this for initialization
 	void Awake () {
@@ -32,6 +33,11 @@ public class CameraOptionsController : MonoBehaviour {
 				if(ssao != null)
 				{
 					ssao.enabled = GameManager.instance.prefs.enablePostProcessEffects;
+				}
+
+				if(dof != null)
+				{
+					dof.enabled = GameManager.instance.prefs.enablePostProcessEffects;
 				}
 
 				if(bloom != null)
