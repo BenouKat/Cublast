@@ -73,7 +73,7 @@ public class ChartManager : MonoBehaviour {
 	//Manager global variable
 	public Transform scrollingObject;
 	public float systemSpeedmod = 1f; //Resize the chart to ITG Like base spacement
-	public double systemOffset = -0.150; //Engine Offset
+	public double systemOffset = -0.000; //Engine Offset
 	public double rate;
 	public float timeBeforeStart;
 
@@ -162,6 +162,9 @@ public class ChartManager : MonoBehaviour {
 			computeTime ();
 			moveChart ();
 			processMusicalBump ();
+		}else if(gameOver){
+			currentSyncTime += Time.deltaTime;
+			moveChart ();
 		}
 	}
 

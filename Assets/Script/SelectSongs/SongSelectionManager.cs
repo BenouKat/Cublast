@@ -371,8 +371,6 @@ public class SongSelectionManager : MonoBehaviour {
 		songLaunchPanel.worldRecord.text = (infoPanel.worldRecordScore > 0f && !string.IsNullOrEmpty(infoPanel.worldRecordName)) ?
 			infoPanel.worldRecordName + " (" + infoPanel.worldRecordScore.ToString("0.00") + "%)" : GameLocalization.instance.Translate ("NoWorldRecord");
 
-
-
 		yield return new WaitForSeconds(5f);
 
 		TransitionManager.instance.changeSceneWithTransition("SoloChart", 0.2f, 0.5f, false, false);

@@ -49,13 +49,13 @@ public class AudioController : MonoBehaviour {
 
 	public void playSound(string sound)
 	{
-		sounds.Find(c => c.name == sound).Play();
+		playSound(sound, 1f, 1f);
 	}
 
 	public void playSound(string sound, float pitchMin, float pitchMax)
 	{
 		currentSource = sounds.Find(c => c.name == sound);
-		currentSource.pitch = Random.Range(pitchMin, pitchMax);
+		currentSource.pitch = (pitchMin == pitchMax) ? pitchMin : Random.Range(pitchMin, pitchMax);
 		currentSource.PlayOneShot(currentSource.clip);
 	}
 }

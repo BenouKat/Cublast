@@ -112,6 +112,7 @@ public class ComboController : MonoBehaviour {
 		if (combo >= comboSimpleCap) {
 			explosion.Play();
 			explosionFlare.enableTween();
+			AudioController.instance.playSound("ComboBreak");
 		}
 
 		combo = 0;
