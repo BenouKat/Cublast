@@ -15,8 +15,6 @@ public class MainMenuConnectedAnim : MonoBehaviour {
 
 	public Animation gamePanelAnim;
 
-	public UnityStandardAssets.ImageEffects.ScreenSpaceAmbientOcclusion SSAO;
-
 	public Color[] availableCubeColor;
 	public Color[] availableLightColor;
 
@@ -54,7 +52,6 @@ public class MainMenuConnectedAnim : MonoBehaviour {
 			SoundWaveManager.instance.activeAnalysis (true);
 			gamePanelAnim.gameObject.SetActive(true);
 			gamePanelAnim.GetComponent<CanvasGroup>().alpha = 1f;
-			SSAO.enabled = true;
 			flareAnim.GetComponent<Animation>().enabled = false;
 			flareAnim.GetComponent<LensFlare>().brightness = 0.3f;
 		} else {
@@ -94,7 +91,6 @@ public class MainMenuConnectedAnim : MonoBehaviour {
 		yield return new WaitForSeconds (0.7f);
 
 		gamePanelAnim.Play();
-		SSAO.enabled = true;
 
 		yield return new WaitForSeconds(0.3f);
 
@@ -102,21 +98,9 @@ public class MainMenuConnectedAnim : MonoBehaviour {
 		SoundWaveManager.instance.init (mainMusic);
 		SoundWaveManager.instance.activeAnalysis (true);
 	}
-	
-	// Update is called once per frame
-	private float smoothFramerate;
 
 	void Update () {
 
-		if (SoundWaveManager.instance.isAnalyseActive()) {
-			SoundWaveManager.instance.getSpectrumBand(ref spectrumDatas, visualizerBarHeights, SpectrumCut.EXP);
-			
-			smoothFramerate = Mathf.Lerp(0.05f, 0.9f, Mathf.Clamp(Time.deltaTime / 0.033f, 0f, 1f));
-			for(int i=0; i<bandNumber; i++)
-			{
-				cubesVisualizer[i].localScale = Vector3.Lerp(cubesVisualizer[i].localScale, flatY + Vector3.up*Mathf.Clamp(spectrumDatas[i+bandIngore], 0f, heightLimit), smoothFramerate);
-				if(i==(bandNumber/2)) lightVisualizer.intensity = ((cubesVisualizer[i].localScale.y / heightLimit)*(maxLightIntensity - minLightIntensity)) + minLightIntensity;
-			}
-		}
+
 	}
 }
