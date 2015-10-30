@@ -26,7 +26,7 @@ public class MainMenuConnection : MonoBehaviour {
 
 	public GameObject warningPanel;
 
-	public GameObject mainMenuAnim;
+	public MainMenuConnectedAnim mainMenuAnim;
 
 	bool isConnecting = false;
 	bool fromRegister = false;
@@ -123,7 +123,7 @@ public class MainMenuConnection : MonoBehaviour {
 		{
 			activeCreatePanel(false);
 		}else{
-			mainMenuAnim.SetActive(true);
+			mainMenuAnim.goConnection();
 			globalPanelConnection.SetActive(false);
 		}
 

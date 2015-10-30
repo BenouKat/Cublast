@@ -6,16 +6,11 @@ public class MainMenuMode : MonoBehaviour {
 
 	public Button multiButton;
 
-	public Animation cameraAnim;
-
 	public Animation optionMenu;
 
 	// Use this for initialization
 	void Start () {
-		if(!ServerManager.instance.connected || !ServerManager.instance.connectedToRoom)
-		{
-			multiButton.interactable = false;
-		}
+
 	}
 	
 	// Update is called once per frame
@@ -27,14 +22,12 @@ public class MainMenuMode : MonoBehaviour {
 	{
 		optionMenu.Play ("CloseOptionMenu");
 		optionMenu.GetComponent<MainMenuOptions> ().closePanel ();
-		cameraAnim.Play("OptionToMainMenu");
 		Invoke ("playCameraShake", 1f);
 	}
 	
 	public void playCameraShake()
 	{
 		optionMenu.gameObject.SetActive(false);
-		cameraAnim.Play("CameraShake");
 	}
 
 	public void openOption()
@@ -46,7 +39,6 @@ public class MainMenuMode : MonoBehaviour {
 	public void goToOption()
 	{
 		CancelInvoke ("playCameraShake");
-		cameraAnim.Play("GoToOption");
 		Invoke ("openOption", 0.5f);
 	}
 

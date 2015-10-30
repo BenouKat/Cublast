@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GlobalMenu : MonoBehaviour {
 
@@ -13,6 +14,7 @@ public class GlobalMenu : MonoBehaviour {
 	public Animation animationMenu;
 
 	public GameObject backButton;
+	public Text backText;
 
 	public void activeMenu(bool active)
 	{
@@ -20,9 +22,10 @@ public class GlobalMenu : MonoBehaviour {
 		if(active) animationMenu.Play();
 	}
 
-	public void activeBackButton(bool active)
+	public void activeBackButton(bool active, string backText)
 	{
 		backButton.SetActive(active);
+		backText = GameLocalization.instance.Translate(backText);
 	}
 
 	public void activeBackButtonClicked()

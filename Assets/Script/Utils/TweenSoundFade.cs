@@ -9,6 +9,7 @@ public class TweenSoundFade : MonoBehaviour {
 	public float to;
 	public float delay;
 
+	public bool cancel = false;
 	// Use this for initialization
 	void Start () {
 		StartCoroutine(tweenSound());
@@ -19,11 +20,12 @@ public class TweenSoundFade : MonoBehaviour {
 		//Pass fiew frame to avoid loading garbage
 		yield return 0; yield return 0;yield return 0;yield return 0;
 		float timeSpent = 0f;
-		while(timeSpent < time)
+		while(timeSpent < time && !cancel)
 		{
 			timeSpent += Time.deltaTime;
 			source.volume = Mathf.Lerp(from < to ? from : to, from < to ? to : from, timeSpent/time);
 			yield return 0;
 		}
+		cancel = false;
 	}
 }

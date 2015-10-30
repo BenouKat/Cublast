@@ -40,9 +40,10 @@ ErrorUnknown;Failed : Unknown error. Please retry.;Echec : Erreur inconnue. Merc
 ErrorBadUsername;Failed : Account name is empty or contains invalid characters;Echec : Le nom de compte est vide ou contient des caractères interdits
 ErrorAlreadyTaken;Failed : This name is already taken;Echec : Ce nom est déjà pris
 ErrorIncorrectPassword;The password is incorrect (You didn't retype the same) or contains invalid characters;Le mot de passe est incorrect (vous ne l'avez pas retapé correctement) ou contient des caractères invalides
-WarningOffline;If you play offline, you will only see you own score. The "Friends" and "Multiplayers" functions will be disabled.
+WarningOffline;If you play offline, you will only see you own score. The friends and ranked functions will be disabled.;Si vous jouez hors ligne, vous ne verrez que vos propres scores. Les fonctions sociales et de compétitions seront désactivés.
 OK;OK;OK
 Back;Back;Retour
+Quit;Quit;Quitter
 PleaseWait;Please wait;Veuillez patientez
 Game;Game;Jeu
 Inputs;Inputs;Contrôles
